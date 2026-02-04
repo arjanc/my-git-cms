@@ -12,7 +12,7 @@ interface PageProps {
 }
 
 async function getPageContent(slugArray: string[] | undefined) {
-    const contentDir = join(process.cwd(), 'content', 'pages');
+    const contentDir = join(process.cwd(), '../content', 'pages');
 
     try {
         const files = readdirSync(contentDir);
@@ -52,7 +52,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export async function generateStaticParams() {
-    const contentDir = join(process.cwd(), 'content', 'pages');
+    const contentDir = join(process.cwd(), '../content', 'pages');
 
     try {
         const files = readdirSync(contentDir);
