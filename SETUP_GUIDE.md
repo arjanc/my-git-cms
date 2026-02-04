@@ -56,17 +56,16 @@
 
 3. **Edit `.env.local`** with your values:
    ```env
-   GITHUB_CLIENT_ID=your_github_client_id_here
-   GITHUB_CLIENT_SECRET=your_github_client_secret_here
-   NEXTAUTH_URL=http://localhost:3000
-   NEXTAUTH_SECRET=generate_with_openssl_rand_base64_32
+   AUTH_GITHUB_ID=your_github_client_id_here
+   AUTH_GITHUB_SECRET=your_github_client_secret_here
+   AUTH_SECRET=generate_with_openssl_rand_base64_32
    ```
 
 4. **Generate NextAuth secret**
    ```bash
    openssl rand -base64 32
    ```
-   Copy the output and paste it as the `NEXTAUTH_SECRET` value.
+   Copy the output and paste it as the `AUTH_SECRET` value.
 
 5. **Start the CMS**
    ```bash
@@ -132,7 +131,7 @@
 3. **Configure environment variables in Vercel**
    - Go to your project settings in Vercel dashboard
    - Add the same environment variables from `.env.local`
-   - Update `NEXTAUTH_URL` to your production URL (e.g., `https://my-cms.vercel.app`)
+   - Variables needed: `AUTH_SECRET`, `AUTH_GITHUB_ID`, `AUTH_GITHUB_SECRET`
 
 4. **Update GitHub OAuth App**
    - Go back to GitHub OAuth settings

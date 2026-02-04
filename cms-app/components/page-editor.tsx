@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { PageContent, Block, BlockType, createDefaultBlock } from '../../../shared/block-types';
 import { serializeToMarkdown, parseMarkdown, generateBlockId } from '../../../shared/markdown-utils';
 import { BlockEditor } from './blocks/BlockEditor';
+"use client";
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';

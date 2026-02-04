@@ -1,98 +1,73 @@
-import { useState, useEffect } from 'react';
-import { useSession, signIn, signOut } from 'next-auth/react';
-import { useRouter } from 'next/router';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { FileText, Folder, Plus, LogOut } from 'lucide-react';
+"use client"
+
+import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { FileText, Folder, Plus, LogOut } from "lucide-react"
+import { signOut } from "next-auth/react"
 
 interface GitHubFile {
-  name: string;
-  path: string;
-  type: 'file' | 'dir';
+  name: string
+  path: string
+  type: "file" | "dir"
 }
 
-export default function CMSHome() {
-  const { data: session, status } = useSession();
-  const router = useRouter();
-  const [repos, setRepos] = useState<Array<{ name: string; full_name: string }>>([]);
-  const [selectedRepo, setSelectedRepo] = useState<string | null>(null);
-  const [files, setFiles] = useState<GitHubFile[]>([]);
-  const [loading, setLoading] = useState(false);
+interface DashboardClientProps {
+  session: any
+}
+
+export function DashboardClient({ session }: DashboardClientProps) {
+  const router = useRouter()
+  const [repos, setRepos] = useState<Array<{ name: string; full_name: string }>>([])
+  const [selectedRepo, setSelectedRepo] = useState<string | null>(null)
+  const [files, setFiles] = useState<GitHubFile[]>([])
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    if (session) {
-      loadRepos();
-    }
-  }, [session]);
+    loadRepos()
+  }, [])
 
   const loadRepos = async () => {
     try {
-      setLoading(true);
-      const response = await fetch('/api/repos');
-      const data = await response.json();
-      setRepos(data);
+      setLoading(true)
+      const response = await fetch("/api/repos")
+      const data = await response.json()
+      setRepos(data)
     } catch (error) {
-      console.error('Error loading repos:', error);
+      console.error("Error loading repos:", error)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   const loadFiles = async (repoFullName: string) => {
     try {
-      setLoading(true);
-      const [owner, repo] = repoFullName.split('/');
-      const response = await fetch(`/api/github/${owner}/${repo}?path=content/pages`);
-      const data = await response.json();
-      setFiles(data);
-      setSelectedRepo(repoFullName);
+      setLoading(true)
+      const [owner, repo] = repoFullName.split("/")
+      const response = await fetch(`/api/github/${owner}/${repo}?path=content/pages`)
+      const data = await response.json()
+      setFiles(data)
+      setSelectedRepo(repoFullName)
     } catch (error) {
-      console.error('Error loading files:', error);
+      console.error("Error loading files:", error)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   const handleFileClick = (file: GitHubFile) => {
-    if (file.type === 'file' && selectedRepo) {
-      const [owner, repo] = selectedRepo.split('/');
-      router.push(`/editor/${owner}/${repo}?path=${encodeURIComponent(file.path)}`);
+    if (file.type === "file" && selectedRepo) {
+      const [owner, repo] = selectedRepo.split("/")
+      router.push(`/editor/${owner}/${repo}?path=${encodeURIComponent(file.path)}`)
     }
-  };
+  }
 
   const handleNewPage = () => {
     if (selectedRepo) {
-      const [owner, repo] = selectedRepo.split('/');
-      router.push(`/editor/${owner}/${repo}`);
+      const [owner, repo] = selectedRepo.split("/")
+      router.push(`/editor/${owner}/${repo}`)
     }
-  };
-
-  if (status === 'loading') {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p>Loading...</p>
-      </div>
-    );
-  }
-
-  if (!session) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 to-slate-700">
-        <Card className="w-96">
-          <CardHeader>
-            <CardTitle>Git-based CMS</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="mb-4 text-muted-foreground">
-              Sign in with GitHub to manage your content
-            </p>
-            <Button onClick={() => signIn('github')} className="w-full">
-              Sign in with GitHub
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-    );
   }
 
   return (
@@ -102,10 +77,16 @@ export default function CMSHome() {
           <h1 className="text-2xl font-bold">Git CMS</h1>
           <div className="flex items-center gap-4">
             <span className="text-sm text-muted-foreground">{session.user?.name}</span>
-            <Button variant="outline" size="sm" onClick={() => signOut()}>
-              <LogOut className="w-4 h-4 mr-2" />
-              Sign Out
-            </Button>
+            <form
+              action={async () => {
+                await signOut({ redirectTo: "/auth/signin" })
+              }}
+            >
+              <Button variant="outline" size="sm" type="submit">
+                <LogOut className="w-4 h-4 mr-2" />
+                Sign Out
+              </Button>
+            </form>
           </div>
         </div>
       </header>
@@ -127,7 +108,7 @@ export default function CMSHome() {
                       key={repo.full_name}
                       onClick={() => loadFiles(repo.full_name)}
                       className={`w-full text-left px-3 py-2 rounded hover:bg-gray-100 transition-colors ${
-                        selectedRepo === repo.full_name ? 'bg-gray-100' : ''
+                        selectedRepo === repo.full_name ? "bg-gray-100" : ""
                       }`}
                     >
                       <div className="flex items-center gap-2">
@@ -160,9 +141,7 @@ export default function CMSHome() {
                   Select a repository to view pages
                 </p>
               ) : loading ? (
-                <p className="text-sm text-muted-foreground text-center py-8">
-                  Loading files...
-                </p>
+                <p className="text-sm text-muted-foreground text-center py-8">Loading files...</p>
               ) : files.length === 0 ? (
                 <div className="text-center py-8">
                   <p className="text-sm text-muted-foreground mb-4">
@@ -194,5 +173,5 @@ export default function CMSHome() {
         </div>
       </main>
     </div>
-  );
+  )
 }
