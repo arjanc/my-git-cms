@@ -10,6 +10,17 @@ export async function GET() {
   }
 
   try {
+    // Check for specific repo in environment variables
+    const envRepoOwner = process.env.gcs_REPO_OWNER
+    const envRepoName = process.env.gcs_REPO
+
+    if (envRepoOwner && envRepoName) {
+      return NextResponse.json([{
+        name: envRepoName,
+        full_name: `${envRepoOwner}/${envRepoName}`
+      }])
+    }
+
     const repos = await GitHubAPI.listUserRepos(session.accessToken)
     return NextResponse.json(repos)
   } catch (error) {

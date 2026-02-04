@@ -35,6 +35,9 @@ export function DashboardClient({ session }: DashboardClientProps) {
       const data = await response.json()
       if (Array.isArray(data)) {
         setRepos(data)
+        if (data.length === 1) {
+          await loadFiles(data[0].full_name)
+        }
       } else {
         console.error("Error loading repos:", data)
         setRepos([])
