@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { PageContent, Block, BlockType, createDefaultBlock } from '../../../shared/block-types';
-import { serializeToMarkdown, parseMarkdown, generateBlockId } from '../../../shared/markdown-utils';
-import { BlockEditor } from './blocks/BlockEditor';
 "use client";
+
+import React, { useState, useEffect } from 'react';
+import { PageContent, Block, BlockType, createDefaultBlock, serializeToMarkdown, parseMarkdown, generateBlockId } from '@git-cms/shared';
+import { BlockEditor } from './blocks/BlockEditor';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -67,7 +67,7 @@ export function PageEditor({ initialContent, onSave, isSaving }: PageEditorProps
   const handleBlockMove = (index: number, direction: 'up' | 'down') => {
     const newBlocks = [...pageContent.blocks];
     const newIndex = direction === 'up' ? index - 1 : index + 1;
-    
+
     if (newIndex >= 0 && newIndex < newBlocks.length) {
       [newBlocks[index], newBlocks[newIndex]] = [newBlocks[newIndex], newBlocks[index]];
       setPageContent({ ...pageContent, blocks: newBlocks });

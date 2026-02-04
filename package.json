@@ -1,0 +1,9 @@
+{
+    "name": "git-cms-monorepo",
+    "private": true,
+    "workspaces": [
+        "cms-app",
+        "web-app",
+        "shared"
+    ]
+}

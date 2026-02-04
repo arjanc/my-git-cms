@@ -1,5 +1,5 @@
 import React from 'react';
-import { HeroBlock } from '../../../shared/block-types';
+import { HeroBlock } from '@git-cms/shared';
 
 interface HeroProps {
   block: HeroBlock;
@@ -21,13 +21,13 @@ export function Hero({ block }: HeroProps) {
         <h1 className="text-5xl md:text-7xl font-bold mb-6 animate-fade-in">
           {block.heading}
         </h1>
-        
+
         {block.subheading && (
           <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto text-gray-200">
             {block.subheading}
           </p>
         )}
-        
+
         {block.ctaText && block.ctaUrl && (
           <a
             href={block.ctaUrl}

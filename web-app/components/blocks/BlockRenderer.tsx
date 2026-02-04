@@ -1,5 +1,5 @@
 import React from 'react';
-import { Block } from '../../../shared/block-types';
+import { Block } from '@git-cms/shared';
 import { Hero } from './Hero';
 import { USP } from './USP';
 
@@ -52,7 +52,7 @@ export function BlockRenderer({ block }: BlockRendererProps) {
         </div>
       );
     default:
-      console.warn(`Unknown block type: ${block.type}`);
+      console.warn(`Unknown block type: ${(block as any).type}`);
       return null;
   }
 }

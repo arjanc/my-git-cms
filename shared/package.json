@@ -1,0 +1,8 @@
+{
+    "name": "@git-cms/shared",
+    "version": "0.1.0",
+    "main": "index.ts",
+    "dependencies": {
+        "gray-matter": "^4.0.3"
+    }
+}

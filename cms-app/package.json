@@ -22,7 +22,8 @@
     "clsx": "^2.1.1",
     "lucide-react": "^0.468.0",
     "tailwind-merge": "^2.6.0",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "@git-cms/shared": "*"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",

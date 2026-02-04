@@ -1,5 +1,5 @@
 import React from 'react';
-import { USPBlock } from '../../../shared/block-types';
+import { USPBlock } from '@git-cms/shared';
 
 interface USPProps {
   block: USPBlock;
@@ -14,7 +14,7 @@ export function USP({ block }: USPProps) {
             {block.title}
           </h2>
         )}
-        
+
         <div className="grid md:grid-cols-3 gap-8">
           {block.items.map((item, index) => (
             <div
@@ -26,11 +26,11 @@ export function USP({ block }: USPProps) {
                   {item.icon}
                 </div>
               )}
-              
+
               <h3 className="text-2xl font-semibold mb-3 text-gray-900">
                 {item.title}
               </h3>
-              
+
               <p className="text-gray-600 leading-relaxed">
                 {item.description}
               </p>

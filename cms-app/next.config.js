@@ -5,6 +5,7 @@ const nextConfig = {
       bodySizeLimit: '2mb',
     },
   },
+  transpilePackages: ['@git-cms/shared'],
 }
 
 module.exports = nextConfig

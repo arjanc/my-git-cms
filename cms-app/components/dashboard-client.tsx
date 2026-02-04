@@ -33,9 +33,15 @@ export function DashboardClient({ session }: DashboardClientProps) {
       setLoading(true)
       const response = await fetch("/api/repos")
       const data = await response.json()
-      setRepos(data)
+      if (Array.isArray(data)) {
+        setRepos(data)
+      } else {
+        console.error("Error loading repos:", data)
+        setRepos([])
+      }
     } catch (error) {
       console.error("Error loading repos:", error)
+      setRepos([])
     } finally {
       setLoading(false)
     }
@@ -47,10 +53,17 @@ export function DashboardClient({ session }: DashboardClientProps) {
       const [owner, repo] = repoFullName.split("/")
       const response = await fetch(`/api/github/${owner}/${repo}?path=content/pages`)
       const data = await response.json()
-      setFiles(data)
+
+      if (Array.isArray(data)) {
+        setFiles(data)
+      } else {
+        console.error("Error loading files:", data)
+        setFiles([])
+      }
       setSelectedRepo(repoFullName)
     } catch (error) {
       console.error("Error loading files:", error)
+      setFiles([])
     } finally {
       setLoading(false)
     }
@@ -107,9 +120,8 @@ export function DashboardClient({ session }: DashboardClientProps) {
                     <button
                       key={repo.full_name}
                       onClick={() => loadFiles(repo.full_name)}
-                      className={`w-full text-left px-3 py-2 rounded hover:bg-gray-100 transition-colors ${
-                        selectedRepo === repo.full_name ? "bg-gray-100" : ""
-                      }`}
+                      className={`w-full text-left px-3 py-2 rounded hover:bg-gray-100 transition-colors ${selectedRepo === repo.full_name ? "bg-gray-100" : ""
+                        }`}
                     >
                       <div className="flex items-center gap-2">
                         <Folder className="w-4 h-4" />
@@ -154,7 +166,7 @@ export function DashboardClient({ session }: DashboardClientProps) {
                 </div>
               ) : (
                 <div className="space-y-2">
-                  {files.map((file) => (
+                  {files && files.map((file) => (
                     <button
                       key={file.path}
                       onClick={() => handleFileClick(file)}

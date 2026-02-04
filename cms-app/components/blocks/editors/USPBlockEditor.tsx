@@ -1,5 +1,5 @@
 import React from 'react';
-import { USPBlock } from '../../../../shared/block-types';
+import { USPBlock } from '@git-cms/shared';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';

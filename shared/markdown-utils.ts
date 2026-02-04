@@ -13,6 +13,15 @@ export function serializeToMarkdown(content: PageContent): string {
     metadata: content.metadata,
   };
 
+  // Remove undefined values to avoid YAMLException
+  Object.keys(frontmatter).forEach(key => {
+    if ((frontmatter as any)[key] === undefined) {
+      delete (frontmatter as any)[key];
+    }
+  });
+
+  console.log(frontmatter);
+
   const md = matter.stringify('', frontmatter);
   return md;
 }
@@ -22,7 +31,7 @@ export function serializeToMarkdown(content: PageContent): string {
  */
 export function parseMarkdown(markdown: string): PageContent {
   const { data } = matter(markdown);
-  
+
   return {
     title: data.title || 'Untitled',
     slug: data.slug || '/',
@@ -38,7 +47,7 @@ export function parseMarkdown(markdown: string): PageContent {
 export function validateBlock(block: any): block is Block {
   if (!block || typeof block !== 'object') return false;
   if (!block.id || !block.type) return false;
-  
+
   // Add more specific validation per block type if needed
   return true;
 }

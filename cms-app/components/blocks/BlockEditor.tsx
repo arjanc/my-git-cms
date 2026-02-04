@@ -1,7 +1,7 @@
 import React from 'react';
-import { Block } from '../../../../shared/block-types';
-import { HeroBlockEditor } from './HeroBlockEditor';
-import { USPBlockEditor } from './USPBlockEditor';
+import { Block } from '@git-cms/shared';
+import { HeroBlockEditor } from './editors/HeroBlockEditor';
+import { USPBlockEditor } from './editors/USPBlockEditor';
 // Import other block editors as you create them
 
 interface BlockEditorProps {
