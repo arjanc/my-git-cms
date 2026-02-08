@@ -9,10 +9,14 @@
       "use": "@vercel/next"
     }
   ],
-  "rewrites": [
+  "routes": [
     {
-      "source": "/admin/:path*",
-      "destination": "/packages/cms-app/:path*"
+      "src": "/admin/(.*)",
+      "dest": "/packages/cms-app/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/web-app/$1"
     }
   ]
 }
