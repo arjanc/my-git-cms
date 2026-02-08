@@ -1,0 +1,1 @@
+export { createGitCMSHandler } from './handler';
