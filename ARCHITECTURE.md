@@ -21,6 +21,8 @@
 
 ### 1. CMS App (Admin Interface)
 
+**Path**: `packages/cms-app`
+
 **Purpose**: Content authoring and management
 
 **Technology Stack**:
@@ -43,6 +45,8 @@
 - API routes proxy GitHub API calls
 
 ### 2. Shared Library
+
+**Path**: `packages/shared`
 
 **Purpose**: Common code between CMS and Web App
 
@@ -184,8 +188,10 @@
 
 ```
 Local Machine
-├── CMS App (localhost:3000)
-├── Web App (localhost:3001)
+├── packages/
+│   ├── cms-app (localhost:3000)
+│   └── shared (common logic)
+├── web-app (localhost:3001)
 └── Content Repo (Git submodule/clone)
 ```
 
@@ -233,8 +239,8 @@ BaseBlock (interface)
 
 **Adding a new block type**:
 
-1. Define TypeScript interface in `shared/block-types.ts`
-2. Create editor component in `cms-app/components/blocks/editors/`
+1. Define TypeScript interface in `packages/shared/block-types.ts`
+2. Create editor component in `packages/cms-app/components/blocks/editors/`
 3. Create renderer component in `web-app/components/blocks/`
 4. Register in factory components
 5. Done! No database migrations needed
