@@ -3,12 +3,13 @@ import { Octokit } from '@octokit/rest';
 export function createGitCMSHandler(config) {
     return {
         GET: async (request, context) => {
+            const params = await context.params;
             const accessToken = await config.getAccessToken();
             if (!accessToken) {
                 return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
             }
             const octokit = new Octokit({ auth: accessToken });
-            const path = context.params.path?.join('/') || 'content/pages';
+            const path = params.path?.join('/') || 'content/pages';
             try {
                 const { data } = await octokit.repos.getContent({
                     owner: config.owner,

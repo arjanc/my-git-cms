@@ -1,5 +1,5 @@
-import { createGitCMSHandler } from '../../../../lib/git-cms/dist/api'
-import { auth } from '../../../../lib/git-cms/dist/auth';
+import { createGitCMSHandler } from '@git-cms/core/api'
+import { auth } from '@git-cms/core/auth';
 
 export const { GET, POST, DELETE } = createGitCMSHandler({
   getAccessToken: async () => {

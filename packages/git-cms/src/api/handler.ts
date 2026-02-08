@@ -11,16 +11,17 @@ export function createGitCMSHandler(config: GitCMSConfig) {
   return {
     GET: async (
       request: NextRequest,
-      context: { params: { path: string[] } }
+      context: { params: Promise<{ path: string[] }> | { path: string[] } }
     ) => {
+      const params = await context.params
       const accessToken = await config.getAccessToken()
-      
+
       if (!accessToken) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
       }
 
       const octokit = new Octokit({ auth: accessToken })
-      const path = context.params.path?.join('/') || 'content/pages'
+      const path = params.path?.join('/') || 'content/pages'
 
       try {
         const { data } = await octokit.repos.getContent({
@@ -58,10 +59,10 @@ export function createGitCMSHandler(config: GitCMSConfig) {
 
     POST: async (
       request: NextRequest,
-      context: { params: { path: string[] } }
+      context: { params: Promise<{ path: string[] }> | { path: string[] } }
     ) => {
       const accessToken = await config.getAccessToken()
-      
+
       if (!accessToken) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
       }
@@ -93,10 +94,10 @@ export function createGitCMSHandler(config: GitCMSConfig) {
 
     DELETE: async (
       request: NextRequest,
-      context: { params: { path: string[] } }
+      context: { params: Promise<{ path: string[] }> | { path: string[] } }
     ) => {
       const accessToken = await config.getAccessToken()
-      
+
       if (!accessToken) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
       }

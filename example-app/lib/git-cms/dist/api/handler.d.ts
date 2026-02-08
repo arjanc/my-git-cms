@@ -6,7 +6,9 @@ export interface GitCMSConfig {
 }
 export declare function createGitCMSHandler(config: GitCMSConfig): {
     GET: (request: NextRequest, context: {
-        params: {
+        params: Promise<{
+            path: string[];
+        }> | {
             path: string[];
         };
     }) => Promise<NextResponse<{
@@ -22,7 +24,9 @@ export declare function createGitCMSHandler(config: GitCMSConfig): {
         path: string;
     }>>;
     POST: (request: NextRequest, context: {
-        params: {
+        params: Promise<{
+            path: string[];
+        }> | {
             path: string[];
         };
     }) => Promise<NextResponse<{
@@ -31,7 +35,9 @@ export declare function createGitCMSHandler(config: GitCMSConfig): {
         success: boolean;
     }>>;
     DELETE: (request: NextRequest, context: {
-        params: {
+        params: Promise<{
+            path: string[];
+        }> | {
             path: string[];
         };
     }) => Promise<NextResponse<{
