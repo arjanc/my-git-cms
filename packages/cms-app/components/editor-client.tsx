@@ -34,7 +34,7 @@ export function EditorClient({ owner, repo, path }: EditorClientProps) {
     try {
       setLoading(true)
       const response = await fetch(
-        `/api/github/${owner}/${repo}?path=${encodeURIComponent(filePath)}`
+        `/admin/api/github/${owner}/${repo}?path=${encodeURIComponent(filePath)}`
       )
       const data = await response.json()
       setContent(data.content)
@@ -57,7 +57,7 @@ export function EditorClient({ owner, repo, path }: EditorClientProps) {
         setFilePath(targetPath)
       }
 
-      const response = await fetch(`/api/github/${owner}/${repo}`, {
+      const response = await fetch(`/admin/api/github/${owner}/${repo}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

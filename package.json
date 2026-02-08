@@ -1,9 +1,22 @@
 {
     "name": "git-cms-monorepo",
+    "version": "1.0.0",
     "private": true,
     "workspaces": [
-        "cms-app",
         "web-app",
-        "shared"
-    ]
+        "packages/*"
+    ],
+    "scripts": {
+        "dev": "concurrently \"npm run dev:web\" \"npm run dev:admin\"",
+        "dev:web": "npm run dev --workspace=web-app",
+        "dev:admin": "npm run dev --workspace=packages/cms-app",
+        "build": "npm run build --workspace=packages/cms-app && npm run build --workspace=web-app",
+        "build:web": "npm run build --workspace=web-app",
+        "build:admin": "npm run build --workspace=packages/cms-app",
+        "clean": "rm -rf node_modules web-app/node_modules packages/*/node_modules web-app/.next packages/*/.next",
+        "lint": "npm run lint --workspaces"
+    },
+    "devDependencies": {
+        "concurrently": "^8.2.2"
+    }
 }

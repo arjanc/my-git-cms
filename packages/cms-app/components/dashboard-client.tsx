@@ -31,7 +31,7 @@ export function DashboardClient({ session }: DashboardClientProps) {
   const loadRepos = async () => {
     try {
       setLoading(true)
-      const response = await fetch("/api/repos")
+      const response = await fetch("/admin/api/repos")
       const data = await response.json()
       if (Array.isArray(data)) {
         setRepos(data)
@@ -54,7 +54,7 @@ export function DashboardClient({ session }: DashboardClientProps) {
     try {
       setLoading(true)
       const [owner, repo] = repoFullName.split("/")
-      const response = await fetch(`/api/github/${owner}/${repo}?path=content/pages`)
+      const response = await fetch(`/admin/api/github/${owner}/${repo}?path=content/pages`)
       const data = await response.json()
 
       if (Array.isArray(data)) {
