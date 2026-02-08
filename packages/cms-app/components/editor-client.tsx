@@ -6,6 +6,7 @@ import { PageEditor } from "@/components/page-editor"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft } from "lucide-react"
 import Link from "next/link"
+import { slugify } from "@git-cms/shared"
 
 interface EditorClientProps {
   owner: string
@@ -46,16 +47,19 @@ export function EditorClient({ owner, repo, path }: EditorClientProps) {
     }
   }
 
-  const handleSave = async (markdown: string) => {
+  const handleSave = async (markdown: string, title: string = "") => {
+    console.log("Saving page with title:", title)
     try {
       setSaving(true)
 
       let targetPath = filePath
       if (!targetPath) {
-        const timestamp = Date.now()
-        targetPath = `content/pages/page-${timestamp}.md`
+        const slug = slugify(title || "untitled")
+        console.log("Generated slug:", slug)
+        targetPath = `content/pages/${slug}.md`
         setFilePath(targetPath)
       }
+      console.log("Target path:", targetPath)
 
       const response = await fetch(`/admin/api/github/${owner}/${repo}`, {
         method: "POST",

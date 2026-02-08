@@ -19,7 +19,7 @@ import { Save, Plus } from 'lucide-react';
 
 interface PageEditorProps {
   initialContent?: string;
-  onSave: (markdown: string) => Promise<void>;
+  onSave: (markdown: string, title: string) => Promise<void>;
   isSaving?: boolean;
 }
 
@@ -76,7 +76,7 @@ export function PageEditor({ initialContent, onSave, isSaving }: PageEditorProps
 
   const handleSave = async () => {
     const markdown = serializeToMarkdown(pageContent);
-    await onSave(markdown);
+    await onSave(markdown, pageContent.title);
   };
 
   return (
