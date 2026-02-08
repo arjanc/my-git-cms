@@ -1,4 +1,4 @@
-import { CMS } from '@git-cms/core'
+import { CMS } from '../../lib/git-cms'
 
 export default function AdminPage() {
   return (
