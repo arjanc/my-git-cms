@@ -1,389 +1,355 @@
-# Git CMS Monorepo + Git‑Based CMS Starter
+# Git CMS - Next.js Package
 
-A **Git-powered CMS monorepo** that combines a **public website** and a **Git‑based CMS admin** in a **single Vercel deployment**, built with **Next.js 15, App Router, React 19, NextAuth v5, and Tailwind CSS**.
+A Git-based CMS package for Next.js apps - like Outstatic or DecapCMS.
 
-This README merges:
-- **Monorepo & deployment setup** (root workspace, Vercel routing, shared packages)
-- **CMS App & Web App project details** (features, stack, usage, blocks, auth, performance)
+## Overview
 
----
+This is a **single package** that you install in your Next.js app. No separate deployments, no complex monorepo setup. Just add it to your app and deploy to Vercel normally.
 
-## ✨ Overview
-
-**One repo. One domain. Two apps. No backend.**
-
-| Path | App | Purpose |
-|------|-----|--------|
-| `/` | Web App | Public website (SSG / ISR) |
-| `/admin` | CMS App | Git‑based CMS admin |
-
-All content is stored as **Markdown in GitHub**, edited visually via the CMS, and rendered statically on the website.
-
----
-
-## 🆕 What’s New (v2.0)
-
-- ✅ Next.js 15 (App Router + RSC)
-- ✅ React 19
-- ✅ NextAuth v5 (Server Actions)
-- ✅ Tailwind CSS 3.4
-- ✅ TypeScript 5.7
-- ✅ shadcn/ui + Radix UI
-- ✅ GitHub API (Octokit v21)
-- ✅ Server Actions & Server Components
-- ✅ Single‑domain monorepo deployment
-
----
-
-## 🚀 Key Features
-
-### CMS Features
-- 🔐 GitHub OAuth Authentication
-- 📝 Visual block‑based editor
-- 🎨 Hero, Banner, USP, Video, Image, Text blocks
-- 📦 Git‑powered content storage
-- ⚡ Serverless (no backend)
-- 🔄 Server Actions (type‑safe)
-
-### Monorepo & Deployment
-- ✅ Single Vercel project
-- ✅ `/admin` routed to CMS
-- ✅ Shared types via `@git-cms/shared`
-- ✅ One domain, shared env variables
-- ✅ Unified analytics & hosting
-
-### Web App
-- ⚡ Static generation (SSG)
-- 🔁 ISR (Incremental Static Regeneration)
-- 🧾 Markdown + frontmatter parsing
-- 🏎️ Excellent Lighthouse scores
-
----
-
-## 🏗️ Architecture
+## How It Works (Like Outstatic)
 
 ```
-your-domain.com/           → Web App (public)
-your-domain.com/admin      → CMS App (admin)
+your-nextjs-app/
+├── app/
+│   ├── admin/
+│   │   └── page.tsx          # <CMS /> component
+│   └── api/
+│       └── cms/
+│           └── [...path]/
+│               └── route.ts   # API handlers
+├── content/
+│   └── pages/
+│       └── *.md               # Your content
+└── package.json
 ```
 
-Both apps are deployed under **one Vercel project**.
+## Installation
 
----
+### 1. Install the Package
 
-## 📁 Project Structure (Monorepo)
-
-```
-git-cms-monorepo/
-├── packages/
-│   ├── cms-app/          # CMS Admin (Next.js App Router)
-│   │   ├── app/
-│   │   ├── components/
-│   │   ├── lib/
-│   │   ├── types/
-│   │   ├── auth.ts
-│   │   ├── middleware.ts
-│   │   └── package.json
-│   └── shared/           # Shared types & utilities
-│       ├── block-types.ts
-│       ├── markdown-utils.ts
-│       └── package.json
-│
-├── web-app/              # Public Website (SSG / ISR)
-│   ├── pages/
-│   ├── components/
-│   ├── content/          # Markdown content
-│   └── package.json
-│
-├── package.json          # Root workspace config
-└── vercel.json           # Deployment routing
-```
-
----
-
-## 🧱 Tech Stack
-
-### CMS App (`packages/cms-app`)
-- Next.js 15 (App Router + RSC)
-- NextAuth v5
-- React 19
-- Octokit v21
-- Tailwind CSS 3.4
-- shadcn/ui + Radix UI
-- TypeScript 5.7
-
-### Web App (`web-app`)
-- Next.js 15 (SSG / ISR)
-- gray‑matter (Markdown frontmatter)
-- Tailwind CSS 3.4
-- TypeScript 5.7
-- React 19
-
-### Shared (`packages/shared`)
-- Shared block types
-- Markdown utilities
-- Cross‑app type safety
-
----
-
-## 🚀 Quick Start
-
-### 1️⃣ Install Dependencies
-
-```bash
-npm install
-```
-
-Installs dependencies for **all workspaces**.
-
----
-
-### 2️⃣ GitHub OAuth Setup
-
-Create a GitHub OAuth App:
-
-- Homepage URL: `http://localhost:3000`
-- Callback URL (local):
-
-```
-http://localhost:3000/admin/api/auth/callback/github
-```
-
-Production:
-
-```
-https://your-domain.com/admin/api/auth/callback/github
-```
-
----
-
-### 3️⃣ Configure Environment
-
-Create `.env.local` in:
-
-```
-packages/cms-app/
-```
-
-```env
-AUTH_GITHUB_ID=your_client_id
-AUTH_GITHUB_SECRET=your_client_secret
-AUTH_SECRET=run_openssl_rand_base64_32
-```
-
-Generate secret:
-
-```bash
-openssl rand -base64 32
-```
-
----
-
-### 4️⃣ Run Development
-
-```bash
-npm run dev           # Run both apps
-npm run dev:web       # Web only (:3000)
-npm run dev:admin     # CMS only (:3001)
-```
-
-Access:
-
-- Web: http://localhost:3000
-- CMS: http://localhost:3000/admin
-
----
-
-## 🔧 Scripts
-
-```bash
-npm run dev
-npm run dev:web
-npm run dev:admin
-
-npm run build
-npm run build:web
-npm run build:admin
-
-npm run clean
-```
-
----
-
-## 🔄 Routing & Rewrites
-
-### Development Rewrite (`web-app/next.config.js`)
-
-```js
-async rewrites() {
-  return [
-    {
-      source: '/admin/:path*',
-      destination: 'http://localhost:3001/admin/:path*'
-    }
-  ]
-}
-```
-
-### Production (`vercel.json`)
+**For local development (before publishing to npm):**
 
 ```json
 {
-  "rewrites": [
-    {
-      "source": "/admin/:path*",
-      "destination": "/packages/cms-app/:path*"
-    }
-  ]
+  "dependencies": {
+    "@git-cms/core": "file:../path/to/packages/git-cms"
+  }
 }
 ```
 
----
+**After publishing to npm:**
 
-## 🔐 Authentication
+```bash
+npm install @git-cms/core
+```
 
-- NextAuth v5
-- GitHub OAuth
-- Base path: `/admin/api/auth`
-- Middleware protects `/admin/*`
+### 2. Add CMS Page
 
-```ts
-export const config = {
-  matcher: ['/admin/:path*']
+Create `app/admin/page.tsx`:
+
+```typescript
+import { CMS } from '@git-cms/core'
+
+export default function AdminPage() {
+  return (
+    <CMS
+      basePath="/admin"
+      contentPath="content/pages"
+      githubOwner="your-username"
+      githubRepo="your-repo"
+    />
+  )
 }
 ```
 
----
+### 3. Add API Routes
 
-## 📝 Creating Content
+Create `app/api/cms/[...path]/route.ts`:
 
-1. Visit `/admin`
-2. Sign in with GitHub
-3. Select repository
-4. Create new page
-5. Add blocks
-6. Save → commits Markdown to GitHub
+```typescript
+import { createGitCMSHandler } from '@git-cms/core/api'
+import { auth } from '@/auth'
 
----
+export const { GET, POST, DELETE } = createGitCMSHandler({
+  getAccessToken: async () => {
+    const session = await auth()
+    return session?.accessToken || null
+  },
+  owner: process.env.GITHUB_OWNER || '',
+  repo: process.env.GITHUB_REPO || '',
+})
+```
 
-## 🧩 Available Block Types
+### 4. Configure NextAuth
 
-- Hero
-- USP Grid
-- Banner
-- Video
-- Image
-- Text
+Set up NextAuth for GitHub authentication (see example-app).
 
----
-
-## ➕ Add a New Block
-
-1. Define type in `shared/block-types.ts`
-2. Create CMS editor UI
-3. Create Web App renderer
-4. Register block in factory
-
----
-
-## ⚡ Performance
-
-### CMS (App Router)
-- React Server Components
-- Streaming + Suspense
-- Smaller client bundles
-
-### Web App (SSG)
-- Static builds
-- ISR
-- Edge‑ready
-- Lighthouse 95+ scores
-
----
-
-## 🌐 Deployment (Vercel)
+### 5. Deploy!
 
 ```bash
 vercel
 ```
 
-Set environment variables in Vercel:
+That's it! Standard Vercel deployment - no special configuration needed.
 
-```
-AUTH_SECRET
-AUTH_GITHUB_ID
-AUTH_GITHUB_SECRET
-```
+## Development Workflow
 
----
+### Local Package Development
 
-## 🔄 Migration (v1 → v2)
+1. **Build the package:**
+   ```bash
+   cd packages/git-cms
+   npm run build
+   # or for watch mode:
+   npm run dev
+   ```
 
-- Pages Router → App Router
-- NextAuth v4 → v5
-- `NEXTAUTH_*` → `AUTH_*`
-- Convert API routes → Server Actions
+2. **Use in your app:**
+   ```bash
+   cd example-app
+   npm install
+   npm run dev
+   ```
 
-Migration guide: `MIGRATION.md`
+The `file:` protocol in package.json links to your local package.
 
----
-
-## 📦 Publishing CMS as NPM Package
+### When Ready to Publish
 
 ```bash
-cd packages/cms-app
-npm publish --access public
+cd packages/git-cms
+npm version 1.0.0
+npm publish
 ```
 
-Use in any Next.js app:
+Then update apps to use:
 
-```tsx
-import { GitCMS } from '@your-org/git-cms'
-
-export default function AdminPage() {
-  return <GitCMS />
+```json
+{
+  "dependencies": {
+    "@git-cms/core": "^1.0.0"
+  }
 }
 ```
 
----
+## Vercel Deployment
 
-## 🛠️ Troubleshooting
+### Why This Works
 
-**OAuth callback invalid?**
-- Ensure `/admin/api/auth/callback/github` matches exactly
+✅ **Single Next.js App** - Your app, not a monorepo  
+✅ **Standard Build** - No custom configuration  
+✅ **One Deployment** - Just `vercel`  
+✅ **Works Like Any Package** - Like `next-auth`, `prisma`, etc.  
 
-**Import errors?**
-```bash
-npm run clean
-npm install
+### Deployment Steps
+
+1. **Push to GitHub**
+2. **Connect to Vercel**
+3. **Set Environment Variables:**
+   ```
+   AUTH_GITHUB_ID=...
+   AUTH_GITHUB_SECRET=...
+   AUTH_SECRET=...
+   GITHUB_OWNER=your-username
+   GITHUB_REPO=your-repo
+   ```
+4. **Deploy** - Vercel handles everything!
+
+## Package Structure
+
+```
+packages/git-cms/
+├── src/
+│   ├── components/        # React components
+│   │   ├── CMS.tsx       # Main CMS component
+│   │   ├── Dashboard.tsx
+│   │   ├── Editor.tsx
+│   │   └── FileList.tsx
+│   ├── api/              # API handlers
+│   │   ├── handler.ts    # Route handler factory
+│   │   └── index.ts
+│   ├── lib/              # Utilities
+│   │   └── markdown.ts
+│   ├── types/            # TypeScript types
+│   │   └── blocks.ts
+│   └── index.ts          # Main exports
+├── dist/                 # Compiled output
+├── package.json
+└── tsconfig.json
 ```
 
-**CMS not loading?**
-- Check rewrites
-- Ensure both apps run
+## Exports
 
----
+### Components
 
-## 📚 Documentation
+```typescript
+import { CMS } from '@git-cms/core'
+import type { CMSProps } from '@git-cms/core'
+```
 
-- SETUP_GUIDE.md
-- ARCHITECTURE.md
-- MIGRATION.md
-- MONOREPO_DEPLOYMENT.md
+### API
 
----
+```typescript
+import { createGitCMSHandler } from '@git-cms/core/api'
+import type { GitCMSConfig } from '@git-cms/core/api'
+```
 
-## 🤝 Contributing
+### Types
 
-PRs welcome. Test both apps before submitting.
+```typescript
+import type {
+  Block,
+  PageContent,
+  HeroBlock,
+  USPBlock,
+  // ... more types
+} from '@git-cms/core'
+```
 
----
+### Utilities
 
-## 📜 License
+```typescript
+import {
+  serializeToMarkdown,
+  parseMarkdown,
+  generateBlockId,
+  createDefaultBlock,
+} from '@git-cms/core'
+```
+
+## Comparison: Monorepo vs Package
+
+### ❌ Monorepo Approach (Previous)
+
+```
+git-cms-monorepo/
+├── packages/
+│   └── cms-app/          # Separate Next.js app
+└── web-app/              # Your app
+└── vercel.json           # Complex routing config
+```
+
+**Problems:**
+- Complex Vercel configuration
+- Multiple build outputs
+- Routing complexity
+- Hard to deploy
+
+### ✅ Package Approach (Current)
+
+```
+your-app/
+├── app/
+│   └── admin/
+│       └── page.tsx      # Just import CMS
+└── node_modules/
+    └── @git-cms/core/    # Regular npm package
+```
+
+**Benefits:**
+- Simple Next.js app
+- Standard Vercel deployment
+- Works like any package
+- Easy to use
+
+## Usage Examples
+
+### Basic Setup
+
+```typescript
+// app/admin/page.tsx
+import { CMS } from '@git-cms/core'
+
+export default function AdminPage() {
+  return <CMS />
+}
+```
+
+### With Custom Config
+
+```typescript
+import { CMS } from '@git-cms/core'
+
+export default function AdminPage() {
+  return (
+    <CMS
+      basePath="/admin"
+      contentPath="content/pages"
+      githubOwner={process.env.GITHUB_OWNER}
+      githubRepo={process.env.GITHUB_REPO}
+    />
+  )
+}
+```
+
+### Using Types
+
+```typescript
+import type { PageContent, Block } from '@git-cms/core'
+
+function MyComponent() {
+  const page: PageContent = {
+    title: 'My Page',
+    slug: '/my-page',
+    blocks: [],
+  }
+  // ...
+}
+```
+
+### Using Utilities
+
+```typescript
+import { parseMarkdown, serializeToMarkdown } from '@git-cms/core'
+
+const content = parseMarkdown(markdownString)
+const markdown = serializeToMarkdown(content)
+```
+
+## Environment Variables
+
+```env
+# NextAuth (for GitHub OAuth)
+AUTH_GITHUB_ID=your_client_id
+AUTH_GITHUB_SECRET=your_secret
+AUTH_SECRET=random_string
+
+# GitHub Repository
+GITHUB_OWNER=your-username
+GITHUB_REPO=your-repo-name
+```
+
+## Features
+
+- ✅ **Git-based storage** - All content in your repo
+- ✅ **Block-based editor** - Visual content editing
+- ✅ **TypeScript** - Full type safety
+- ✅ **Zero config** - Works out of the box
+- ✅ **Vercel-ready** - Deploy like any Next.js app
+- ✅ **Local development** - Use `file:` protocol
+- ✅ **Publishable** - Push to npm when ready
+
+## Roadmap
+
+- [ ] Full block editor UI (currently basic)
+- [ ] Image upload to GitHub
+- [ ] Draft/publish workflow
+- [ ] Multi-language support
+- [ ] Custom block types
+- [ ] Publish to npm
+
+## Contributing
+
+1. Clone the repo
+2. Make changes in `packages/git-cms`
+3. Test in `example-app`
+4. Submit PR
+
+## License
 
 MIT
 
 ---
 
-Built with ❤️ using **Next.js 15, React 19, Tailwind CSS, and GitHub‑powered content**
+**This is the right approach for Vercel!** 🎉
 
+No monorepo complexity, just a regular Next.js app with a package.
