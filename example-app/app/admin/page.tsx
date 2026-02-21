@@ -5,8 +5,8 @@ export default function AdminPage() {
     <CMS
       basePath="/admin"
       contentPath="content/pages"
-      githubOwner="your-username"
-      githubRepo="your-repo"
+      githubOwner={process.env.GITHUB_OWNER}
+      githubRepo={process.env.GITHUB_REPO}
     />
   )
 }
