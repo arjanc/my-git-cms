@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Dashboard } from './Dashboard';
 import { Editor } from './Editor';
 import { FileList } from './FileList';
-export function CMS({ basePath = '/admin', contentPath = 'content/pages', githubOwner, githubRepo }) {
+export function CMS({ basePath = '/admin', apiBasePath = '/admin/api/cms', contentPath = 'content/pages', githubOwner, githubRepo }) {
     const [currentView, setCurrentView] = useState('dashboard');
     const [selectedFile, setSelectedFile] = useState(null);
     return (React.createElement("div", { className: "git-cms-container min-h-screen bg-gray-50" },
@@ -15,6 +15,6 @@ export function CMS({ basePath = '/admin', contentPath = 'content/pages', github
             currentView === 'files' && (React.createElement(FileList, { onSelectFile: (file) => {
                     setSelectedFile(file);
                     setCurrentView('editor');
-                }, onBack: () => setCurrentView('dashboard'), contentPath: contentPath })),
-            currentView === 'editor' && (React.createElement(Editor, { filePath: selectedFile, onBack: () => setCurrentView('files'), basePath: basePath })))));
+                }, onBack: () => setCurrentView('dashboard'), contentPath: contentPath, apiBasePath: apiBasePath })),
+            currentView === 'editor' && (React.createElement(Editor, { filePath: selectedFile, onBack: () => setCurrentView('files'), basePath: basePath, apiBasePath: apiBasePath })))));
 }

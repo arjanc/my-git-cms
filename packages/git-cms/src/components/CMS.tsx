@@ -1,19 +1,21 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { Dashboard } from './Dashboard'
 import { Editor } from './Editor'
 import { FileList } from './FileList'
 
 export interface CMSProps {
   basePath?: string
+  apiBasePath?: string
   contentPath?: string
   githubOwner?: string
   githubRepo?: string
 }
 
-export function CMS({ 
+export function CMS({
   basePath = '/admin',
+  apiBasePath = '/admin/api/cms',
   contentPath = 'content/pages',
   githubOwner,
   githubRepo
@@ -45,6 +47,7 @@ export function CMS({
             }}
             onBack={() => setCurrentView('dashboard')}
             contentPath={contentPath}
+            apiBasePath={apiBasePath}
           />
         )}
 
@@ -53,6 +56,7 @@ export function CMS({
             filePath={selectedFile}
             onBack={() => setCurrentView('files')}
             basePath={basePath}
+            apiBasePath={apiBasePath}
           />
         )}
       </main>

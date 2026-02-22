@@ -6,11 +6,13 @@ interface FileListProps {
   onSelectFile: (file: string) => void
   onBack: () => void
   contentPath: string
+  apiBasePath?: string
 }
 
-export function FileList({ onSelectFile, onBack, contentPath }: FileListProps) {
+export function FileList({ onSelectFile, onBack, contentPath, apiBasePath = '/admin/api/cms' }: FileListProps) {
   const [files, setFiles] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     loadFiles()
@@ -18,11 +20,17 @@ export function FileList({ onSelectFile, onBack, contentPath }: FileListProps) {
 
   const loadFiles = async () => {
     try {
-      const response = await fetch(`/api/cms/${contentPath}`)
+      const response = await fetch(`${apiBasePath}/${contentPath}`)
       const data = await response.json()
-      setFiles(data)
+      if (!response.ok) {
+        setError(data.error || 'Failed to load files')
+        setFiles([])
+        return
+      }
+      setFiles(Array.isArray(data) ? data : [])
     } catch (error) {
       console.error('Error loading files:', error)
+      setError('Failed to load files')
     } finally {
       setLoading(false)
     }
@@ -42,6 +50,12 @@ export function FileList({ onSelectFile, onBack, contentPath }: FileListProps) {
 
       {loading ? (
         <p>Loading files...</p>
+      ) : error ? (
+        <p className="text-red-600">
+          {error === 'Unauthorized'
+            ? 'Not signed in. Please sign in with GitHub to manage content.'
+            : error}
+        </p>
       ) : (
         <div className="space-y-2">
           {files.map((file) => (

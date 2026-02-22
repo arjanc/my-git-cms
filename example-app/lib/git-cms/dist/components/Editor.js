@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-export function Editor({ filePath, onBack, basePath }) {
+export function Editor({ filePath, onBack, basePath, apiBasePath = '/admin/api/cms' }) {
     const [content, setContent] = useState('');
     const [loading, setLoading] = useState(true);
     useEffect(() => {
@@ -10,7 +10,7 @@ export function Editor({ filePath, onBack, basePath }) {
     }, [filePath]);
     const loadFile = async (path) => {
         try {
-            const response = await fetch(`/api/cms/${path}`);
+            const response = await fetch(`${apiBasePath}/${path}`);
             const data = await response.json();
             setContent(data.content);
         }
@@ -25,7 +25,7 @@ export function Editor({ filePath, onBack, basePath }) {
         if (!filePath)
             return;
         try {
-            await fetch(`/api/cms/${filePath}`, {
+            await fetch(`${apiBasePath}/${filePath}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

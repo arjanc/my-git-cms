@@ -6,9 +6,10 @@ interface EditorProps {
   filePath: string | null
   onBack: () => void
   basePath: string
+  apiBasePath?: string
 }
 
-export function Editor({ filePath, onBack, basePath }: EditorProps) {
+export function Editor({ filePath, onBack, basePath, apiBasePath = '/admin/api/cms' }: EditorProps) {
   const [content, setContent] = useState('')
   const [loading, setLoading] = useState(true)
 
@@ -20,7 +21,7 @@ export function Editor({ filePath, onBack, basePath }: EditorProps) {
 
   const loadFile = async (path: string) => {
     try {
-      const response = await fetch(`/api/cms/${path}`)
+      const response = await fetch(`${apiBasePath}/${path}`)
       const data = await response.json()
       setContent(data.content)
     } catch (error) {
@@ -34,7 +35,7 @@ export function Editor({ filePath, onBack, basePath }: EditorProps) {
     if (!filePath) return
 
     try {
-      await fetch(`/api/cms/${filePath}`, {
+      await fetch(`${apiBasePath}/${filePath}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
