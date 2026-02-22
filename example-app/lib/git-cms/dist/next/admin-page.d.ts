@@ -1,3 +1,9 @@
 import React from 'react';
-export default function AdminPage(): Promise<React.FunctionComponentElement<import("..").CMSProps>>;
+import type { BlockSchema, PageSchema } from '../types/schemas';
+interface AdminPageProps {
+    blockSchemas?: BlockSchema[];
+    pageSchemas?: PageSchema[];
+}
+export default function AdminPage({ blockSchemas, pageSchemas }?: AdminPageProps): Promise<React.FunctionComponentElement<import("..").CMSProps>>;
+export {};
 //# sourceMappingURL=admin-page.d.ts.map

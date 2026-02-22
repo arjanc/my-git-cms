@@ -32,6 +32,10 @@
     "./next/route": {
       "types": "./dist/next/dispatcher.d.ts",
       "default": "./dist/next/dispatcher.js"
+    },
+    "./markdown": {
+      "types": "./dist/lib/markdown.d.ts",
+      "default": "./dist/lib/markdown.js"
     }
   },
   "files": [

@@ -1,0 +1,5 @@
+export { HeroBlock } from './HeroBlock'
+export { BannerBlock } from './BannerBlock'
+export { USPBlock } from './USPBlock'
+export { ImageBlock } from './ImageBlock'
+export { TextBlock } from './TextBlock'
