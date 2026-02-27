@@ -2,7 +2,17 @@
 export { CMS } from './components/CMS'
 export type { CMSProps } from './components/CMS'
 
-// Type exports
+// Schema type exports (new generic schema system)
+export type {
+  FieldType,
+  FieldSchema,
+  BlockSchema,
+  PageSchema,
+  BlockInstance,
+  PageContent,
+} from './types/schemas'
+
+// Legacy block type exports (kept for backward compatibility)
 export type {
   Block,
   BlockType,
@@ -13,7 +23,6 @@ export type {
   VideoBlock,
   ImageBlock,
   TextBlock,
-  PageContent,
 } from './types/blocks'
 
 export { createDefaultBlock } from './types/blocks'

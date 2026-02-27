@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { Octokit } from '@octokit/rest';
+import { parseMarkdown, serializeToMarkdown } from '../lib/markdown';
 export function createGitCMSHandler(config) {
     return {
         GET: async (request, context) => {
@@ -28,10 +29,12 @@ export function createGitCMSHandler(config) {
                 else if ('content' in data) {
                     // File content
                     const content = Buffer.from(data.content, 'base64').toString('utf-8');
+                    const pageContent = content.trimStart().startsWith('---') ? parseMarkdown(content) : null;
                     return NextResponse.json({
                         content,
                         sha: data.sha,
                         path: data.path,
+                        pageContent,
                     });
                 }
                 return NextResponse.json({ error: 'Not found' }, { status: 404 });
@@ -48,10 +51,14 @@ export function createGitCMSHandler(config) {
             }
             const octokit = new Octokit({ auth: accessToken });
             const body = await request.json();
-            const { path, content, message, sha } = body;
-            if (!path || !content || !message) {
+            const { path, content: rawContent, pageContent, message, sha } = body;
+            if (!path || (!rawContent && !pageContent) || !message) {
                 return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
             }
+            // If pageContent (schema-driven editor), serialize to markdown server-side
+            const content = pageContent
+                ? serializeToMarkdown(pageContent)
+                : rawContent;
             try {
                 await octokit.repos.createOrUpdateFileContents({
                     owner: config.owner,

@@ -22,7 +22,10 @@ declare module "next-auth/jwt" {
     }
 }
 
+const BASE_PATH = process.env.GIT_CMS_BASE_PATH ?? '/admin'
+
 const config: NextAuthConfig = {
+    basePath: `${BASE_PATH}/api/auth`,
     providers: [
         GitHub({
             clientId: process.env.AUTH_GITHUB_ID!,
@@ -45,9 +48,6 @@ const config: NextAuthConfig = {
             session.accessToken = token.accessToken as string
             return session
         },
-    },
-    pages: {
-        signIn: '/auth/signin',
     },
 }
 

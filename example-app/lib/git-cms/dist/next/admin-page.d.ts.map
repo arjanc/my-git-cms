@@ -1,0 +1,1 @@
+{"version":3,"file":"admin-page.d.ts","sourceRoot":"","sources":["../../src/next/admin-page.tsx"],"names":[],"mappings":"AAAA,OAAO,KAAK,MAAM,OAAO,CAAA;AAIzB,OAAO,KAAK,EAAE,WAAW,EAAE,UAAU,EAAE,MAAM,kBAAkB,CAAA;AAE/D,UAAU,cAAc;IACtB,YAAY,CAAC,EAAE,WAAW,EAAE,CAAA;IAC5B,WAAW,CAAC,EAAE,UAAU,EAAE,CAAA;CAC3B;AAED,wBAA8B,SAAS,CAAC,EAAE,YAAY,EAAE,WAAW,EAAE,GAAE,cAAmB,kEAiBzF"}
