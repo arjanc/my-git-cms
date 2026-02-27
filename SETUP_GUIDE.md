@@ -1,271 +1,495 @@
-# Complete Setup Guide
+# Setup Guide - Git CMS Package
 
-## Prerequisites
+## Quick Start (5 minutes)
 
-- Node.js 18+ installed
-- GitHub account
-- Git installed
-- Code editor (VS Code recommended)
+### 1. Create Your Next.js App
 
-## Step-by-Step Setup
+```bash
+npx create-next-app@latest my-website
+cd my-website
+```
 
-### Part 1: GitHub OAuth Configuration
+### 2. Install Git CMS
 
-1. **Create GitHub OAuth App**
-   - Go to https://github.com/settings/developers
-   - Click "New OAuth App"
-   - Fill in the form:
-     ```
-     Application name: My Git CMS
-     Homepage URL: http://localhost:3000
-     Authorization callback URL: http://localhost:3000/api/auth/callback/github
-     ```
-   - Click "Register application"
-   - **Copy the Client ID**
-   - Click "Generate a new client secret" and **copy the secret**
+**Local development (before publishing):**
 
-### Part 2: Create a Content Repository
+```bash
+# Add to package.json
+{
+  "dependencies": {
+    "@git-cms/core": "file:../git-cms-package/packages/git-cms"
+  }
+}
 
-1. **Create a new GitHub repository** for your content
-   - Name it something like `my-website-content`
-   - Make it public or private (your choice)
-   - Initialize with a README
+npm install
+```
 
-2. **Create the content directory structure**
+**Or after publishing to npm:**
+
+```bash
+npm install @git-cms/core
+```
+
+### 3. Add CMS Admin Page
+
+Create `app/admin/page.tsx`:
+
+```typescript
+import { CMS } from '@git-cms/core'
+
+export default function AdminPage() {
+  return <CMS />
+}
+```
+
+### 4. Add API Routes
+
+Create `app/api/cms/[...path]/route.ts`:
+
+```typescript
+import { createGitCMSHandler } from '@git-cms/core/api'
+import { auth } from '@/auth'
+
+export const { GET, POST, DELETE } = createGitCMSHandler({
+  getAccessToken: async () => {
+    const session = await auth()
+    return session?.accessToken || null
+  },
+  owner: process.env.GITHUB_OWNER!,
+  repo: process.env.GITHUB_REPO!,
+})
+```
+
+### 5. Set Up NextAuth
+
+Create `auth.ts`:
+
+```typescript
+import NextAuth from "next-auth"
+import GitHub from "next-auth/providers/github"
+
+export const { handlers, signIn, signOut, auth } = NextAuth({
+  providers: [
+    GitHub({
+      clientId: process.env.AUTH_GITHUB_ID!,
+      clientSecret: process.env.AUTH_GITHUB_SECRET!,
+      authorization: {
+        params: {
+          scope: 'repo read:user user:email',
+        },
+      },
+    }),
+  ],
+  callbacks: {
+    async jwt({ token, account }) {
+      if (account) {
+        token.accessToken = account.access_token
+      }
+      return token
+    },
+    async session({ session, token }) {
+      session.accessToken = token.accessToken as string
+      return session
+    },
+  },
+})
+```
+
+Create `app/api/auth/[...nextauth]/route.ts`:
+
+```typescript
+import { handlers } from "@/auth"
+export const { GET, POST } = handlers
+```
+
+### 6. Configure Environment Variables
+
+Create `.env.local`:
+
+```env
+AUTH_GITHUB_ID=your_github_client_id
+AUTH_GITHUB_SECRET=your_github_secret
+AUTH_SECRET=run_openssl_rand_base64_32
+GITHUB_OWNER=your-github-username
+GITHUB_REPO=your-repo-name
+```
+
+### 7. Run Development Server
+
+```bash
+npm run dev
+```
+
+Visit:
+- Your site: `http://localhost:3000`
+- CMS Admin: `http://localhost:3000/admin`
+
+## Detailed Setup
+
+### GitHub OAuth Setup
+
+1. Go to https://github.com/settings/developers
+2. Click "New OAuth App"
+3. Fill in:
+   - **Application name**: My Website CMS
+   - **Homepage URL**: `http://localhost:3000`
+   - **Authorization callback URL**: `http://localhost:3000/api/auth/callback/github`
+4. Save Client ID and Client Secret
+
+### Content Directory Structure
+
+Create your content directory:
+
+```bash
+mkdir -p content/pages
+```
+
+Add example content `content/pages/home.md`:
+
+```markdown
+---
+title: Home
+slug: /
+blocks:
+  - id: block_1
+    type: hero
+    heading: Welcome to My Site
+    subheading: Built with Git CMS
+---
+```
+
+### Rendering Content in Your App
+
+Create a page to render content `app/[...slug]/page.tsx`:
+
+```typescript
+import { readFileSync, readdirSync } from 'fs'
+import { join } from 'path'
+import { parseMarkdown } from '@git-cms/core'
+import { BlockRenderer } from '@/components/BlockRenderer'
+
+export default async function Page({ params }: { params: { slug: string[] } }) {
+  const slug = params.slug ? `/${params.slug.join('/')}` : '/'
+  
+  // Find matching markdown file
+  const contentDir = join(process.cwd(), 'content/pages')
+  const files = readdirSync(contentDir)
+  
+  for (const file of files) {
+    const content = readFileSync(join(contentDir, file), 'utf-8')
+    const page = parseMarkdown(content)
+    
+    if (page.slug === slug) {
+      return (
+        <main>
+          {page.blocks.map((block) => (
+            <BlockRenderer key={block.id} block={block} />
+          ))}
+        </main>
+      )
+    }
+  }
+  
+  return <div>Page not found</div>
+}
+```
+
+Create `components/BlockRenderer.tsx`:
+
+```typescript
+import type { Block } from '@git-cms/core'
+
+export function BlockRenderer({ block }: { block: Block }) {
+  switch (block.type) {
+    case 'hero':
+      return (
+        <section className="py-20 bg-gray-900 text-white">
+          <div className="container mx-auto px-4">
+            <h1 className="text-6xl font-bold">{block.heading}</h1>
+            {block.subheading && (
+              <p className="text-2xl mt-4">{block.subheading}</p>
+            )}
+          </div>
+        </section>
+      )
+    // Add other block types...
+    default:
+      return null
+  }
+}
+```
+
+## Local Package Development
+
+### Building the Package
+
+```bash
+cd packages/git-cms
+npm install
+npm run build    # One-time build
+# or
+npm run dev      # Watch mode
+```
+
+### Using Local Package
+
+In your app's `package.json`:
+
+```json
+{
+  "dependencies": {
+    "@git-cms/core": "file:../git-cms-package/packages/git-cms"
+  }
+}
+```
+
+Then:
+
+```bash
+npm install
+```
+
+### After Making Changes
+
+1. Rebuild the package:
    ```bash
-   git clone https://github.com/YOUR_USERNAME/my-website-content.git
-   cd my-website-content
-   mkdir -p content/pages
-   git add .
-   git commit -m "Add content directory"
-   git push
+   cd packages/git-cms
+   npm run build
    ```
 
-### Part 3: CMS App Setup
-
-1. **Install dependencies**
+2. Reinstall in your app:
    ```bash
-   cd cms-app
+   cd your-app
+   rm -rf node_modules/@git-cms
    npm install
    ```
 
-2. **Configure environment variables**
-   ```bash
-   cp .env.example .env.local
-   ```
+## Deployment to Vercel
 
-3. **Edit `.env.local`** with your values:
-   ```env
-   AUTH_GITHUB_ID=your_github_client_id_here
-   AUTH_GITHUB_SECRET=your_github_client_secret_here
-   AUTH_SECRET=generate_with_openssl_rand_base64_32
-   ```
+### 1. Prepare for Deployment
 
-4. **Generate NextAuth secret**
-   ```bash
-   openssl rand -base64 32
-   ```
-   Copy the output and paste it as the `AUTH_SECRET` value.
+**If using local package:**
 
-5. **Start the CMS**
-   ```bash
-   npm run dev
-   ```
+Build the package first:
 
-6. **Test the CMS**
-   - Open http://localhost:3000
-   - Click "Sign in with GitHub"
-   - Authorize the application
-   - Select your content repository
-   - Create a test page
+```bash
+cd packages/git-cms
+npm run build
+```
 
-### Part 4: Web App Setup
+**If publishing to npm:**
 
-1. **Clone your content repository into the web app**
-   ```bash
-   cd web-app
-   git clone https://github.com/YOUR_USERNAME/my-website-content.git content
-   ```
+```bash
+cd packages/git-cms
+npm publish
+```
 
-   Or if you prefer to use Git submodules:
-   ```bash
-   cd web-app
-   git submodule add https://github.com/YOUR_USERNAME/my-website-content.git content
-   ```
+Then update your app to use the npm version.
 
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
+### 2. Push to GitHub
 
-3. **Start the web app**
-   ```bash
-   npm run dev
-   ```
+```bash
+git add .
+git commit -m "Add Git CMS"
+git push
+```
 
-4. **View your site**
-   - Open http://localhost:3001
-   - You should see your pages rendered
+### 3. Deploy to Vercel
 
-### Part 5: Deployment to Vercel
+#### Via Vercel Dashboard:
 
-#### Deploy CMS App
+1. Go to https://vercel.com
+2. Import your repository
+3. Add environment variables:
+   - `AUTH_GITHUB_ID`
+   - `AUTH_GITHUB_SECRET`
+   - `AUTH_SECRET`
+   - `GITHUB_OWNER`
+   - `GITHUB_REPO`
+4. Deploy!
 
-1. **Push your CMS code to GitHub**
-   ```bash
-   cd cms-app
-   git init
-   git add .
-   git commit -m "Initial CMS setup"
-   git branch -M main
-   git remote add origin https://github.com/YOUR_USERNAME/my-git-cms.git
-   git push -u origin main
-   ```
+#### Via CLI:
 
-2. **Deploy to Vercel**
-   ```bash
-   npm i -g vercel
-   vercel
-   ```
+```bash
+npm i -g vercel
+vercel
+```
 
-3. **Configure environment variables in Vercel**
-   - Go to your project settings in Vercel dashboard
-   - Add the same environment variables from `.env.local`
-   - Variables needed: `AUTH_SECRET`, `AUTH_GITHUB_ID`, `AUTH_GITHUB_SECRET`
+### 4. Update GitHub OAuth Callback
 
-4. **Update GitHub OAuth App**
-   - Go back to GitHub OAuth settings
-   - Update the Authorization callback URL to:
-     ```
-     https://your-cms-domain.vercel.app/api/auth/callback/github
-     ```
+Update your GitHub OAuth app callback URL to:
 
-#### Deploy Web App
-
-1. **Push your web app code to GitHub**
-   ```bash
-   cd web-app
-   git init
-   git add .
-   git commit -m "Initial web app setup"
-   git branch -M main
-   git remote add origin https://github.com/YOUR_USERNAME/my-website.git
-   git push -u origin main
-   ```
-
-2. **Deploy to Vercel**
-   ```bash
-   vercel
-   ```
-
-3. **Configure Vercel to watch content changes**
-   - In Vercel dashboard, go to project settings
-   - Add GitHub webhook for your content repository
-   - This will trigger rebuilds when content changes
-
-### Part 6: Configure Auto-Rebuild
-
-To automatically rebuild your website when content changes:
-
-1. **Set up Vercel Deploy Hook**
-   - Go to your web app project in Vercel
-   - Settings > Git > Deploy Hooks
-   - Create a new hook (name it "Content Update")
-   - Copy the webhook URL
-
-2. **Add webhook to content repository**
-   - Go to your content repository on GitHub
-   - Settings > Webhooks > Add webhook
-   - Paste the Vercel deploy hook URL
-   - Content type: `application/json`
-   - Events: Choose "Just the push event"
-   - Click "Add webhook"
-
-Now whenever you save content in the CMS:
-1. CMS commits changes to GitHub
-2. GitHub triggers Vercel webhook
-3. Vercel rebuilds your website
-4. Changes are live in ~1 minute
+```
+https://your-domain.vercel.app/api/auth/callback/github
+```
 
 ## Troubleshooting
 
-### Issue: "OAuth Error" when signing in
+### Issue: Package not found
 
-**Solution:**
-- Check that your `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET` are correct
-- Verify the callback URL in GitHub OAuth app settings matches your `NEXTAUTH_URL`
+**Using file: protocol:**
 
-### Issue: "Repository not found"
+```bash
+# Make sure package is built
+cd packages/git-cms
+npm run build
 
-**Solution:**
-- Ensure your GitHub user has access to the repository
-- Check that the OAuth app has `repo` scope permission
+# Reinstall in app
+cd your-app
+rm -rf node_modules
+npm install
+```
 
-### Issue: "Cannot save file"
+### Issue: Types not found
 
-**Solution:**
-- Verify your GitHub token has write permissions
-- Check that the content directory exists in your repository
+Make sure TypeScript is configured:
 
-### Issue: Page not showing on website
+```json
+// tsconfig.json
+{
+  "compilerOptions": {
+    "moduleResolution": "bundler",
+    "paths": {
+      "@git-cms/core": ["./node_modules/@git-cms/core/dist"]
+    }
+  }
+}
+```
 
-**Solution:**
-- Ensure the markdown file is in `content/pages/` directory
-- Check that the slug in frontmatter is correct
-- Verify the file has been committed to the repository
-- Try rebuilding the web app: `npm run build && npm run start`
+### Issue: Vercel deployment fails
+
+**If using file: protocol:**
+
+You can't deploy with `file:` - you need to either:
+
+1. **Publish to npm** (recommended for production)
+2. **Copy package to your app:**
+   ```bash
+   cp -r packages/git-cms node_modules/@git-cms/core
+   ```
+3. **Use a private npm registry**
+
+**Recommended: Publish to npm before deploying to Vercel**
+
+## Publishing to npm
+
+### 1. Prepare Package
+
+```bash
+cd packages/git-cms
+```
+
+Update `package.json`:
+
+```json
+{
+  "name": "@your-org/git-cms",
+  "version": "1.0.0",
+  "description": "Git-based CMS for Next.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-org/git-cms"
+  },
+  "keywords": ["cms", "nextjs", "git", "markdown"],
+  "author": "Your Name",
+  "license": "MIT"
+}
+```
+
+### 2. Build
+
+```bash
+npm run build
+```
+
+### 3. Test Locally
+
+```bash
+npm pack
+# Creates git-cms-0.1.0.tgz
+
+# Test in another project
+cd your-app
+npm install ../packages/git-cms/git-cms-0.1.0.tgz
+```
+
+### 4. Publish
+
+```bash
+# Login to npm (first time only)
+npm login
+
+# Publish
+npm publish --access public
+```
+
+### 5. Use Published Package
+
+In your apps:
+
+```bash
+npm install @your-org/git-cms
+```
+
+## Best Practices
+
+### 1. Version Control
+
+Don't commit:
+- `.env.local`
+- `node_modules/`
+- `.next/`
+
+### 2. Content Storage
+
+Store content in your repo:
+```
+content/
+└── pages/
+    ├── home.md
+    ├── about.md
+    └── contact.md
+```
+
+### 3. Environment Variables
+
+Use different values for dev/prod:
+
+```env
+# Development (.env.local)
+GITHUB_OWNER=your-username
+GITHUB_REPO=your-test-repo
+
+# Production (Vercel)
+GITHUB_OWNER=your-username
+GITHUB_REPO=your-production-repo
+```
+
+### 4. TypeScript
+
+Use types from the package:
+
+```typescript
+import type { PageContent, Block } from '@git-cms/core'
+```
 
 ## Next Steps
 
-1. **Customize your blocks** - Add new block types or modify existing ones
-2. **Style your website** - Customize Tailwind theme and component styles
-3. **Add features** - Image uploads, SEO settings, draft mode, etc.
-4. **Create templates** - Predefined page templates for common layouts
-5. **Multi-language** - Add i18n support for multiple languages
+1. ✅ Set up basic installation
+2. ✅ Configure GitHub OAuth
+3. ✅ Create content directory
+4. ✅ Add content rendering
+5. 🎯 Customize block components
+6. 🎯 Add custom blocks
+7. 🎯 Style CMS admin
+8. 🚀 Deploy to production
 
-## File Structure Reference
+## Support
 
-```
-cms-app/
-├── components/
-│   ├── ui/              # shadcn/ui components
-│   ├── blocks/          # Block editor components
-│   │   ├── editors/     # Individual block editors
-│   │   └── BlockEditor.tsx
-│   └── PageEditor.tsx   # Main page editor
-├── pages/
-│   ├── api/
-│   │   ├── auth/        # NextAuth configuration
-│   │   ├── repos.ts     # List user repos
-│   │   └── github/      # GitHub API routes
-│   ├── editor/          # Editor pages
-│   └── index.tsx        # Dashboard
-├── lib/
-│   ├── github-api.ts    # GitHub API wrapper
-│   └── utils.ts         # Utility functions
-└── styles/
-    └── globals.css      # Global styles
+- 📖 Full documentation: See README.md
+- 🐛 Issues: GitHub Issues
+- 💬 Discussions: GitHub Discussions
 
-web-app/
-├── components/
-│   └── blocks/          # Block renderer components
-│       ├── Hero.tsx
-│       ├── USP.tsx
-│       └── BlockRenderer.tsx
-├── pages/
-│   └── [...slug].tsx    # Dynamic page routing
-└── content/
-    └── pages/           # Markdown content files
+---
 
-shared/
-├── block-types.ts       # Block type definitions
-└── markdown-utils.ts    # Markdown parsing utilities
-```
-
-## Tips for Development
-
-1. **Hot Reload**: Both apps support hot reload - changes appear instantly
-2. **TypeScript**: Use TypeScript for better DX and fewer bugs
-3. **Testing**: Test your blocks in both the editor and the rendered website
-4. **Version Control**: Commit your CMS app and web app separately
-5. **Content Backups**: Your content is in Git - full version history!
+**Ready to deploy?** Your app works like any Next.js app - just push and deploy! 🚀
