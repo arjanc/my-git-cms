@@ -61,6 +61,14 @@ export const blockSchemas: BlockSchema[] = [
   },
 ]
 
+/**
+ * Subdirectory within the git repo where this Next.js app lives.
+ * All PageSchema contentPath values are relative to this base.
+ *
+ * Change to '' (empty string) if this app is at the repo root.
+ */
+export const contentBase = 'example-app'
+
 export const pageSchemas: PageSchema[] = [
   {
     type: 'pages',

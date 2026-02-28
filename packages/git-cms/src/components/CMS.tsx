@@ -32,11 +32,18 @@ export function CMS({
   const [currentView, setCurrentView] = useState<'dashboard' | 'editor' | 'files'>('dashboard')
   const [selectedFile, setSelectedFile] = useState<string | null>(null)
   const [activeContentPath, setActiveContentPath] = useState(contentPath)
+  const [isCreating, setIsCreating] = useState(false)
 
   function handleSelectSchema(schemaType: string) {
     const schema = pageSchemas?.find((s) => s.type === schemaType)
     if (schema) setActiveContentPath(schema.contentPath)
     setCurrentView('files')
+  }
+
+  function handleCreateNew() {
+    setSelectedFile(null)
+    setIsCreating(true)
+    setCurrentView('editor')
   }
 
   return (
@@ -77,8 +84,10 @@ export function CMS({
           <FileList
             onSelectFile={(file) => {
               setSelectedFile(file)
+              setIsCreating(false)
               setCurrentView('editor')
             }}
+            onCreateNew={handleCreateNew}
             onBack={() => setCurrentView('dashboard')}
             contentPath={activeContentPath}
             apiBasePath={apiBasePath}
@@ -88,7 +97,16 @@ export function CMS({
         {currentView === 'editor' && (
           <Editor
             filePath={selectedFile}
-            onBack={() => setCurrentView('files')}
+            isCreating={isCreating}
+            contentPath={activeContentPath}
+            onBack={() => {
+              setIsCreating(false)
+              setCurrentView('files')
+            }}
+            onCreated={(newFilePath) => {
+              setSelectedFile(newFilePath)
+              setIsCreating(false)
+            }}
             basePath={basePath}
             apiBasePath={apiBasePath}
             blockSchemas={blockSchemas}

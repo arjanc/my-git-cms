@@ -4,12 +4,13 @@ import React, { useState, useEffect } from 'react'
 
 interface FileListProps {
   onSelectFile: (file: string) => void
+  onCreateNew: () => void
   onBack: () => void
   contentPath: string
   apiBasePath?: string
 }
 
-export function FileList({ onSelectFile, onBack, contentPath, apiBasePath = '/admin/api/cms' }: FileListProps) {
+export function FileList({ onSelectFile, onCreateNew, onBack, contentPath, apiBasePath = '/admin/api/cms' }: FileListProps) {
   const [files, setFiles] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -40,12 +41,20 @@ export function FileList({ onSelectFile, onBack, contentPath, apiBasePath = '/ad
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold">Pages</h2>
-        <button
-          onClick={onBack}
-          className="px-4 py-2 text-gray-600 hover:text-gray-900"
-        >
-          ← Back
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={onCreateNew}
+            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm"
+          >
+            + New
+          </button>
+          <button
+            onClick={onBack}
+            className="px-4 py-2 text-gray-600 hover:text-gray-900"
+          >
+            ← Back
+          </button>
+        </div>
       </div>
 
       {loading ? (
@@ -57,7 +66,15 @@ export function FileList({ onSelectFile, onBack, contentPath, apiBasePath = '/ad
             : error}
         </p>
       ) : files.length === 0 ? (
-        <p className="text-gray-500">No pages found. Create your first page.</p>
+        <div className="text-center py-12">
+          <p className="text-gray-500 mb-4">No pages found.</p>
+          <button
+            onClick={onCreateNew}
+            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          >
+            Create your first page
+          </button>
+        </div>
       ) : (
         <div className="space-y-2">
           {files.map((file) => (
@@ -69,6 +86,14 @@ export function FileList({ onSelectFile, onBack, contentPath, apiBasePath = '/ad
               <span className="font-medium">{file.name}</span>
             </button>
           ))}
+          <div className="pt-2">
+            <button
+              onClick={onCreateNew}
+              className="w-full p-4 border-2 border-dashed border-gray-300 rounded-lg text-gray-500 hover:border-blue-400 hover:text-blue-600 transition-colors text-sm"
+            >
+              + New page
+            </button>
+          </div>
         </div>
       )}
     </div>

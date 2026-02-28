@@ -42,6 +42,19 @@ export interface BlockInstance {
     [field: string]: unknown;
 }
 /**
+ * Global configuration for AdminPage.
+ * contentBase is prepended to any PageSchema.contentPath that does not start
+ * with a slash. Leave empty when the Next.js app is at the repo root.
+ *
+ * Example:
+ *   contentBase: 'example-app'
+ *   schema.contentPath: 'content/pages'
+ *   resolved GitHub path: 'example-app/content/pages'
+ */
+export interface CMSConfig {
+    contentBase?: string;
+}
+/**
  * The full parsed content of a markdown file.
  * Used by the page renderer and the CMS editor.
  */

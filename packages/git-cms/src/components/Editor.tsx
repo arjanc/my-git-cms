@@ -11,7 +11,13 @@ function generateBlockId() {
 
 interface EditorProps {
   filePath: string | null
+  /** When true, the editor is in create-new-file mode (no existing file to load) */
+  isCreating?: boolean
+  /** Directory path where the new file will be created, e.g. 'example-app/content/pages' */
+  contentPath?: string
   onBack: () => void
+  /** Called after a new file is successfully committed, with its full repo path */
+  onCreated?: (filePath: string) => void
   basePath: string
   apiBasePath?: string
   blockSchemas?: BlockSchema[]
@@ -19,7 +25,10 @@ interface EditorProps {
 
 export function Editor({
   filePath,
+  isCreating = false,
+  contentPath,
   onBack,
+  onCreated,
   apiBasePath = '/admin/api/cms',
   blockSchemas,
 }: EditorProps) {
@@ -27,10 +36,25 @@ export function Editor({
   const [pageContent, setPageContent] = useState<PageContent | null>(null)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const [fileSha, setFileSha] = useState<string | undefined>(undefined)
+  const [newFileName, setNewFileName] = useState('')
 
   useEffect(() => {
-    if (filePath) loadFile(filePath)
-  }, [filePath])
+    if (filePath) {
+      loadFile(filePath)
+    } else if (isCreating) {
+      // New file — initialise empty state, skip loading
+      setRawContent('')
+      setPageContent(
+        blockSchemas && blockSchemas.length > 0
+          ? { title: '', slug: '', description: '', blocks: [] }
+          : null
+      )
+      setFileSha(undefined)
+      setNewFileName('')
+      setLoading(false)
+    }
+  }, [filePath, isCreating])
 
   async function loadFile(path: string) {
     setLoading(true)
@@ -39,6 +63,7 @@ export function Editor({
       const data = await response.json()
       const raw: string = data.content ?? ''
       setRawContent(raw)
+      setFileSha(data.sha)
       // pageContent is parsed server-side by the API handler (gray-matter stays server-side)
       if (blockSchemas && blockSchemas.length > 0 && data.pageContent) {
         setPageContent(data.pageContent as PageContent)
@@ -51,21 +76,47 @@ export function Editor({
   }
 
   async function handleSave() {
-    if (!filePath) return
+    let targetPath = filePath
+
+    if (isCreating) {
+      const name = newFileName.trim()
+      if (!name) {
+        alert('Please enter a file name.')
+        return
+      }
+      const safeName = name.endsWith('.md') ? name : `${name}.md`
+      targetPath = contentPath ? `${contentPath}/${safeName}` : safeName
+    }
+
+    if (!targetPath) return
+
     setSaving(true)
     try {
-      // Send pageContent as JSON → API serializes to markdown server-side
+      const isNew = isCreating
+      const message = isNew ? `Create ${targetPath}` : `Update ${targetPath}`
+
       const body =
         blockSchemas && blockSchemas.length > 0 && pageContent
-          ? { path: filePath, pageContent, message: `Update ${filePath}` }
-          : { path: filePath, content: rawContent, message: `Update ${filePath}` }
+          ? { path: targetPath, pageContent, message, ...(isNew ? {} : { sha: fileSha }) }
+          : { path: targetPath, content: rawContent, message, ...(isNew ? {} : { sha: fileSha }) }
 
-      await fetch(`${apiBasePath}/${filePath}`, {
+      const response = await fetch(`${apiBasePath}/${targetPath}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
       })
-      alert('Saved successfully!')
+
+      if (!response.ok) {
+        const data = await response.json()
+        alert(`Failed to save: ${data.error ?? 'Unknown error'}`)
+        return
+      }
+
+      if (isNew && onCreated) {
+        onCreated(targetPath)
+      } else {
+        alert('Saved successfully!')
+      }
     } catch (err) {
       console.error('Error saving:', err)
       alert('Failed to save')
@@ -118,17 +169,31 @@ export function Editor({
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold truncate max-w-sm text-gray-800">{filePath}</h2>
+        {isCreating ? (
+          <div className="flex items-center gap-2 flex-1 mr-4">
+            <span className="text-sm text-gray-500 whitespace-nowrap">New file:</span>
+            <input
+              type="text"
+              value={newFileName}
+              onChange={(e) => setNewFileName(e.target.value)}
+              placeholder="my-page.md"
+              className="border rounded px-3 py-1.5 text-sm flex-1 max-w-xs"
+              autoFocus
+            />
+          </div>
+        ) : (
+          <h2 className="text-xl font-bold truncate max-w-sm text-gray-800">{filePath}</h2>
+        )}
         <div className="flex gap-2">
           <button onClick={onBack} className="px-4 py-2 text-gray-600 hover:text-gray-900">
             ← Back
           </button>
           <button
             onClick={handleSave}
-            disabled={saving}
+            disabled={saving || (isCreating && !newFileName.trim())}
             className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
           >
-            {saving ? 'Saving…' : 'Save'}
+            {saving ? 'Saving…' : isCreating ? 'Create' : 'Save'}
           </button>
         </div>
       </div>

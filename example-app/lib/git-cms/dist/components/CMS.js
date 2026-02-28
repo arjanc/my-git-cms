@@ -7,11 +7,17 @@ export function CMS({ basePath = '/admin', apiBasePath = '/admin/api/cms', conte
     const [currentView, setCurrentView] = useState('dashboard');
     const [selectedFile, setSelectedFile] = useState(null);
     const [activeContentPath, setActiveContentPath] = useState(contentPath);
+    const [isCreating, setIsCreating] = useState(false);
     function handleSelectSchema(schemaType) {
         const schema = pageSchemas?.find((s) => s.type === schemaType);
         if (schema)
             setActiveContentPath(schema.contentPath);
         setCurrentView('files');
+    }
+    function handleCreateNew() {
+        setSelectedFile(null);
+        setIsCreating(true);
+        setCurrentView('editor');
     }
     return (React.createElement("div", { className: "git-cms-container min-h-screen bg-gray-50" },
         React.createElement("header", { className: "bg-white border-b" },
@@ -25,7 +31,14 @@ export function CMS({ basePath = '/admin', apiBasePath = '/admin/api/cms', conte
             currentView === 'dashboard' && (React.createElement(Dashboard, { onNavigate: setCurrentView, basePath: basePath, pageSchemas: pageSchemas, onSelectSchema: handleSelectSchema })),
             currentView === 'files' && (React.createElement(FileList, { onSelectFile: (file) => {
                     setSelectedFile(file);
+                    setIsCreating(false);
                     setCurrentView('editor');
-                }, onBack: () => setCurrentView('dashboard'), contentPath: activeContentPath, apiBasePath: apiBasePath })),
-            currentView === 'editor' && (React.createElement(Editor, { filePath: selectedFile, onBack: () => setCurrentView('files'), basePath: basePath, apiBasePath: apiBasePath, blockSchemas: blockSchemas })))));
+                }, onCreateNew: handleCreateNew, onBack: () => setCurrentView('dashboard'), contentPath: activeContentPath, apiBasePath: apiBasePath })),
+            currentView === 'editor' && (React.createElement(Editor, { filePath: selectedFile, isCreating: isCreating, contentPath: activeContentPath, onBack: () => {
+                    setIsCreating(false);
+                    setCurrentView('files');
+                }, onCreated: (newFilePath) => {
+                    setSelectedFile(newFilePath);
+                    setIsCreating(false);
+                }, basePath: basePath, apiBasePath: apiBasePath, blockSchemas: blockSchemas })))));
 }

@@ -5,15 +5,28 @@ import { BlockEditor } from './BlockEditor';
 function generateBlockId() {
     return `block_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 }
-export function Editor({ filePath, onBack, apiBasePath = '/admin/api/cms', blockSchemas, }) {
+export function Editor({ filePath, isCreating = false, contentPath, onBack, onCreated, apiBasePath = '/admin/api/cms', blockSchemas, }) {
     const [rawContent, setRawContent] = useState('');
     const [pageContent, setPageContent] = useState(null);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
+    const [fileSha, setFileSha] = useState(undefined);
+    const [newFileName, setNewFileName] = useState('');
     useEffect(() => {
-        if (filePath)
+        if (filePath) {
             loadFile(filePath);
-    }, [filePath]);
+        }
+        else if (isCreating) {
+            // New file — initialise empty state, skip loading
+            setRawContent('');
+            setPageContent(blockSchemas && blockSchemas.length > 0
+                ? { title: '', slug: '', description: '', blocks: [] }
+                : null);
+            setFileSha(undefined);
+            setNewFileName('');
+            setLoading(false);
+        }
+    }, [filePath, isCreating]);
     async function loadFile(path) {
         setLoading(true);
         try {
@@ -21,6 +34,7 @@ export function Editor({ filePath, onBack, apiBasePath = '/admin/api/cms', block
             const data = await response.json();
             const raw = data.content ?? '';
             setRawContent(raw);
+            setFileSha(data.sha);
             // pageContent is parsed server-side by the API handler (gray-matter stays server-side)
             if (blockSchemas && blockSchemas.length > 0 && data.pageContent) {
                 setPageContent(data.pageContent);
@@ -34,20 +48,41 @@ export function Editor({ filePath, onBack, apiBasePath = '/admin/api/cms', block
         }
     }
     async function handleSave() {
-        if (!filePath)
+        let targetPath = filePath;
+        if (isCreating) {
+            const name = newFileName.trim();
+            if (!name) {
+                alert('Please enter a file name.');
+                return;
+            }
+            const safeName = name.endsWith('.md') ? name : `${name}.md`;
+            targetPath = contentPath ? `${contentPath}/${safeName}` : safeName;
+        }
+        if (!targetPath)
             return;
         setSaving(true);
         try {
-            // Send pageContent as JSON → API serializes to markdown server-side
+            const isNew = isCreating;
+            const message = isNew ? `Create ${targetPath}` : `Update ${targetPath}`;
             const body = blockSchemas && blockSchemas.length > 0 && pageContent
-                ? { path: filePath, pageContent, message: `Update ${filePath}` }
-                : { path: filePath, content: rawContent, message: `Update ${filePath}` };
-            await fetch(`${apiBasePath}/${filePath}`, {
+                ? { path: targetPath, pageContent, message, ...(isNew ? {} : { sha: fileSha }) }
+                : { path: targetPath, content: rawContent, message, ...(isNew ? {} : { sha: fileSha }) };
+            const response = await fetch(`${apiBasePath}/${targetPath}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(body),
             });
-            alert('Saved successfully!');
+            if (!response.ok) {
+                const data = await response.json();
+                alert(`Failed to save: ${data.error ?? 'Unknown error'}`);
+                return;
+            }
+            if (isNew && onCreated) {
+                onCreated(targetPath);
+            }
+            else {
+                alert('Saved successfully!');
+            }
         }
         catch (err) {
             console.error('Error saving:', err);
@@ -101,10 +136,12 @@ export function Editor({ filePath, onBack, apiBasePath = '/admin/api/cms', block
     const useSchemaEditor = !!(blockSchemas && blockSchemas.length > 0 && pageContent);
     return (React.createElement("div", { className: "space-y-4" },
         React.createElement("div", { className: "flex items-center justify-between" },
-            React.createElement("h2", { className: "text-xl font-bold truncate max-w-sm text-gray-800" }, filePath),
+            isCreating ? (React.createElement("div", { className: "flex items-center gap-2 flex-1 mr-4" },
+                React.createElement("span", { className: "text-sm text-gray-500 whitespace-nowrap" }, "New file:"),
+                React.createElement("input", { type: "text", value: newFileName, onChange: (e) => setNewFileName(e.target.value), placeholder: "my-page.md", className: "border rounded px-3 py-1.5 text-sm flex-1 max-w-xs", autoFocus: true }))) : (React.createElement("h2", { className: "text-xl font-bold truncate max-w-sm text-gray-800" }, filePath)),
             React.createElement("div", { className: "flex gap-2" },
                 React.createElement("button", { onClick: onBack, className: "px-4 py-2 text-gray-600 hover:text-gray-900" }, "\u2190 Back"),
-                React.createElement("button", { onClick: handleSave, disabled: saving, className: "px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50" }, saving ? 'Saving…' : 'Save'))),
+                React.createElement("button", { onClick: handleSave, disabled: saving || (isCreating && !newFileName.trim()), className: "px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50" }, saving ? 'Saving…' : isCreating ? 'Create' : 'Save'))),
         useSchemaEditor ? (React.createElement("div", { className: "space-y-4" },
             React.createElement("div", { className: "bg-white p-4 rounded-lg shadow space-y-3" },
                 React.createElement("h3", { className: "font-semibold text-sm text-gray-700" }, "Page settings"),
