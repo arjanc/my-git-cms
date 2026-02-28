@@ -1,1 +1,19 @@
-{"items":[]}
+{
+  "items": [
+    {
+      "title": "Home",
+      "href": "/"
+    },
+    {
+      "title": "Blog",
+      "href": "/blog",
+      "slug": "/blog",
+      "children": [
+        {
+          "title": "Getting started",
+          "href": "/blog/getting-started"
+        }
+      ]
+    }
+  ]
+}
