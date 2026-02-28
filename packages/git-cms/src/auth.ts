@@ -2,11 +2,8 @@ import NextAuth from "next-auth"
 import type { NextAuthConfig, NextAuthResult, Session } from "next-auth"
 import GitHub from "next-auth/providers/github"
 
-// Import types that might be needed for portability
-import type { NextRequest } from "next/server"
-
-// Import JWT to ensure the module is available for augmentation
-import "next-auth/jwt"
+// Type-only — erased at compile time, no runtime side effect
+import type {} from "next-auth/jwt"
 
 // Module augmentation for next-auth to add accessToken
 declare module "next-auth" {

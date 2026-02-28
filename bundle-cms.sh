@@ -4,16 +4,18 @@ set -e
 
 echo "🔨 Building Git CMS package..."
 
-# Build the CMS package
+# Build the CMS package (clean first so deleted source files don't linger in dist/)
 cd packages/git-cms
 npm install
+rm -rf dist/
 npm run build
 
 echo "📦 Bundling into app..."
 
-# Copy to app/lib
+# Copy to app/lib (clean first so stale compiled files don't accumulate)
 cd ../../example-app
 mkdir -p lib/git-cms
+rm -rf lib/git-cms/dist
 
 # Copy built files
 cp -r ../packages/git-cms/dist lib/git-cms/

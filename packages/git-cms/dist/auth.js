@@ -1,7 +1,5 @@
 import NextAuth from "next-auth";
 import GitHub from "next-auth/providers/github";
-// Import JWT to ensure the module is available for augmentation
-import "next-auth/jwt";
 const BASE_PATH = process.env.GIT_CMS_BASE_PATH ?? '/admin';
 const config = {
     basePath: `${BASE_PATH}/api/auth`,

@@ -57,6 +57,12 @@ export function createGitCMSHandler(config: GitCMSConfig) {
         return NextResponse.json({ error: 'Not found' }, { status: 404 })
       } catch (error) {
         console.error('GitHub API error:', error)
+        const status = (error as { status?: number })?.status
+        // GitHub returns 404 for private repos with bad/missing token — treat as auth failure.
+        // 401/403 are explicit auth errors.
+        if (status === 401 || status === 403 || status === 404) {
+          return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+        }
         return NextResponse.json({ error: 'Failed to fetch' }, { status: 500 })
       }
     },
@@ -97,6 +103,10 @@ export function createGitCMSHandler(config: GitCMSConfig) {
         return NextResponse.json({ success: true })
       } catch (error) {
         console.error('GitHub API error:', error)
+        const status = (error as { status?: number })?.status
+        if (status === 401 || status === 403 || status === 404) {
+          return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+        }
         return NextResponse.json({ error: 'Failed to save' }, { status: 500 })
       }
     },
@@ -131,6 +141,10 @@ export function createGitCMSHandler(config: GitCMSConfig) {
         return NextResponse.json({ success: true })
       } catch (error) {
         console.error('GitHub API error:', error)
+        const status = (error as { status?: number })?.status
+        if (status === 401 || status === 403 || status === 404) {
+          return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+        }
         return NextResponse.json({ error: 'Failed to delete' }, { status: 500 })
       }
     },
