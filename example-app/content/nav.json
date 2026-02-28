@@ -5,8 +5,8 @@
       "href": "/"
     },
     {
-      "title": "Blog",
-      "href": "/blog",
+      "title": "Blogs",
+      "href": "/blogs",
       "slug": "/blog",
       "children": [
         {
