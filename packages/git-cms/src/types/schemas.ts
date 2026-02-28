@@ -50,6 +50,40 @@ export interface BlockInstance {
   [field: string]: unknown
 }
 
+// ─── Navigation / Project Map ─────────────────────────────────────────────
+
+/**
+ * A single item in the site navigation tree.
+ */
+export interface NavItem {
+  /** Display text in the navigation */
+  title: string
+  /** URL path, e.g. "/" or "/blog/my-post" */
+  href: string
+  /**
+   * Optional slug cross-reference. When present this item links to a markdown
+   * page whose PageContent.slug equals this value.
+   */
+  slug?: string
+  /** Nested nav items — one level deep in the UI, type allows recursion */
+  children?: NavItem[]
+}
+
+/** The full navigation document as stored in the JSON file. */
+export interface NavData {
+  items: NavItem[]
+}
+
+/**
+ * Props that the example-app's Nav renderer component must satisfy.
+ * Import this type in your custom Nav component to get full type safety.
+ */
+export interface NavRendererProps {
+  nav: NavData
+  /** Current pathname for active-link highlighting */
+  currentPath?: string
+}
+
 /**
  * Global configuration for AdminPage.
  * contentBase is prepended to any PageSchema.contentPath that does not start

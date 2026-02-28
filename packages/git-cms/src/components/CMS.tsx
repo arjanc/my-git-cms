@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import { Dashboard } from './Dashboard'
 import { Editor } from './Editor'
 import { FileList } from './FileList'
+import { NavEditor } from './NavEditor'
 import type { BlockSchema, PageSchema } from '../types/schemas'
 
 export interface CMSProps {
@@ -16,6 +17,12 @@ export interface CMSProps {
   pageSchemas?: PageSchema[]
   user?: { name?: string | null; image?: string | null }
   signOutUrl?: string
+  /**
+   * Absolute GitHub repo path to the nav JSON file.
+   * Example: "example-app/content/nav.json"
+   * When provided, the Dashboard shows a Navigation card.
+   */
+  navPath?: string
 }
 
 export function CMS({
@@ -28,8 +35,9 @@ export function CMS({
   pageSchemas,
   user,
   signOutUrl,
+  navPath,
 }: CMSProps) {
-  const [currentView, setCurrentView] = useState<'dashboard' | 'editor' | 'files'>('dashboard')
+  const [currentView, setCurrentView] = useState<'dashboard' | 'editor' | 'files' | 'nav'>('dashboard')
   const [selectedFile, setSelectedFile] = useState<string | null>(null)
   const [activeContentPath, setActiveContentPath] = useState(contentPath)
   const [isCreating, setIsCreating] = useState(false)
@@ -77,6 +85,7 @@ export function CMS({
             basePath={basePath}
             pageSchemas={pageSchemas}
             onSelectSchema={handleSelectSchema}
+            onOpenNav={navPath ? () => setCurrentView('nav') : undefined}
           />
         )}
 
@@ -110,6 +119,14 @@ export function CMS({
             basePath={basePath}
             apiBasePath={apiBasePath}
             blockSchemas={blockSchemas}
+          />
+        )}
+
+        {currentView === 'nav' && navPath && (
+          <NavEditor
+            navPath={navPath}
+            apiBasePath={apiBasePath}
+            onBack={() => setCurrentView('dashboard')}
           />
         )}
       </main>

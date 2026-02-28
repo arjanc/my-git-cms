@@ -17,6 +17,13 @@ interface AdminPageProps {
    * Omit (or leave empty) when the Next.js app is at the repo root.
    */
   contentBase?: string
+  /**
+   * Repo-relative path to the navigation JSON file.
+   * Resolved through contentBase the same way PageSchema.contentPath is.
+   * Example: navPath='content/nav.json' + contentBase='example-app'
+   *          → GitHub path 'example-app/content/nav.json'
+   */
+  navPath?: string
 }
 
 function resolveContentPath(contentBase: string | undefined, contentPath: string): string {
@@ -28,6 +35,7 @@ export default async function AdminPage({
   blockSchemas,
   pageSchemas,
   contentBase,
+  navPath,
 }: AdminPageProps = {}) {
   const session = await auth()
   const basePath = process.env.GIT_CMS_BASE_PATH ?? '/admin'
@@ -42,6 +50,7 @@ export default async function AdminPage({
   }))
 
   const defaultContentPath = resolveContentPath(contentBase, 'content/pages')
+  const resolvedNavPath = navPath ? resolveContentPath(contentBase, navPath) : undefined
 
   return React.createElement(CMS, {
     basePath,
@@ -53,5 +62,6 @@ export default async function AdminPage({
     pageSchemas: resolvedPageSchemas,
     user: { name: session.user?.name, image: session.user?.image },
     signOutUrl: `${basePath}/api/auth/signout`,
+    navPath: resolvedNavPath,
   })
 }

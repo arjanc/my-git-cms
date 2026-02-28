@@ -32,6 +32,10 @@
     "./markdown": {
       "types": "./dist/lib/markdown.d.ts",
       "default": "./dist/lib/markdown.js"
+    },
+    "./nav": {
+      "types": "./dist/lib/nav.d.ts",
+      "default": "./dist/lib/nav.js"
     }
   },
   "files": [

@@ -1,0 +1,1 @@
+{"version":3,"file":"NavEditor.d.ts","sourceRoot":"","sources":["../../src/components/NavEditor.tsx"],"names":[],"mappings":"AAEA,OAAO,KAA8B,MAAM,OAAO,CAAA;AAgBlD,MAAM,WAAW,cAAc;IAC7B,0FAA0F;IAC1F,OAAO,EAAE,MAAM,CAAA;IACf,WAAW,EAAE,MAAM,CAAA;IACnB,MAAM,EAAE,MAAM,IAAI,CAAA;CACnB;AAED,wBAAgB,SAAS,CAAC,EAAE,OAAO,EAAE,WAAW,EAAE,MAAM,EAAE,EAAE,cAAc,qBAwTzE"}

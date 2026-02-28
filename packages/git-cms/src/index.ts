@@ -10,6 +10,9 @@ export type {
   PageSchema,
   BlockInstance,
   PageContent,
+  NavItem,
+  NavData,
+  NavRendererProps,
 } from './types/schemas'
 
 // Legacy block type exports (kept for backward compatibility)
