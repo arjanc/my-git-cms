@@ -14,6 +14,8 @@ export interface CMSProps {
   githubRepo?: string
   blockSchemas?: BlockSchema[]
   pageSchemas?: PageSchema[]
+  user?: { name?: string | null; image?: string | null }
+  signOutUrl?: string
 }
 
 export function CMS({
@@ -24,6 +26,8 @@ export function CMS({
   githubRepo,
   blockSchemas,
   pageSchemas,
+  user,
+  signOutUrl,
 }: CMSProps) {
   const [currentView, setCurrentView] = useState<'dashboard' | 'editor' | 'files'>('dashboard')
   const [selectedFile, setSelectedFile] = useState<string | null>(null)
@@ -38,8 +42,24 @@ export function CMS({
   return (
     <div className="git-cms-container min-h-screen bg-gray-50">
       <header className="bg-white border-b">
-        <div className="container mx-auto px-4 py-4">
+        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <h1 className="text-2xl font-bold">Git CMS</h1>
+          <div className="flex items-center gap-3">
+            {user?.image && (
+              <img src={user.image} alt="" width={32} height={32} className="rounded-full" />
+            )}
+            {user?.name && (
+              <span className="text-sm text-gray-700">{user.name}</span>
+            )}
+            {signOutUrl && (
+              <a
+                href={signOutUrl}
+                className="text-sm text-gray-500 hover:text-gray-800 underline"
+              >
+                Sign out
+              </a>
+            )}
+          </div>
         </div>
       </header>
 

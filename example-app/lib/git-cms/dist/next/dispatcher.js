@@ -1,20 +1,19 @@
 import { NextResponse } from 'next/server';
-import { handlers } from '../auth';
+import { handlers, auth } from '../auth';
 import { createGitCMSHandler } from '../api/handler';
-import { auth } from '../auth';
-// Pre-wired CMS handler reads owner/repo from env at module load time.
-// getAccessToken is a closure — called per-request, never stale.
-const cmsHandler = createGitCMSHandler({
-    getAccessToken: async () => {
-        const session = await auth();
-        return session?.accessToken ?? null;
-    },
-    owner: process.env.GITHUB_OWNER ?? '',
-    repo: process.env.GITHUB_REPO ?? '',
-});
 // Adapt the catch-all params into the shape handler.ts expects: { path: string[] }
 function cmsContext(segments) {
     return { params: Promise.resolve({ path: segments }) };
+}
+// Create a handler with the resolved access token for the current request.
+// auth() must be called at the route-handler level so next-auth can read the
+// session cookie via next/headers in the correct request context.
+function makeCmsHandler(accessToken) {
+    return createGitCMSHandler({
+        getAccessToken: async () => accessToken,
+        owner: process.env.GITHUB_OWNER ?? '',
+        repo: process.env.GITHUB_REPO ?? '',
+    });
 }
 export async function GET(request, context) {
     const { cms = [] } = await context.params;
@@ -24,7 +23,8 @@ export async function GET(request, context) {
     }
     // /admin/api/cms/** → GitHub file operations; strip the leading 'cms' segment
     if (cms[0] === 'cms') {
-        return cmsHandler.GET(request, cmsContext(cms.slice(1)));
+        const session = await auth();
+        return makeCmsHandler(session?.accessToken ?? null).GET(request, cmsContext(cms.slice(1)));
     }
     return NextResponse.json({ error: 'Not found' }, { status: 404 });
 }
@@ -34,14 +34,16 @@ export async function POST(request, context) {
         return handlers.POST(request);
     }
     if (cms[0] === 'cms') {
-        return cmsHandler.POST(request, cmsContext(cms.slice(1)));
+        const session = await auth();
+        return makeCmsHandler(session?.accessToken ?? null).POST(request, cmsContext(cms.slice(1)));
     }
     return NextResponse.json({ error: 'Not found' }, { status: 404 });
 }
 export async function DELETE(request, context) {
     const { cms = [] } = await context.params;
     if (cms[0] === 'cms') {
-        return cmsHandler.DELETE(request, cmsContext(cms.slice(1)));
+        const session = await auth();
+        return makeCmsHandler(session?.accessToken ?? null).DELETE(request, cmsContext(cms.slice(1)));
     }
     return NextResponse.json({ error: 'Not found' }, { status: 404 });
 }

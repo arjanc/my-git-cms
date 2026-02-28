@@ -13,7 +13,7 @@ export default async function AdminPage({ blockSchemas, pageSchemas }: AdminPage
   const session = await auth()
   const basePath = process.env.GIT_CMS_BASE_PATH ?? '/admin'
 
-  if (!session) {
+  if (!session || !session.accessToken) {
     redirect(`${basePath}/api/auth/signin?callbackUrl=${encodeURIComponent(basePath)}`)
   }
 
@@ -25,5 +25,7 @@ export default async function AdminPage({ blockSchemas, pageSchemas }: AdminPage
     githubRepo: process.env.GITHUB_REPO,
     blockSchemas,
     pageSchemas,
+    user: { name: session.user?.name, image: session.user?.image },
+    signOutUrl: `${basePath}/api/auth/signout`,
   })
 }

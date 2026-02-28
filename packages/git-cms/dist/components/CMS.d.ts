@@ -8,6 +8,11 @@ export interface CMSProps {
     githubRepo?: string;
     blockSchemas?: BlockSchema[];
     pageSchemas?: PageSchema[];
+    user?: {
+        name?: string | null;
+        image?: string | null;
+    };
+    signOutUrl?: string;
 }
-export declare function CMS({ basePath, apiBasePath, contentPath, githubOwner, githubRepo, blockSchemas, pageSchemas, }: CMSProps): React.JSX.Element;
+export declare function CMS({ basePath, apiBasePath, contentPath, githubOwner, githubRepo, blockSchemas, pageSchemas, user, signOutUrl, }: CMSProps): React.JSX.Element;
 //# sourceMappingURL=CMS.d.ts.map
