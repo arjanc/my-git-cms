@@ -5,26 +5,30 @@ import { BlockEditor } from './BlockEditor';
 function generateBlockId() {
     return `block_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 }
-export function Editor({ filePath, isCreating = false, contentPath, onBack, onCreated, apiBasePath = '/admin/api/cms', blockSchemas, }) {
+export function Editor({ filePath, isCreating = false, contentPath, onBack, onCreated, apiBasePath = '/admin/api/cms', blockSchemas, pageSchemas, }) {
     const [rawContent, setRawContent] = useState('');
     const [pageContent, setPageContent] = useState(null);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [fileSha, setFileSha] = useState(undefined);
     const [newFileName, setNewFileName] = useState('');
+    const schema = pageSchemas?.find((s) => s.contentPath.includes(contentPath || ''));
+    console.log('schema: ', schema, ' contentPath: ', contentPath);
     useEffect(() => {
         if (filePath) {
+            console.log('loading file');
             loadFile(filePath);
         }
         else if (isCreating) {
             // New file — initialise empty state, skip loading
             setRawContent('');
             setPageContent(blockSchemas && blockSchemas.length > 0
-                ? { title: '', slug: '', description: '', blocks: [] }
+                ? { title: '', slug: '', description: '', blocks: [], pageSchema: schema?.type }
                 : null);
             setFileSha(undefined);
             setNewFileName('');
             setLoading(false);
+            console.log('iscreating:');
         }
     }, [filePath, isCreating]);
     async function loadFile(path) {

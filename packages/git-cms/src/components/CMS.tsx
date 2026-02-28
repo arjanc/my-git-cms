@@ -119,6 +119,7 @@ export function CMS({
             basePath={basePath}
             apiBasePath={apiBasePath}
             blockSchemas={blockSchemas}
+            pageSchemas={pageSchemas}
           />
         )}
 

@@ -8,6 +8,7 @@ export function serializeToMarkdown(content) {
         blocks: content.blocks,
         metadata: content.metadata,
     };
+    console.log('serializeToMarkdown: ', frontmatter);
     return matter.stringify('', frontmatter);
 }
 export function parseMarkdown(markdown) {
@@ -18,7 +19,7 @@ export function parseMarkdown(markdown) {
         description: data.description,
         pageSchema: data.pageSchema,
         blocks: data.blocks || [],
-        metadata: data.metadata,
+        metadata: data.metadata
     };
 }
 export function validateBlock(block) {

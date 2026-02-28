@@ -21,7 +21,7 @@ export function parseMarkdown(markdown: string): PageContent {
     description: data.description,
     pageSchema: data.pageSchema,
     blocks: (data.blocks as BlockInstance[]) || [],
-    metadata: data.metadata,
+    metadata: data.metadata
   }
 }
 

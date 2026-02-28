@@ -93,6 +93,30 @@ export function createGitCMSHandler(config: GitCMSConfig) {
         return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
       }
 
+      // add metadata to pageContent
+      if (pageContent) {
+        try {
+          const { data: user } = await octokit.users.getAuthenticated()
+          const author = user.name || user.login
+
+          pageContent.metadata = {
+            createdAt: pageContent.metadata?.createdAt ?? new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+            author,
+          }
+        } catch (error) {
+          console.error('Failed to fetch authenticated user for metadata:', error)
+          // Fallback if user fetch fails but we still want to save
+          pageContent.metadata = {
+            createdAt: pageContent.metadata?.createdAt ?? new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+            author: 'Anonymous',
+          }
+        }
+      }
+
+      console.log('handler POST: ', pageContent)
+
       // If pageContent (schema-driven editor), serialize to markdown server-side
       const content: string = pageContent
         ? serializeToMarkdown(pageContent as PageContent)

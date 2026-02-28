@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import type { BlockSchema, BlockInstance, PageContent } from '../types/schemas'
+import type { BlockSchema, BlockInstance, PageContent, PageSchema } from '../types/schemas'
 import { BlockEditor } from './BlockEditor'
 
 // Inlined so this client component has zero server-only dependencies (no gray-matter)
@@ -21,6 +21,7 @@ interface EditorProps {
   basePath: string
   apiBasePath?: string
   blockSchemas?: BlockSchema[]
+  pageSchemas?: PageSchema[]
 }
 
 export function Editor({
@@ -31,6 +32,7 @@ export function Editor({
   onCreated,
   apiBasePath = '/admin/api/cms',
   blockSchemas,
+  pageSchemas,
 }: EditorProps) {
   const [rawContent, setRawContent] = useState('')
   const [pageContent, setPageContent] = useState<PageContent | null>(null)
@@ -38,6 +40,7 @@ export function Editor({
   const [saving, setSaving] = useState(false)
   const [fileSha, setFileSha] = useState<string | undefined>(undefined)
   const [newFileName, setNewFileName] = useState('')
+  const schema = pageSchemas?.find((s) => s.contentPath.includes(contentPath || ''));
 
   useEffect(() => {
     if (filePath) {
@@ -47,7 +50,7 @@ export function Editor({
       setRawContent('')
       setPageContent(
         blockSchemas && blockSchemas.length > 0
-          ? { title: '', slug: '', description: '', blocks: [] }
+          ? { title: '', slug: '', description: '', blocks: [], pageSchema: schema?.type }
           : null
       )
       setFileSha(undefined)
@@ -151,14 +154,14 @@ export function Editor({
   function handleMoveUp(index: number) {
     if (!pageContent || index === 0) return
     const blocks = [...pageContent.blocks]
-    ;[blocks[index - 1], blocks[index]] = [blocks[index], blocks[index - 1]]
+      ;[blocks[index - 1], blocks[index]] = [blocks[index], blocks[index - 1]]
     setPageContent({ ...pageContent, blocks })
   }
 
   function handleMoveDown(index: number) {
     if (!pageContent || index === pageContent.blocks.length - 1) return
     const blocks = [...pageContent.blocks]
-    ;[blocks[index], blocks[index + 1]] = [blocks[index + 1], blocks[index]]
+      ;[blocks[index], blocks[index + 1]] = [blocks[index + 1], blocks[index]]
     setPageContent({ ...pageContent, blocks })
   }
 

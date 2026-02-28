@@ -1,5 +1,5 @@
 import React from 'react';
-import type { BlockSchema } from '../types/schemas';
+import type { BlockSchema, PageSchema } from '../types/schemas';
 interface EditorProps {
     filePath: string | null;
     /** When true, the editor is in create-new-file mode (no existing file to load) */
@@ -12,7 +12,8 @@ interface EditorProps {
     basePath: string;
     apiBasePath?: string;
     blockSchemas?: BlockSchema[];
+    pageSchemas?: PageSchema[];
 }
-export declare function Editor({ filePath, isCreating, contentPath, onBack, onCreated, apiBasePath, blockSchemas, }: EditorProps): React.JSX.Element;
+export declare function Editor({ filePath, isCreating, contentPath, onBack, onCreated, apiBasePath, blockSchemas, pageSchemas, }: EditorProps): React.JSX.Element;
 export {};
 //# sourceMappingURL=Editor.d.ts.map

@@ -41,6 +41,6 @@ export function CMS({ basePath = '/admin', apiBasePath = '/admin/api/cms', conte
                 }, onCreated: (newFilePath) => {
                     setSelectedFile(newFilePath);
                     setIsCreating(false);
-                }, basePath: basePath, apiBasePath: apiBasePath, blockSchemas: blockSchemas })),
+                }, basePath: basePath, apiBasePath: apiBasePath, blockSchemas: blockSchemas, pageSchemas: pageSchemas })),
             currentView === 'nav' && navPath && (React.createElement(NavEditor, { navPath: navPath, apiBasePath: apiBasePath, onBack: () => setCurrentView('dashboard') })))));
 }
