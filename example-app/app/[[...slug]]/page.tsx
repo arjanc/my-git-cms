@@ -11,13 +11,34 @@ interface PageProps {
 }
 
 function resolveContentPath(slug: string[]): string[] {
+  const contentDir = path.join(process.cwd(), 'content')
+
   if (slug.length === 0) {
-    return [path.join(process.cwd(), 'content', 'pages', 'home.md')]
+    return [path.join(contentDir, 'pages', 'home.md')]
   }
-  return [
-    path.join(process.cwd(), 'content', ...slug) + '.md',
-    path.join(process.cwd(), 'content', ...slug, 'index.md'),
+
+  // 1. Try resolving relative to content/
+  const candidates = [
+    path.join(contentDir, ...slug) + '.md',
+    path.join(contentDir, ...slug, 'index.md'),
   ]
+
+  // 2. Dynamically add candidates for each subdirectory in content/
+  // This handles content in pages/, blog/, etc.
+  try {
+    const subdirs = fs.readdirSync(contentDir, { withFileTypes: true })
+      .filter((dirent) => dirent.isDirectory())
+      .map((dirent) => dirent.name)
+
+    for (const subdir of subdirs) {
+      candidates.push(path.join(contentDir, subdir, ...slug) + '.md')
+      candidates.push(path.join(contentDir, subdir, ...slug, 'index.md'))
+    }
+  } catch (err) {
+    console.error('Failed to read content directory:', err)
+  }
+
+  return candidates
 }
 
 function readContent(slug: string[]) {

@@ -1,9 +1,6 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
-import path from 'path';
-import { getNav } from '@git-cms/core/nav';
-import { Nav } from '../components/Nav';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -17,12 +14,10 @@ export default async function RootLayout({
 }: {
     children: React.ReactNode;
 }) {
-    const nav = getNav(path.join(process.cwd(), 'content', 'nav.json'));
 
     return (
         <html lang="en">
             <body className={inter.className}>
-                {nav.items.length > 0 && <Nav nav={nav} />}
                 {children}
             </body>
         </html>
