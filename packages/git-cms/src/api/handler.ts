@@ -58,10 +58,18 @@ export function createGitCMSHandler(config: GitCMSConfig) {
       } catch (error) {
         console.error('GitHub API error:', error)
         const status = (error as { status?: number })?.status
-        // GitHub returns 404 for private repos with bad/missing token — treat as auth failure.
-        // 401/403 are explicit auth errors.
-        if (status === 401 || status === 403 || status === 404) {
+        if (status === 401 || status === 403) {
           return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+        }
+        if (status === 404) {
+          // We already confirmed a token exists above, so this is a genuine not-found:
+          // directory → return empty list so the CMS can show an empty state;
+          // file (has extension) → return 404 so the editor knows the file is gone.
+          const lastSegment = path.split('/').pop() ?? ''
+          if (lastSegment.includes('.')) {
+            return NextResponse.json({ error: 'Not found' }, { status: 404 })
+          }
+          return NextResponse.json([], { status: 200 })
         }
         return NextResponse.json({ error: 'Failed to fetch' }, { status: 500 })
       }

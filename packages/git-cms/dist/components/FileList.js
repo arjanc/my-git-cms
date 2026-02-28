@@ -32,6 +32,6 @@ export function FileList({ onSelectFile, onBack, contentPath, apiBasePath = '/ad
             React.createElement("button", { onClick: onBack, className: "px-4 py-2 text-gray-600 hover:text-gray-900" }, "\u2190 Back")),
         loading ? (React.createElement("p", null, "Loading files...")) : error ? (React.createElement("p", { className: "text-red-600" }, error === 'Unauthorized'
             ? 'Not signed in. Please sign in with GitHub to manage content.'
-            : error)) : (React.createElement("div", { className: "space-y-2" }, files.map((file) => (React.createElement("button", { key: file.path, onClick: () => onSelectFile(file.path), className: "w-full p-4 bg-white rounded-lg shadow hover:shadow-md transition-shadow text-left" },
+            : error)) : files.length === 0 ? (React.createElement("p", { className: "text-gray-500" }, "No pages found. Create your first page.")) : (React.createElement("div", { className: "space-y-2" }, files.map((file) => (React.createElement("button", { key: file.path, onClick: () => onSelectFile(file.path), className: "w-full p-4 bg-white rounded-lg shadow hover:shadow-md transition-shadow text-left" },
             React.createElement("span", { className: "font-medium" }, file.name))))))));
 }

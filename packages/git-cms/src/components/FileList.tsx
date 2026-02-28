@@ -56,6 +56,8 @@ export function FileList({ onSelectFile, onBack, contentPath, apiBasePath = '/ad
             ? 'Not signed in. Please sign in with GitHub to manage content.'
             : error}
         </p>
+      ) : files.length === 0 ? (
+        <p className="text-gray-500">No pages found. Create your first page.</p>
       ) : (
         <div className="space-y-2">
           {files.map((file) => (
