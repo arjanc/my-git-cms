@@ -7,7 +7,7 @@ function resolveContentPath(contentBase, contentPath) {
         return contentPath;
     return `${contentBase}/${contentPath}`;
 }
-export default async function AdminPage({ blockSchemas, pageSchemas, contentBase, navPath, } = {}) {
+export default async function AdminPage({ blockSchemas, pageSchemas, contentBase, } = {}) {
     const session = await auth();
     const basePath = process.env.GIT_CMS_BASE_PATH ?? '/admin';
     if (!session || !session.accessToken) {
@@ -18,7 +18,6 @@ export default async function AdminPage({ blockSchemas, pageSchemas, contentBase
         contentPath: resolveContentPath(contentBase, schema.contentPath),
     }));
     const defaultContentPath = resolveContentPath(contentBase, 'content/pages');
-    const resolvedNavPath = navPath ? resolveContentPath(contentBase, navPath) : undefined;
     return React.createElement(CMS, {
         basePath,
         apiBasePath: `${basePath}/api/cms`,
@@ -29,6 +28,5 @@ export default async function AdminPage({ blockSchemas, pageSchemas, contentBase
         pageSchemas: resolvedPageSchemas,
         user: { name: session.user?.name, image: session.user?.image },
         signOutUrl: `${basePath}/api/auth/signout`,
-        navPath: resolvedNavPath,
     });
 }

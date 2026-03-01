@@ -3,8 +3,7 @@ import React, { useState } from 'react';
 import { Dashboard } from './Dashboard';
 import { Editor } from './Editor';
 import { FileList } from './FileList';
-import { NavEditor } from './NavEditor';
-export function CMS({ basePath = '/admin', apiBasePath = '/admin/api/cms', contentPath = 'content/pages', githubOwner, githubRepo, blockSchemas, pageSchemas, user, signOutUrl, navPath, }) {
+export function CMS({ basePath = '/admin', apiBasePath = '/admin/api/cms', contentPath = 'content/pages', githubOwner, githubRepo, blockSchemas, pageSchemas, user, signOutUrl, }) {
     const [currentView, setCurrentView] = useState('dashboard');
     const [selectedFile, setSelectedFile] = useState(null);
     const [activeContentPath, setActiveContentPath] = useState(contentPath);
@@ -29,7 +28,7 @@ export function CMS({ basePath = '/admin', apiBasePath = '/admin/api/cms', conte
                     user?.name && (React.createElement("span", { className: "text-sm text-gray-700" }, user.name)),
                     signOutUrl && (React.createElement("a", { href: signOutUrl, className: "text-sm text-gray-500 hover:text-gray-800 underline" }, "Sign out"))))),
         React.createElement("main", { className: "container mx-auto px-4 py-8" },
-            currentView === 'dashboard' && (React.createElement(Dashboard, { onNavigate: setCurrentView, basePath: basePath, pageSchemas: pageSchemas, onSelectSchema: handleSelectSchema, onOpenNav: navPath ? () => setCurrentView('nav') : undefined })),
+            currentView === 'dashboard' && (React.createElement(Dashboard, { onNavigate: setCurrentView, basePath: basePath, pageSchemas: pageSchemas, onSelectSchema: handleSelectSchema })),
             currentView === 'files' && (React.createElement(FileList, { onSelectFile: (file) => {
                     setSelectedFile(file);
                     setIsCreating(false);
@@ -41,6 +40,5 @@ export function CMS({ basePath = '/admin', apiBasePath = '/admin/api/cms', conte
                 }, onCreated: (newFilePath) => {
                     setSelectedFile(newFilePath);
                     setIsCreating(false);
-                }, basePath: basePath, apiBasePath: apiBasePath, blockSchemas: blockSchemas, pageSchemas: pageSchemas })),
-            currentView === 'nav' && navPath && (React.createElement(NavEditor, { navPath: navPath, apiBasePath: apiBasePath, onBack: () => setCurrentView('dashboard') })))));
+                }, basePath: basePath, apiBasePath: apiBasePath, blockSchemas: blockSchemas, pageSchemas: pageSchemas })))));
 }

@@ -235,6 +235,57 @@ export function Editor({
             </div>
           </div>
 
+          {/* Navigation */}
+          <div className="bg-white p-4 rounded-lg shadow space-y-3">
+            <h3 className="font-semibold text-sm text-gray-700">Navigation</h3>
+            <div className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                id="navEnabled"
+                checked={!!pageContent!.navEnabled}
+                onChange={(e) => setPageContent({ ...pageContent!, navEnabled: e.target.checked || undefined })}
+                className="rounded"
+              />
+              <label htmlFor="navEnabled" className="text-sm text-gray-700">Show in navigation</label>
+            </div>
+            {pageContent!.navEnabled && (
+              <div className="space-y-3 pt-1">
+                <div>
+                  <label className="block text-xs font-medium text-gray-600 mb-1">Nav label <span className="text-gray-400 font-normal">(defaults to title)</span></label>
+                  <input
+                    type="text"
+                    value={pageContent!.navTitle ?? ''}
+                    onChange={(e) => setPageContent({ ...pageContent!, navTitle: e.target.value || undefined })}
+                    placeholder={pageContent!.title || 'Page title'}
+                    className="w-full border rounded px-3 py-2 text-sm"
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-medium text-gray-600 mb-1">Order <span className="text-gray-400 font-normal">(ascending)</span></label>
+                    <input
+                      type="number"
+                      value={pageContent!.navOrder ?? ''}
+                      onChange={(e) => setPageContent({ ...pageContent!, navOrder: e.target.value ? Number(e.target.value) : undefined })}
+                      placeholder="0"
+                      className="w-full border rounded px-3 py-2 text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-600 mb-1">Parent slug <span className="text-gray-400 font-normal">(e.g. /about)</span></label>
+                    <input
+                      type="text"
+                      value={pageContent!.navParent ?? ''}
+                      onChange={(e) => setPageContent({ ...pageContent!, navParent: e.target.value || undefined })}
+                      placeholder="/parent-page"
+                      className="w-full border rounded px-3 py-2 text-sm"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
           {/* Block list */}
           {pageContent!.blocks.map((block, index) => {
             const schema = blockSchemas!.find((s) => s.type === block.type)

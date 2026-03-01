@@ -62,14 +62,6 @@ export const blockSchemas: BlockSchema[] = [
 ]
 
 /**
- * Repo-relative path to the navigation JSON file.
- * contentBase ('example-app') will be prepended by AdminPage,
- * resolving to 'example-app/content/nav.json' in GitHub.
- * The local filesystem path (for getNav in layout.tsx) is: <cwd>/content/nav.json
- */
-export const navPath = 'content/nav.json'
-
-/**
  * Subdirectory within the git repo where this Next.js app lives.
  * All PageSchema contentPath values are relative to this base.
  *

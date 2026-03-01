@@ -42,22 +42,18 @@ export interface BlockInstance {
     [field: string]: unknown;
 }
 /**
- * A single item in the site navigation tree.
+ * A single item in the assembled site navigation tree.
+ * Derived at runtime from page frontmatter — never stored standalone.
  */
 export interface NavItem {
-    /** Display text in the navigation */
+    /** Display text (from page navTitle, falls back to page title) */
     title: string;
-    /** URL path, e.g. "/" or "/blog/my-post" */
+    /** URL path derived from the page slug, e.g. "/" or "/blog/my-post" */
     href: string;
-    /**
-     * Optional slug cross-reference. When present this item links to a markdown
-     * page whose PageContent.slug equals this value.
-     */
-    slug?: string;
-    /** Nested nav items — one level deep in the UI, type allows recursion */
+    /** Nested items assembled from pages whose navParent equals this item's href */
     children?: NavItem[];
 }
-/** The full navigation document as stored in the JSON file. */
+/** The assembled site navigation. Derived at runtime from page frontmatter. */
 export interface NavData {
     items: NavItem[];
 }
@@ -99,5 +95,13 @@ export interface PageContent {
         updatedAt?: string;
         author?: string;
     };
+    /** Include this page in the assembled site navigation */
+    navEnabled?: boolean;
+    /** Display text in nav; falls back to title when absent */
+    navTitle?: string;
+    /** Sort position within nav group (ascending); undefined sorts last */
+    navOrder?: number;
+    /** href of the parent nav item, e.g. "/about" — makes this a child item */
+    navParent?: string;
 }
 //# sourceMappingURL=schemas.d.ts.map

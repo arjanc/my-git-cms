@@ -1,5 +1,5 @@
 import path from 'path';
-import { getNav } from '@git-cms/core/nav';
+import { buildNav } from '@git-cms/core/nav';
 import { Nav } from '../../components/Nav';
 
 
@@ -8,7 +8,12 @@ export default async function AppLayout({
 }: {
     children: React.ReactNode;
 }) {
-    const nav = getNav(path.join(process.cwd(), 'content', 'nav.json'));
+    const nav = buildNav([
+        path.join(process.cwd(), 'content', 'pages'),
+        path.join(process.cwd(), 'content', 'blog'),
+    ]);
+
+    console.log('nav: ', nav);
 
     return (
         <>

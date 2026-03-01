@@ -7,6 +7,10 @@ export function serializeToMarkdown(content) {
         pageSchema: content.pageSchema,
         blocks: content.blocks,
         metadata: content.metadata,
+        navEnabled: content.navEnabled,
+        navTitle: content.navTitle,
+        navOrder: content.navOrder,
+        navParent: content.navParent,
     };
     // js-yaml cannot serialize undefined — drop any key whose value is undefined
     const frontmatter = Object.fromEntries(Object.entries(raw).filter(([, v]) => v !== undefined));
@@ -20,7 +24,11 @@ export function parseMarkdown(markdown) {
         description: data.description,
         pageSchema: data.pageSchema,
         blocks: data.blocks || [],
-        metadata: data.metadata
+        metadata: data.metadata,
+        navEnabled: data.navEnabled,
+        navTitle: data.navTitle,
+        navOrder: data.navOrder,
+        navParent: data.navParent,
     };
 }
 export function validateBlock(block) {

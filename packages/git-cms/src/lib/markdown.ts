@@ -9,6 +9,10 @@ export function serializeToMarkdown(content: PageContent): string {
     pageSchema: content.pageSchema,
     blocks: content.blocks,
     metadata: content.metadata,
+    navEnabled: content.navEnabled,
+    navTitle: content.navTitle,
+    navOrder: content.navOrder,
+    navParent: content.navParent,
   }
   // js-yaml cannot serialize undefined — drop any key whose value is undefined
   const frontmatter = Object.fromEntries(
@@ -25,7 +29,11 @@ export function parseMarkdown(markdown: string): PageContent {
     description: data.description,
     pageSchema: data.pageSchema,
     blocks: (data.blocks as BlockInstance[]) || [],
-    metadata: data.metadata
+    metadata: data.metadata,
+    navEnabled: data.navEnabled,
+    navTitle: data.navTitle,
+    navOrder: data.navOrder,
+    navParent: data.navParent,
   }
 }
 

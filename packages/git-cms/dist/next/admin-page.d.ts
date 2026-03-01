@@ -13,14 +13,7 @@ interface AdminPageProps {
      * Omit (or leave empty) when the Next.js app is at the repo root.
      */
     contentBase?: string;
-    /**
-     * Repo-relative path to the navigation JSON file.
-     * Resolved through contentBase the same way PageSchema.contentPath is.
-     * Example: navPath='content/nav.json' + contentBase='example-app'
-     *          → GitHub path 'example-app/content/nav.json'
-     */
-    navPath?: string;
 }
-export default function AdminPage({ blockSchemas, pageSchemas, contentBase, navPath, }?: AdminPageProps): Promise<React.FunctionComponentElement<import("..").CMSProps>>;
+export default function AdminPage({ blockSchemas, pageSchemas, contentBase, }?: AdminPageProps): Promise<React.FunctionComponentElement<import("..").CMSProps>>;
 export {};
 //# sourceMappingURL=admin-page.d.ts.map

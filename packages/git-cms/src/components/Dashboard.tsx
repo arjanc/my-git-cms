@@ -8,11 +8,9 @@ interface DashboardProps {
   basePath: string
   pageSchemas?: PageSchema[]
   onSelectSchema?: (schemaType: string) => void
-  /** When provided, shows a Navigation card on the dashboard */
-  onOpenNav?: () => void
 }
 
-export function Dashboard({ onNavigate, pageSchemas, onSelectSchema, onOpenNav }: DashboardProps) {
+export function Dashboard({ onNavigate, pageSchemas, onSelectSchema }: DashboardProps) {
   return (
     <div className="space-y-6">
       <h2 className="text-3xl font-bold">Dashboard</h2>
@@ -36,16 +34,6 @@ export function Dashboard({ onNavigate, pageSchemas, onSelectSchema, onOpenNav }
           >
             <h3 className="text-xl font-semibold mb-2">Manage Pages</h3>
             <p className="text-gray-600">Create, edit, and delete your content pages</p>
-          </button>
-        )}
-
-        {onOpenNav && (
-          <button
-            onClick={onOpenNav}
-            className="p-6 bg-white rounded-lg shadow hover:shadow-md transition-shadow text-left"
-          >
-            <h3 className="text-xl font-semibold mb-2">Navigation</h3>
-            <p className="text-gray-600 text-sm">Edit the site header navigation tree</p>
           </button>
         )}
 
