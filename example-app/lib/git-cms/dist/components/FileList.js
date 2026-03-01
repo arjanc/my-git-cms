@@ -30,8 +30,8 @@ export function FileList({ onSelectFile, onCreateNew, onBack, contentPath, apiBa
         React.createElement("div", { className: "flex items-center justify-between" },
             React.createElement("h2", { className: "text-2xl font-bold" }, "Pages"),
             React.createElement("div", { className: "flex items-center gap-2" },
-                React.createElement("button", { onClick: onCreateNew, className: "px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm" }, "+ New"),
-                React.createElement("button", { onClick: onBack, className: "px-4 py-2 text-gray-600 hover:text-gray-900" }, "\u2190 Back"))),
+                React.createElement("button", { onClick: onBack, className: "px-4 py-2 text-gray-600 hover:text-gray-900" }, "\u2190 Back"),
+                React.createElement("button", { onClick: onCreateNew, className: "px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm" }, "+ New"))),
         loading ? (React.createElement("p", null, "Loading files...")) : error ? (React.createElement("p", { className: "text-red-600" }, error === 'Unauthorized'
             ? 'Not signed in. Please sign in with GitHub to manage content.'
             : error)) : files.length === 0 ? (React.createElement("div", { className: "text-center py-12" },

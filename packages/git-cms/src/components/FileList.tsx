@@ -43,16 +43,16 @@ export function FileList({ onSelectFile, onCreateNew, onBack, contentPath, apiBa
         <h2 className="text-2xl font-bold">Pages</h2>
         <div className="flex items-center gap-2">
           <button
-            onClick={onCreateNew}
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm"
-          >
-            + New
-          </button>
-          <button
             onClick={onBack}
             className="px-4 py-2 text-gray-600 hover:text-gray-900"
           >
             ← Back
+          </button>
+          <button
+            onClick={onCreateNew}
+            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm"
+          >
+            + New
           </button>
         </div>
       </div>
