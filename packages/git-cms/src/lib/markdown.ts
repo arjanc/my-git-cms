@@ -2,7 +2,7 @@ import matter from 'gray-matter'
 import type { PageContent, BlockInstance } from '../types/schemas'
 
 export function serializeToMarkdown(content: PageContent): string {
-  const frontmatter = {
+  const raw: Record<string, unknown> = {
     title: content.title,
     slug: content.slug,
     description: content.description,
@@ -10,6 +10,10 @@ export function serializeToMarkdown(content: PageContent): string {
     blocks: content.blocks,
     metadata: content.metadata,
   }
+  // js-yaml cannot serialize undefined — drop any key whose value is undefined
+  const frontmatter = Object.fromEntries(
+    Object.entries(raw).filter(([, v]) => v !== undefined)
+  )
   return matter.stringify('', frontmatter)
 }
 

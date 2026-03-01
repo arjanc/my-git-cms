@@ -1,6 +1,6 @@
 import matter from 'gray-matter';
 export function serializeToMarkdown(content) {
-    const frontmatter = {
+    const raw = {
         title: content.title,
         slug: content.slug,
         description: content.description,
@@ -8,7 +8,8 @@ export function serializeToMarkdown(content) {
         blocks: content.blocks,
         metadata: content.metadata,
     };
-    console.log('serializeToMarkdown: ', frontmatter);
+    // js-yaml cannot serialize undefined — drop any key whose value is undefined
+    const frontmatter = Object.fromEntries(Object.entries(raw).filter(([, v]) => v !== undefined));
     return matter.stringify('', frontmatter);
 }
 export function parseMarkdown(markdown) {

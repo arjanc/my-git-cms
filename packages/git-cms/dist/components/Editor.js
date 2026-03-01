@@ -13,10 +13,8 @@ export function Editor({ filePath, isCreating = false, contentPath, onBack, onCr
     const [fileSha, setFileSha] = useState(undefined);
     const [newFileName, setNewFileName] = useState('');
     const schema = pageSchemas?.find((s) => s.contentPath.includes(contentPath || ''));
-    console.log('schema: ', schema, ' contentPath: ', contentPath);
     useEffect(() => {
         if (filePath) {
-            console.log('loading file');
             loadFile(filePath);
         }
         else if (isCreating) {
@@ -28,7 +26,6 @@ export function Editor({ filePath, isCreating = false, contentPath, onBack, onCr
             setFileSha(undefined);
             setNewFileName('');
             setLoading(false);
-            console.log('iscreating:');
         }
     }, [filePath, isCreating]);
     async function loadFile(path) {
