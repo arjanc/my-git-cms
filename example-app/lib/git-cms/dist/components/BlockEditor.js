@@ -1,5 +1,6 @@
 'use client';
 import React from 'react';
+import { ImageField } from './ImageField';
 function FieldEditor({ field, value, onChange }) {
     // Serialize value to string, using JSON for objects/arrays
     const strVal = value !== undefined && value !== null
@@ -10,8 +11,9 @@ function FieldEditor({ field, value, onChange }) {
     const base = 'w-full border rounded px-3 py-2 text-sm';
     switch (field.fieldType) {
         case 'text':
-        case 'image':
             return (React.createElement("input", { type: "text", value: strVal, onChange: (e) => onChange(e.target.value), className: base, placeholder: field.label }));
+        case 'image':
+            return (React.createElement(ImageField, { field: field, value: strVal, onChange: onChange }));
         case 'textarea':
         case 'richtext': {
             const rows = field.fieldType === 'richtext' ? 8 : 4;

@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import { Dashboard } from './Dashboard'
 import { Editor } from './Editor'
 import { FileList } from './FileList'
+import { MediaManager } from './MediaManager'
 import type { BlockSchema, PageSchema } from '../types/schemas'
 
 export interface CMSProps {
@@ -29,7 +30,7 @@ export function CMS({
   user,
   signOutUrl,
 }: CMSProps) {
-  const [currentView, setCurrentView] = useState<'dashboard' | 'editor' | 'files'>('dashboard')
+  const [currentView, setCurrentView] = useState<'dashboard' | 'editor' | 'files' | 'media'>('dashboard')
   const [selectedFile, setSelectedFile] = useState<string | null>(null)
   const [activeContentPath, setActiveContentPath] = useState(contentPath)
   const [isCreating, setIsCreating] = useState(false)
@@ -51,21 +52,37 @@ export function CMS({
       <header className="bg-white border-b">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <h1 className="text-2xl font-bold">Git CMS</h1>
-          <div className="flex items-center gap-3">
-            {user?.image && (
-              <img src={user.image} alt="" width={32} height={32} className="rounded-full" />
-            )}
-            {user?.name && (
-              <span className="text-sm text-gray-700">{user.name}</span>
-            )}
-            {signOutUrl && (
-              <a
-                href={signOutUrl}
-                className="text-sm text-gray-500 hover:text-gray-800 underline"
+          <div className="flex items-center gap-6">
+            <nav className="flex items-center gap-4">
+              <button
+                onClick={() => setCurrentView('dashboard')}
+                className={`text-sm font-medium ${currentView === 'dashboard' ? 'text-blue-600' : 'text-gray-600 hover:text-gray-900'}`}
               >
-                Sign out
-              </a>
-            )}
+                Dashboard
+              </button>
+              <button
+                onClick={() => setCurrentView('media')}
+                className={`text-sm font-medium ${currentView === 'media' ? 'text-blue-600' : 'text-gray-600 hover:text-gray-900'}`}
+              >
+                Media Library
+              </button>
+            </nav>
+            <div className="flex items-center gap-3 border-l pl-6">
+              {user?.image && (
+                <img src={user.image} alt="" width={32} height={32} className="rounded-full" />
+              )}
+              {user?.name && (
+                <span className="text-sm text-gray-700">{user.name}</span>
+              )}
+              {signOutUrl && (
+                <a
+                  href={signOutUrl}
+                  className="text-sm text-gray-500 hover:text-gray-800 underline"
+                >
+                  Sign out
+                </a>
+              )}
+            </div>
           </div>
         </div>
       </header>
@@ -111,6 +128,13 @@ export function CMS({
             apiBasePath={apiBasePath}
             blockSchemas={blockSchemas}
             pageSchemas={pageSchemas}
+          />
+        )}
+
+        {currentView === 'media' && (
+          <MediaManager
+            apiBasePath={apiBasePath}
+            isLibraryView={true}
           />
         )}
 

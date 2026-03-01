@@ -1,4 +1,4 @@
-import React from 'react'
+import Image from 'next/image'
 import type { BlockInstance } from '@git-cms/core'
 
 export function ImageBlock({ block }: { block: BlockInstance }) {
@@ -10,8 +10,14 @@ export function ImageBlock({ block }: { block: BlockInstance }) {
 
   return (
     <figure className="my-8">
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={url} alt={alt} className="w-full rounded-lg" />
+      <div className="relative w-full aspect-video">
+        <Image
+          src={url}
+          alt={alt}
+          fill
+          className="rounded-lg object-cover"
+        />
+      </div>
       {caption && (
         <figcaption className="mt-2 text-center text-sm text-gray-500">{caption}</figcaption>
       )}

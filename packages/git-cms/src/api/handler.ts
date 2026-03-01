@@ -87,7 +87,7 @@ export function createGitCMSHandler(config: GitCMSConfig) {
 
       const octokit = new Octokit({ auth: accessToken })
       const body = await request.json()
-      const { path, content: rawContent, pageContent, message, sha } = body
+      const { path, content: rawContent, pageContent, message, sha, encoding = 'utf-8' } = body
 
       if (!path || (!rawContent && !pageContent) || !message) {
         return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
@@ -128,7 +128,7 @@ export function createGitCMSHandler(config: GitCMSConfig) {
           repo: config.repo,
           path,
           message,
-          content: Buffer.from(content).toString('base64'),
+          content: encoding === 'base64' ? content : Buffer.from(content).toString('base64'),
           sha,
         })
 

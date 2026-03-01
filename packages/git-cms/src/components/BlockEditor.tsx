@@ -2,6 +2,7 @@
 
 import React from 'react'
 import type { BlockSchema, FieldSchema, BlockInstance } from '../types/schemas'
+import { ImageField } from './ImageField'
 
 interface FieldEditorProps {
   field: FieldSchema
@@ -22,7 +23,6 @@ function FieldEditor({ field, value, onChange }: FieldEditorProps) {
 
   switch (field.fieldType) {
     case 'text':
-    case 'image':
       return (
         <input
           type="text"
@@ -30,6 +30,15 @@ function FieldEditor({ field, value, onChange }: FieldEditorProps) {
           onChange={(e) => onChange(e.target.value)}
           className={base}
           placeholder={field.label}
+        />
+      )
+
+    case 'image':
+      return (
+        <ImageField
+          field={field}
+          value={strVal}
+          onChange={onChange}
         />
       )
 

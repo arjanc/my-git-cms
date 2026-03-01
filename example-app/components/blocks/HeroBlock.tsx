@@ -1,4 +1,5 @@
 import React from 'react'
+import Image from 'next/image'
 import type { BlockInstance } from '@git-cms/core'
 
 export function HeroBlock({ block }: { block: BlockInstance }) {
@@ -9,10 +10,16 @@ export function HeroBlock({ block }: { block: BlockInstance }) {
   const backgroundImage = String(block.backgroundImage ?? '')
 
   return (
-    <section
-      className="relative flex items-center justify-center min-h-[480px] bg-gray-900 text-white overflow-hidden"
-      style={backgroundImage ? { backgroundImage: `url(${backgroundImage})`, backgroundSize: 'cover', backgroundPosition: 'center' } : undefined}
-    >
+    <section className="relative flex items-center justify-center min-h-[480px] bg-gray-900 text-white overflow-hidden">
+      {backgroundImage && (
+        <Image
+          src={backgroundImage}
+          alt=""
+          fill
+          className="object-cover"
+          priority
+        />
+      )}
       {backgroundImage && <div className="absolute inset-0 bg-black/50" />}
       <div className="relative z-10 text-center max-w-3xl mx-auto px-6 py-16">
         <h1 className="text-4xl md:text-6xl font-bold mb-4">{heading}</h1>

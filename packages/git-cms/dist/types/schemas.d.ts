@@ -104,4 +104,13 @@ export interface PageContent {
     /** href of the parent nav item, e.g. "/about" — makes this a child item */
     navParent?: string;
 }
+export interface MediaItem {
+    filename: string;
+    title?: string;
+    labels?: string[];
+}
+export interface MediaData {
+    images: MediaItem[];
+    labels?: string[];
+}
 //# sourceMappingURL=schemas.d.ts.map
