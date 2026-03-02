@@ -85,7 +85,7 @@ export default async function Page({ params }: PageProps) {
         <div className="max-w-4xl mx-auto px-6 py-16">
           <h1 className="text-4xl font-bold">{content.title}</h1>
           {content.description && (
-            <p className="mt-4 text-xl text-gray-600">{content.description}</p>
+            <p className="mt-4 text-xl text-neutral-600">{content.description}</p>
           )}
         </div>
       )}

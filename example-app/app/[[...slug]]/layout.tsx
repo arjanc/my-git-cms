@@ -13,8 +13,6 @@ export default async function AppLayout({
         path.join(process.cwd(), 'content', 'blog'),
     ]);
 
-    console.log('nav: ', nav);
-
     return (
         <>
             <header>

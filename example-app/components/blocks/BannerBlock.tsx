@@ -2,9 +2,9 @@ import React from 'react'
 import type { BlockInstance } from '@git-cms/core'
 
 const variantStyles: Record<string, string> = {
-  info: 'bg-blue-50 border-blue-200 text-blue-900',
-  warning: 'bg-yellow-50 border-yellow-200 text-yellow-900',
-  success: 'bg-green-50 border-green-200 text-green-900',
+  info:    'bg-primary-50 border-primary-200 text-primary-900',
+  warning: 'bg-warning-50 border-warning-200 text-warning-900',
+  success: 'bg-success-50 border-success-200 text-success-900',
 }
 
 export function BannerBlock({ block }: { block: BlockInstance }) {

@@ -19,7 +19,7 @@ export function ImageBlock({ block }: { block: BlockInstance }) {
         />
       </div>
       {caption && (
-        <figcaption className="mt-2 text-center text-sm text-gray-500">{caption}</figcaption>
+        <figcaption className="mt-2 text-center text-sm text-neutral-500">{caption}</figcaption>
       )}
     </figure>
   )

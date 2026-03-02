@@ -17,7 +17,7 @@ export function Nav({ nav }: Omit<NavRendererProps, 'currentPath'>) {
                 <a
                   href={item.href}
                   className={`text-sm font-medium transition-colors ${
-                    isActive ? 'text-blue-600' : 'text-gray-700 hover:text-gray-900'
+                    isActive ? 'text-primary-600' : 'text-neutral-700 hover:text-neutral-900'
                   }`}
                 >
                   {item.title}
@@ -28,8 +28,8 @@ export function Nav({ nav }: Omit<NavRendererProps, 'currentPath'>) {
                       <li key={child.href}>
                         <a
                           href={child.href}
-                          className={`block px-4 py-2 text-sm hover:bg-gray-50 ${
-                            currentPath === child.href ? 'text-blue-600' : 'text-gray-700'
+                          className={`block px-4 py-2 text-sm hover:bg-neutral-50 ${
+                            currentPath === child.href ? 'text-primary-600' : 'text-neutral-700'
                           }`}
                         >
                           {child.title}
