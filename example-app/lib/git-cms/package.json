@@ -54,8 +54,15 @@
   },
   "dependencies": {
     "@octokit/rest": "^21.1.1",
+    "@tiptap/core": "^3.20.0",
+    "@tiptap/extension-link": "^3.20.0",
+    "@tiptap/extension-table": "^3.20.0",
+    "@tiptap/pm": "^3.20.0",
+    "@tiptap/react": "^3.20.0",
+    "@tiptap/starter-kit": "^3.20.0",
     "gray-matter": "^4.0.3",
-    "next-auth": "^5.0.0-beta.25"
+    "next-auth": "^5.0.0-beta.25",
+    "tiptap-markdown": "^0.9.0"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",

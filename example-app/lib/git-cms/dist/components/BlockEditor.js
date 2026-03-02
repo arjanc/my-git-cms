@@ -1,6 +1,7 @@
 'use client';
 import React from 'react';
 import { ImageField } from './ImageField';
+import { RichTextEditor } from './RichTextEditor';
 function FieldEditor({ field, value, onChange }) {
     // Serialize value to string, using JSON for objects/arrays
     const strVal = value !== undefined && value !== null
@@ -14,19 +15,10 @@ function FieldEditor({ field, value, onChange }) {
             return (React.createElement("input", { type: "text", value: strVal, onChange: (e) => onChange(e.target.value), className: base, placeholder: field.label }));
         case 'image':
             return (React.createElement(ImageField, { field: field, value: strVal, onChange: onChange }));
+        case 'richtext':
+            return (React.createElement(RichTextEditor, { value: strVal, onChange: (val) => onChange(val) }));
         case 'textarea':
-        case 'richtext': {
-            const rows = field.fieldType === 'richtext' ? 8 : 4;
-            return (React.createElement("textarea", { value: strVal, rows: rows, onChange: (e) => {
-                    // Try JSON parse first (handles serialised arrays/objects)
-                    try {
-                        onChange(JSON.parse(e.target.value));
-                    }
-                    catch {
-                        onChange(e.target.value);
-                    }
-                }, className: `${base} font-mono`, placeholder: field.label }));
-        }
+            return (React.createElement("textarea", { value: strVal, rows: 4, onChange: (e) => onChange(e.target.value), className: `${base} font-mono`, placeholder: field.label }));
         case 'number':
             return (React.createElement("input", { type: "number", value: strVal, onChange: (e) => onChange(e.target.value === '' ? undefined : Number(e.target.value)), className: base }));
         case 'boolean':

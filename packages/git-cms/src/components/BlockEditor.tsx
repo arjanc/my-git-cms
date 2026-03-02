@@ -3,6 +3,7 @@
 import React from 'react'
 import type { BlockSchema, FieldSchema, BlockInstance } from '../types/schemas'
 import { ImageField } from './ImageField'
+import { RichTextEditor } from './RichTextEditor'
 
 interface FieldEditorProps {
   field: FieldSchema
@@ -42,26 +43,24 @@ function FieldEditor({ field, value, onChange }: FieldEditorProps) {
         />
       )
 
+    case 'richtext':
+      return (
+        <RichTextEditor
+          value={strVal}
+          onChange={(val) => onChange(val)}
+        />
+      )
+
     case 'textarea':
-    case 'richtext': {
-      const rows = field.fieldType === 'richtext' ? 8 : 4
       return (
         <textarea
           value={strVal}
-          rows={rows}
-          onChange={(e) => {
-            // Try JSON parse first (handles serialised arrays/objects)
-            try {
-              onChange(JSON.parse(e.target.value))
-            } catch {
-              onChange(e.target.value)
-            }
-          }}
+          rows={4}
+          onChange={(e) => onChange(e.target.value)}
           className={`${base} font-mono`}
           placeholder={field.label}
         />
       )
-    }
 
     case 'number':
       return (

@@ -42,6 +42,16 @@
 - `GIT_CMS_BASE_PATH` — CMS mount point (default `/admin`)
 - `NEXTAUTH_SECRET`, `GITHUB_ID`, `GITHUB_SECRET`, `GITHUB_OWNER`, `GITHUB_REPO`, `NEXTAUTH_URL`
 
+## RichText Editor: Tiptap v3 (replaced @uiw/react-md-editor, 2025-03)
+
+- Packages: `@tiptap/react`, `@tiptap/starter-kit`, `@tiptap/pm`, `@tiptap/core`, `@tiptap/extension-table`, `@tiptap/extension-link`, `tiptap-markdown` (all v3.x/0.9.x)
+- `TableRow`, `TableCell`, `TableHeader` are named exports from `@tiptap/extension-table` — NOT separate packages
+- `setContent` v3 signature: `setContent(value, { emitUpdate: false })` — second arg is no longer a boolean
+- `editor.storage` typed as empty `Storage` interface — access tiptap-markdown storage via `(editor.storage as unknown as Record<string, unknown>)['markdown']` then cast to `MarkdownStorage` (imported from `tiptap-markdown`)
+- SSR pattern: `RichTextEditor.tsx` (lazy wrapper) + `TiptapEditor.tsx` (Tiptap impl) — both `'use client'`, both need `import React from 'react'`
+- Tiptap ships zero CSS — table styles live as Tailwind arbitrary selectors in `EditorContent` className
+- `globals.css` no longer imports any editor CSS
+
 ## Confirmed Design Patterns
 - `PageSchema.contentPath` is currently a repo-relative path string, no base applied
 - `admin-page.tsx` hardcodes `contentPath: 'content/pages'` — ignored once `pageSchemas` is set, because `CMS.tsx` uses `schema.contentPath` via `handleSelectSchema`

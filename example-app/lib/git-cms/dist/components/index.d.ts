@@ -6,4 +6,5 @@ export { FileList } from './FileList';
 export { BlockEditor } from './BlockEditor';
 export { MediaManager } from './MediaManager';
 export { ImageField } from './ImageField';
+export { RichTextEditor } from './RichTextEditor';
 //# sourceMappingURL=index.d.ts.map
