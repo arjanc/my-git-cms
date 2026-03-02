@@ -1,6 +1,7 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { Suspense } from 'react'
+import { useRouter, usePathname, useSearchParams } from 'next/navigation'
 import { Dashboard } from './Dashboard'
 import { Editor } from './Editor'
 import { FileList } from './FileList'
@@ -19,7 +20,7 @@ export interface CMSProps {
   signOutUrl?: string
 }
 
-export function CMS({
+function CMSInner({
   basePath = '/admin',
   apiBasePath = '/admin/api/cms',
   contentPath = 'content/pages',
@@ -30,21 +31,54 @@ export function CMS({
   user,
   signOutUrl,
 }: CMSProps) {
-  const [currentView, setCurrentView] = useState<'dashboard' | 'editor' | 'files' | 'media'>('dashboard')
-  const [selectedFile, setSelectedFile] = useState<string | null>(null)
-  const [activeContentPath, setActiveContentPath] = useState(contentPath)
-  const [isCreating, setIsCreating] = useState(false)
+  const router = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
 
-  function handleSelectSchema(schemaType: string) {
-    const schema = pageSchemas?.find((s) => s.type === schemaType)
-    if (schema) setActiveContentPath(schema.contentPath)
-    setCurrentView('files')
+  // Parse path relative to basePath
+  const relative = (pathname === basePath || pathname.startsWith(basePath + '/'))
+    ? pathname.slice(basePath.length)
+    : ''
+  const segments = relative.split('/').filter(Boolean)
+
+  const section = segments[0]  // 'media' | 'files' | schema type | undefined
+  const action  = segments[1]  // 'create' | 'edit' | undefined
+  const fileParam = searchParams.get('file')  // decoded file path (editor only)
+
+  const isMediaView  = section === 'media'
+  const isFilesView  = !isMediaView && !!section && action === undefined
+  const isEditorView = !isMediaView && !!section && (action === 'create' || action === 'edit')
+  const isCreating   = action === 'create'
+
+  const activeSchema = (!isMediaView && section && section !== 'files')
+    ? pageSchemas?.find(s => s.type === section)
+    : undefined
+  const activeContentPath = activeSchema?.contentPath ?? contentPath
+
+  const currentView: 'dashboard' | 'files' | 'editor' | 'media' =
+    isMediaView  ? 'media'  :
+    isEditorView ? 'editor' :
+    isFilesView  ? 'files'  :
+    'dashboard'
+
+  // Navigation helpers
+  function toDashboard() { router.push(basePath) }
+  function toMedia()     { router.push(`${basePath}/media`) }
+
+  function toFiles(schemaType?: string) {
+    router.push(`${basePath}/${schemaType ?? 'files'}`)
   }
-
-  function handleCreateNew() {
-    setSelectedFile(null)
-    setIsCreating(true)
-    setCurrentView('editor')
+  function toCreate() {
+    router.push(`${basePath}/${section ?? 'files'}/create`)
+  }
+  function toEditor(file: string) {
+    router.push(`${basePath}/${section ?? 'files'}/edit?file=${encodeURIComponent(file)}`)
+  }
+  function handleEditorBack() {
+    section ? router.push(`${basePath}/${section}`) : toDashboard()
+  }
+  function handleCreated(newPath: string) {
+    router.replace(`${basePath}/${section ?? 'files'}/edit?file=${encodeURIComponent(newPath)}`)
   }
 
   return (
@@ -55,13 +89,13 @@ export function CMS({
           <div className="flex items-center gap-6">
             <nav className="flex items-center gap-4">
               <button
-                onClick={() => setCurrentView('dashboard')}
+                onClick={toDashboard}
                 className={`text-sm font-medium ${currentView === 'dashboard' ? 'text-blue-600' : 'text-gray-600 hover:text-gray-900'}`}
               >
                 Dashboard
               </button>
               <button
-                onClick={() => setCurrentView('media')}
+                onClick={toMedia}
                 className={`text-sm font-medium ${currentView === 'media' ? 'text-blue-600' : 'text-gray-600 hover:text-gray-900'}`}
               >
                 Media Library
@@ -90,22 +124,18 @@ export function CMS({
       <main className="container mx-auto px-4 py-8">
         {currentView === 'dashboard' && (
           <Dashboard
-            onNavigate={setCurrentView}
+            onNavigate={() => toFiles()}
             basePath={basePath}
             pageSchemas={pageSchemas}
-            onSelectSchema={handleSelectSchema}
+            onSelectSchema={toFiles}
           />
         )}
 
         {currentView === 'files' && (
           <FileList
-            onSelectFile={(file) => {
-              setSelectedFile(file)
-              setIsCreating(false)
-              setCurrentView('editor')
-            }}
-            onCreateNew={handleCreateNew}
-            onBack={() => setCurrentView('dashboard')}
+            onSelectFile={toEditor}
+            onCreateNew={toCreate}
+            onBack={toDashboard}
             contentPath={activeContentPath}
             apiBasePath={apiBasePath}
           />
@@ -113,17 +143,11 @@ export function CMS({
 
         {currentView === 'editor' && (
           <Editor
-            filePath={selectedFile}
+            filePath={fileParam}
             isCreating={isCreating}
             contentPath={activeContentPath}
-            onBack={() => {
-              setIsCreating(false)
-              setCurrentView('files')
-            }}
-            onCreated={(newFilePath) => {
-              setSelectedFile(newFilePath)
-              setIsCreating(false)
-            }}
+            onBack={handleEditorBack}
+            onCreated={handleCreated}
             basePath={basePath}
             apiBasePath={apiBasePath}
             blockSchemas={blockSchemas}
@@ -137,8 +161,15 @@ export function CMS({
             isLibraryView={true}
           />
         )}
-
       </main>
     </div>
+  )
+}
+
+export function CMS(props: CMSProps) {
+  return (
+    <Suspense>
+      <CMSInner {...props} />
+    </Suspense>
   )
 }
