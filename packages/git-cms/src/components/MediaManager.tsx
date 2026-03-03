@@ -2,6 +2,10 @@
 
 import React, { useState, useEffect } from 'react'
 import type { MediaItem, MediaData } from '../types/schemas'
+import { Button } from './ui/button'
+import { Input } from './ui/input'
+import { Badge } from './ui/badge'
+import { X, Upload, Pencil, Trash2, Image as ImageIcon } from 'lucide-react'
 
 interface MediaManagerProps {
     apiBasePath?: string
@@ -38,7 +42,6 @@ export function MediaManager({
     const loadMedia = async () => {
         setLoading(true)
         try {
-            // Load files in directory
             const flResponse = await fetch(`${apiBasePath}/${fullPath}`)
             const flData = await flResponse.json()
 
@@ -46,12 +49,11 @@ export function MediaManager({
                 throw new Error(flData.error || 'Failed to load files')
             }
 
-            const imageFiles = (Array.isArray(flData) ? flData : []).filter(item =>
+            const imageFiles = (Array.isArray(flData) ? flData : []).filter((item: any) =>
                 item.type === 'file' && /\.(jpg|jpeg|png|gif|svg|webp)$/i.test(item.name)
             )
             setFiles(imageFiles)
 
-            // Load media.json metadata
             const mdResponse = await fetch(`${apiBasePath}/${mediaDataPath}`)
             if (mdResponse.ok) {
                 const mdData = await mdResponse.json()
@@ -73,7 +75,6 @@ export function MediaManager({
 
     const saveMediaData = async (newData: MediaData, message: string) => {
         try {
-            // Fetch latest SHA
             const mdResponse = await fetch(`${apiBasePath}/${mediaDataPath}`)
             let sha: string | undefined = undefined
             if (mdResponse.ok) {
@@ -138,14 +139,9 @@ export function MediaManager({
                 throw new Error(data.error || 'Upload failed')
             }
 
-            // Update media.json with new image and default label
             const newImages = [...mediaData.images]
             const existingIndex = newImages.findIndex(i => i.filename === fileName)
-            const newItem: MediaItem = {
-                filename: fileName,
-                title: file.name,
-                labels: [],
-            }
+            const newItem: MediaItem = { filename: fileName, title: file.name, labels: [] }
 
             if (existingIndex >= 0) {
                 newImages[existingIndex] = newItem
@@ -174,12 +170,12 @@ export function MediaManager({
     }
 
     const handleDeleteLabel = async (labelName: string) => {
-        if (!confirm(`Are you sure you want to delete the label "${labelName}"? It will be removed from all images.`)) return
+        if (!confirm(`Delete label "${labelName}"? It will be removed from all images.`)) return
 
-        const updatedImages = mediaData.images.map(img => {
-            let labels = (img.labels || []).filter(l => l !== labelName)
-            return { ...img, labels }
-        })
+        const updatedImages = mediaData.images.map(img => ({
+            ...img,
+            labels: (img.labels || []).filter(l => l !== labelName)
+        }))
         const updatedLabels = (mediaData.labels || []).filter(l => l !== labelName)
         await saveMediaData({ ...mediaData, images: updatedImages, labels: updatedLabels }, `Delete label ${labelName}`)
         if (selectedLabel === labelName) setSelectedLabel('All')
@@ -198,18 +194,14 @@ export function MediaManager({
         if (idx < 0) return
 
         let labels = [...(newImages[idx].labels || [])]
-        if (labels.includes(label)) {
-            labels = labels.filter(l => l !== label)
-        } else {
-            labels = [...labels, label]
-        }
+        labels = labels.includes(label) ? labels.filter(l => l !== label) : [...labels, label]
 
         newImages[idx] = { ...newImages[idx], labels }
         await saveMediaData({ ...mediaData, images: newImages }, `Update labels for ${filename}`)
     }
 
     const handleDelete = async (filename: string) => {
-        if (!confirm(`Are you sure you want to delete ${filename}?`)) return
+        if (!confirm(`Delete ${filename}?`)) return
 
         setLoading(true)
         try {
@@ -246,7 +238,8 @@ export function MediaManager({
 
     const trackedImages = mediaData.images.filter(img => {
         const matchesLabel = selectedLabel === 'All' || (img.labels || []).includes(selectedLabel)
-        const matchesSearch = img.filename.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        const matchesSearch =
+            img.filename.toLowerCase().includes(searchQuery.toLowerCase()) ||
             (img.title ?? '').toLowerCase().includes(searchQuery.toLowerCase())
         const fileExists = files.some(f => f.name === img.filename)
         return matchesLabel && matchesSearch && fileExists
@@ -255,21 +248,27 @@ export function MediaManager({
     const untrackedFiles = files.filter(f => !mediaData.images.some(m => m.filename === f.name))
     const displayedImages: MediaItem[] = [
         ...trackedImages,
-        ...(selectedLabel === 'All' ?
-            untrackedFiles.filter(f => f.name.toLowerCase().includes(searchQuery.toLowerCase())).map(f => ({
-                filename: f.name,
-                title: f.name,
-                labels: []
-            } as MediaItem)) : [])
+        ...(selectedLabel === 'All'
+            ? untrackedFiles
+                .filter(f => f.name.toLowerCase().includes(searchQuery.toLowerCase()))
+                .map(f => ({ filename: f.name, title: f.name, labels: [] } as MediaItem))
+            : []),
     ]
 
     const getPublicUrl = (filename: string) => `/media/${filename}`
 
     return (
-        <div className={`media-manager bg-white rounded-lg shadow-lg flex flex-col ${isLibraryView ? 'h-full' : 'max-h-[90vh] w-[90vw] fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50'}`}>
-            <div className="flex items-center justify-between p-4 border-b">
-                <h2 className="text-xl font-bold">Media Library</h2>
-                <div className="flex items-center gap-4">
+        <div
+            className={`media-manager bg-white rounded-lg border border-gray-200 shadow-lg flex flex-col ${
+                isLibraryView
+                    ? 'h-full'
+                    : 'max-h-[90vh] w-[90vw] max-w-5xl fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50'
+            }`}
+        >
+            {/* Header */}
+            <div className="flex items-center justify-between px-5 py-4 border-b border-gray-200">
+                <h2 className="text-base font-semibold text-gray-900">Media Library</h2>
+                <div className="flex items-center gap-3">
                     <input
                         type="file"
                         accept="image/*"
@@ -278,56 +277,70 @@ export function MediaManager({
                         id="media-upload"
                         disabled={uploading}
                     />
-                    <label
-                        htmlFor="media-upload"
-                        className={`px-4 py-2 bg-blue-600 text-white rounded cursor-pointer hover:bg-blue-700 text-sm font-medium ${uploading ? 'opacity-50 cursor-not-allowed' : ''}`}
-                    >
-                        {uploading ? 'Uploading...' : 'Upload Image'}
+                    <label htmlFor="media-upload">
+                        <Button
+                            asChild
+                            size="sm"
+                            disabled={uploading}
+                            className="cursor-pointer"
+                        >
+                            <span>
+                                <Upload className="h-4 w-4 mr-1.5" />
+                                {uploading ? 'Uploading…' : 'Upload'}
+                            </span>
+                        </Button>
                     </label>
                     {!isLibraryView && (
-                        <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
-                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                        </button>
+                        <Button variant="ghost" size="icon" onClick={onClose} className="h-8 w-8">
+                            <X className="h-4 w-4" />
+                        </Button>
                     )}
                 </div>
             </div>
 
             <div className="flex flex-1 overflow-hidden">
                 {/* Sidebar */}
-                <div className="w-64 border-r bg-gray-50 p-4 flex flex-col overflow-hidden">
-                    <div className="flex items-center justify-between mb-2">
-                        <h3 className="text-sm font-semibold text-gray-900">Labels</h3>
-                        <button onClick={handleAddLabel} className="text-blue-600 hover:text-blue-700 text-xs font-bold">+ Add</button>
+                <div className="w-56 border-r border-gray-200 bg-gray-50 flex flex-col overflow-hidden">
+                    <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200">
+                        <span className="text-xs font-semibold text-gray-600 uppercase tracking-wider">Labels</span>
+                        <button
+                            onClick={handleAddLabel}
+                            className="text-xs font-bold text-blue-600 hover:text-blue-700"
+                        >
+                            + Add
+                        </button>
                     </div>
-                    <div className="flex-1 overflow-y-auto space-y-1 pr-2">
+                    <div className="flex-1 overflow-y-auto p-2 space-y-0.5">
                         {sidebarLabels.map(label => (
                             <div key={label} className="group flex items-center gap-1">
                                 <button
                                     onClick={() => setSelectedLabel(label)}
-                                    className={`flex-1 text-left px-3 py-2 rounded text-sm transition-colors ${selectedLabel === label ? 'bg-blue-100 text-blue-700 font-medium' : 'hover:bg-gray-100 text-gray-600'}`}
+                                    className={`flex-1 text-left px-3 py-1.5 rounded-md text-sm transition-colors ${
+                                        selectedLabel === label
+                                            ? 'bg-blue-100 text-blue-700 font-medium'
+                                            : 'text-gray-600 hover:bg-gray-100'
+                                    }`}
                                 >
                                     {label}
                                 </button>
                                 {label !== 'All' && (
-                                    <div className="hidden group-hover:flex items-center gap-1">
+                                    <div className="hidden group-hover:flex items-center gap-0.5">
                                         <button
                                             onClick={() => {
                                                 const newName = prompt('Rename label:', label)
                                                 if (newName) handleRenameLabel(label, newName)
                                             }}
-                                            className="p-1 text-gray-400 hover:text-blue-600"
+                                            className="p-1 rounded text-gray-400 hover:text-blue-600 hover:bg-white"
                                             title="Rename"
                                         >
-                                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+                                            <Pencil className="w-3 h-3" />
                                         </button>
                                         <button
                                             onClick={() => handleDeleteLabel(label)}
-                                            className="p-1 text-gray-400 hover:text-red-600"
+                                            className="p-1 rounded text-gray-400 hover:text-red-600 hover:bg-white"
                                             title="Delete"
                                         >
-                                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                            <Trash2 className="w-3 h-3" />
                                         </button>
                                     </div>
                                 )}
@@ -338,63 +351,78 @@ export function MediaManager({
 
                 {/* Content */}
                 <div className="flex-1 flex flex-col min-w-0">
-                    <div className="p-4 border-b bg-white">
-                        <input
+                    <div className="px-4 py-3 border-b border-gray-200">
+                        <Input
                             type="text"
-                            placeholder="Search images..."
+                            placeholder="Search images…"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full border rounded px-4 py-2 text-sm"
                         />
                     </div>
 
+                    {error && (
+                        <div className="mx-4 mt-3 px-4 py-3 rounded-lg bg-red-50 border border-red-200 text-sm text-red-700">
+                            {error}
+                        </div>
+                    )}
+
                     <div className="flex-1 overflow-y-auto p-4">
                         {loading ? (
-                            <div className="flex items-center justify-center h-64">
-                                <p className="text-gray-500">Loading media...</p>
+                            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                                {[1, 2, 3, 4, 5, 6].map(n => (
+                                    <div key={n} className="aspect-square rounded-lg bg-gray-100 animate-pulse" />
+                                ))}
                             </div>
-                        ) : error ? (
-                            <div className="p-4 bg-red-50 text-red-700 rounded-lg">{error}</div>
                         ) : displayedImages.length === 0 ? (
-                            <div className="flex flex-col items-center justify-center h-64 text-gray-500">
-                                <p>No images found.</p>
-                                <p className="text-sm">Try uploading one or changing your filters.</p>
+                            <div className="flex flex-col items-center justify-center h-64 text-gray-400 gap-2">
+                                <ImageIcon className="w-10 h-10" />
+                                <p className="text-sm">No images found</p>
+                                <p className="text-xs">Try uploading one or changing your filters</p>
                             </div>
                         ) : (
-                            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
                                 {displayedImages.map((img) => {
                                     const metadata = mediaData.images.find(i => i.filename === img.filename) || img
                                     return (
                                         <div
                                             key={img.filename}
-                                            className="group relative border rounded-lg overflow-hidden bg-gray-50 hover:shadow-md transition-shadow"
+                                            className="group relative border border-gray-200 rounded-lg overflow-hidden bg-gray-50 hover:shadow-md transition-shadow"
                                         >
-                                            <div className="aspect-square bg-gray-200 flex items-center justify-center overflow-hidden">
+                                            <div className="aspect-square bg-gray-100 flex items-center justify-center overflow-hidden">
                                                 <ImagePreview url={getPublicUrl(img.filename)} />
                                             </div>
-                                            <div className="p-2 bg-white border-t">
-                                                <div className="truncate text-xs font-medium text-gray-700" title={metadata.title || img.filename}>
+                                            <div className="p-2 bg-white border-t border-gray-100">
+                                                <div
+                                                    className="truncate text-xs font-medium text-gray-700"
+                                                    title={metadata.title || img.filename}
+                                                >
                                                     {metadata.title || img.filename}
                                                 </div>
                                                 <div className="mt-1 flex flex-wrap gap-1">
                                                     {(metadata.labels || []).map(l => (
-                                                        <span key={l} className="text-[10px] px-1.5 py-0.5 bg-gray-100 text-gray-500 rounded uppercase tracking-wider">{l}</span>
+                                                        <Badge key={l} variant="secondary" className="text-[10px] px-1.5 py-0 h-auto">
+                                                            {l}
+                                                        </Badge>
                                                     ))}
                                                 </div>
                                             </div>
 
-                                            {/* Hover Overlay */}
-                                            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2 p-2 pb-0">
+                                            {/* Hover overlay */}
+                                            <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-end gap-2 p-2">
                                                 {onSelect && (
-                                                    <button
+                                                    <Button
+                                                        size="sm"
+                                                        className="w-full"
                                                         onClick={() => onSelect(getPublicUrl(img.filename))}
-                                                        className="w-full py-1.5 bg-blue-600 text-white rounded text-xs font-medium hover:bg-blue-700"
                                                     >
                                                         Select
-                                                    </button>
+                                                    </Button>
                                                 )}
-                                                <div className="w-full grid grid-cols-2 gap-1 mb-2 mt-auto">
-                                                    <button
+                                                <div className="w-full grid grid-cols-2 gap-1">
+                                                    <Button
+                                                        variant="secondary"
+                                                        size="sm"
+                                                        className="w-full text-xs h-7"
                                                         onClick={() => {
                                                             const newTitle = prompt('Enter new title:', metadata.title || img.filename)
                                                             if (newTitle !== null) {
@@ -405,33 +433,40 @@ export function MediaManager({
                                                                 saveMediaData({ ...mediaData, images: newImages }, `Update title for ${img.filename}`)
                                                             }
                                                         }}
-                                                        className="py-1.5 bg-white text-gray-800 rounded text-[10px] font-bold hover:bg-gray-100"
                                                     >
-                                                        TITLE
-                                                    </button>
-                                                    <button
+                                                        Rename
+                                                    </Button>
+                                                    <Button
+                                                        variant="destructive"
+                                                        size="sm"
+                                                        className="w-full text-xs h-7"
                                                         onClick={() => handleDelete(img.filename)}
-                                                        className="py-1.5 bg-red-600 text-white rounded text-[10px] font-bold hover:bg-red-700"
                                                     >
-                                                        DEL
-                                                    </button>
+                                                        Delete
+                                                    </Button>
                                                 </div>
 
-                                                {/* Label Quick Toggles on Hover */}
-                                                <div className="w-full h-1/3 overflow-y-auto bg-black/60 p-2 rounded-t-lg -mb-px">
-                                                    <p className="text-[10px] text-white/60 mb-1 uppercase font-bold tracking-tighter">Toggle Labels</p>
-                                                    <div className="flex flex-wrap gap-1">
-                                                        {(mediaData.labels || []).map(l => (
-                                                            <button
-                                                                key={l}
-                                                                onClick={() => toggleImageLabel(img.filename, l)}
-                                                                className={`text-[9px] px-1 rounded transition-colors ${metadata.labels?.includes(l) ? 'bg-blue-500 text-white' : 'bg-white/20 text-white/80 hover:bg-white/40'}`}
-                                                            >
-                                                                {l}
-                                                            </button>
-                                                        ))}
+                                                {/* Label quick toggles */}
+                                                {(mediaData.labels || []).length > 0 && (
+                                                    <div className="w-full bg-black/60 rounded p-1.5">
+                                                        <p className="text-[9px] text-white/50 mb-1 uppercase font-bold tracking-wider">Labels</p>
+                                                        <div className="flex flex-wrap gap-1">
+                                                            {(mediaData.labels || []).map(l => (
+                                                                <button
+                                                                    key={l}
+                                                                    onClick={() => toggleImageLabel(img.filename, l)}
+                                                                    className={`text-[9px] px-1.5 py-0.5 rounded transition-colors ${
+                                                                        metadata.labels?.includes(l)
+                                                                            ? 'bg-blue-500 text-white'
+                                                                            : 'bg-white/20 text-white/80 hover:bg-white/40'
+                                                                    }`}
+                                                                >
+                                                                    {l}
+                                                                </button>
+                                                            ))}
+                                                        </div>
                                                     </div>
-                                                </div>
+                                                )}
                                             </div>
                                         </div>
                                     )
@@ -443,10 +478,8 @@ export function MediaManager({
             </div>
 
             {!isLibraryView && (
-                <div className="p-4 border-t bg-gray-50 flex justify-end">
-                    <button onClick={onClose} className="px-4 py-2 border rounded text-sm hover:bg-gray-100">
-                        Close
-                    </button>
+                <div className="px-5 py-3 border-t border-gray-200 flex justify-end">
+                    <Button variant="outline" size="sm" onClick={onClose}>Close</Button>
                 </div>
             )}
 
@@ -460,12 +493,10 @@ export function MediaManager({
 function ImagePreview({ url }: { url: string }) {
     const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading')
 
-    return (status === 'error') ? (
-        <div className="flex flex-col items-center justify-center p-4">
-            <svg className="w-12 h-12 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-            </svg>
-            <span className="text-[10px] text-gray-400 mt-2 uppercase font-medium">No Preview</span>
+    return status === 'error' ? (
+        <div className="flex flex-col items-center justify-center w-full h-full p-4 text-gray-300">
+            <ImageIcon className="w-10 h-10" />
+            <span className="text-[10px] mt-2 text-gray-400 uppercase font-medium">No Preview</span>
         </div>
     ) : (
         <img
@@ -473,7 +504,9 @@ function ImagePreview({ url }: { url: string }) {
             alt=""
             onLoad={() => setStatus('success')}
             onError={() => setStatus('error')}
-            className={`object-contain w-full h-full transition-opacity duration-300 ${status === 'loading' ? 'opacity-0' : 'opacity-100'}`}
+            className={`object-contain w-full h-full transition-opacity duration-300 ${
+                status === 'loading' ? 'opacity-0' : 'opacity-100'
+            }`}
         />
     )
 }

@@ -36,15 +36,18 @@
     "./nav": {
       "types": "./dist/lib/nav.d.ts",
       "default": "./dist/lib/nav.js"
-    }
+    },
+    "./styles": "./dist/git-cms.css"
   },
   "files": [
     "dist",
     "README.md"
   ],
   "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch",
+    "build": "npm run build:ts && npm run build:css",
+    "build:ts": "tsc",
+    "build:css": "tailwindcss -i src/styles/input.css -o dist/git-cms.css --minify",
+    "dev": "concurrently \"tsc --watch\" \"tailwindcss -i src/styles/input.css -o dist/git-cms.css --watch\"",
     "prepublishOnly": "npm run build"
   },
   "peerDependencies": {
@@ -54,19 +57,31 @@
   },
   "dependencies": {
     "@octokit/rest": "^21.1.1",
+    "@radix-ui/react-dialog": "^1.1.2",
+    "@radix-ui/react-label": "^2.1.0",
+    "@radix-ui/react-select": "^2.1.2",
+    "@radix-ui/react-separator": "^1.1.0",
+    "@radix-ui/react-slot": "^1.1.0",
     "@tiptap/core": "^3.20.0",
     "@tiptap/extension-link": "^3.20.0",
     "@tiptap/extension-table": "^3.20.0",
     "@tiptap/pm": "^3.20.0",
     "@tiptap/react": "^3.20.0",
     "@tiptap/starter-kit": "^3.20.0",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
     "gray-matter": "^4.0.3",
+    "lucide-react": "^0.468.0",
     "next-auth": "^5.0.0-beta.25",
+    "tailwind-merge": "^2.5.5",
     "tiptap-markdown": "^0.9.0"
   },
   "devDependencies": {
+    "@tailwindcss/cli": "^4.2.1",
     "@types/node": "^22.10.2",
     "@types/react": "^19.0.1",
+    "concurrently": "^9.1.2",
+    "tailwindcss": "^4.1.18",
     "typescript": "^5.7.2"
   },
   "keywords": [

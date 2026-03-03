@@ -1,0 +1,147 @@
+/* ── Tailwind v4 utilities only (no preflight — host app handles base styles) */
+@import "tailwindcss/utilities";
+
+/* ── Scan source files for class names ───────────────────────────────────── */
+@source "../components/**/*.tsx";
+@source "../lib/**/*.ts";
+
+/* ── .git-cms container reset ────────────────────────────────────────────────
+   Resets inheritable host-app styles so the admin UI looks consistent
+   regardless of the host app's @layer base typography.
+─────────────────────────────────────────────────────────────────────────── */
+
+.git-cms {
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #111827;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.git-cms *,
+.git-cms *::before,
+.git-cms *::after {
+  box-sizing: border-box;
+}
+
+/* Reset headings — host @layer base often sets large font-size/margin */
+.git-cms h1,
+.git-cms h2,
+.git-cms h3,
+.git-cms h4,
+.git-cms h5,
+.git-cms h6 {
+  font-size: inherit;
+  font-weight: inherit;
+  color: inherit;
+  line-height: inherit;
+  letter-spacing: normal;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+/* Reset paragraphs */
+.git-cms p {
+  margin-top: 0;
+  margin-bottom: 0;
+  line-height: 1.5;
+}
+
+/* Reset links */
+.git-cms a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Reset lists */
+.git-cms ul,
+.git-cms ol {
+  list-style: none;
+  padding-left: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.git-cms li {
+  margin-bottom: 0;
+  line-height: 1.5;
+}
+
+/* Reset tables */
+.git-cms table {
+  width: auto;
+  border-collapse: separate;
+  margin-bottom: 0;
+  font-size: inherit;
+}
+
+.git-cms th,
+.git-cms td {
+  padding: 0;
+  border: none;
+  vertical-align: baseline;
+  text-align: left;
+  font-weight: inherit;
+  white-space: normal;
+}
+
+.git-cms thead {
+  background-color: transparent;
+  border-bottom: none;
+}
+
+.git-cms tbody tr:nth-child(even),
+.git-cms tbody tr:hover {
+  background-color: transparent;
+}
+
+/* Reset images */
+.git-cms img {
+  max-width: none;
+}
+
+/* Reset blockquotes */
+.git-cms blockquote {
+  border-left: none;
+  padding: 0;
+  margin: 0;
+  color: inherit;
+  font-style: normal;
+}
+
+/* Reset code/pre */
+.git-cms :not(pre) > code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.875em;
+  background-color: transparent;
+  color: inherit;
+  padding: 0;
+  border-radius: 0;
+  border: none;
+}
+
+.git-cms pre {
+  background-color: transparent;
+  color: inherit;
+  border-radius: 0;
+  padding: 0;
+  overflow-x: visible;
+  margin-bottom: 0;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+/* Reset hr */
+.git-cms hr {
+  border: none;
+  border-top: 1px solid #e5e7eb;
+  margin: 0;
+}
+
+/* Reset strong */
+.git-cms strong {
+  font-weight: 700;
+  color: inherit;
+}

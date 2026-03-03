@@ -7,6 +7,8 @@ import { Editor } from './Editor'
 import { FileList } from './FileList'
 import { MediaManager } from './MediaManager'
 import type { BlockSchema, PageSchema } from '../types/schemas'
+import { Button } from './ui/button'
+import { Separator } from './ui/separator'
 
 export interface CMSProps {
   basePath?: string
@@ -82,46 +84,55 @@ function CMSInner({
   }
 
   return (
-    <div className="git-cms-container min-h-screen bg-gray-50">
-      <header className="bg-white border-b">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <h1 className="text-2xl font-bold">Git CMS</h1>
+    <div className="git-cms min-h-screen bg-gray-50">
+      {/* Header */}
+      <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
+        <div className="max-w-screen-xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
           <div className="flex items-center gap-6">
-            <nav className="flex items-center gap-4">
-              <button
+            <span className="text-base font-semibold text-gray-900 tracking-tight">Git CMS</span>
+            <Separator orientation="vertical" className="h-5" />
+            <nav className="flex items-center gap-1">
+              <Button
+                variant={currentView === 'dashboard' ? 'secondary' : 'ghost'}
+                size="sm"
                 onClick={toDashboard}
-                className={`text-sm font-medium ${currentView === 'dashboard' ? 'text-blue-600' : 'text-gray-600 hover:text-gray-900'}`}
               >
                 Dashboard
-              </button>
-              <button
+              </Button>
+              <Button
+                variant={currentView === 'media' ? 'secondary' : 'ghost'}
+                size="sm"
                 onClick={toMedia}
-                className={`text-sm font-medium ${currentView === 'media' ? 'text-blue-600' : 'text-gray-600 hover:text-gray-900'}`}
               >
-                Media Library
-              </button>
+                Media
+              </Button>
             </nav>
-            <div className="flex items-center gap-3 border-l pl-6">
-              {user?.image && (
-                <img src={user.image} alt="" width={32} height={32} className="rounded-full" />
-              )}
-              {user?.name && (
-                <span className="text-sm text-gray-700">{user.name}</span>
-              )}
-              {signOutUrl && (
-                <a
-                  href={signOutUrl}
-                  className="text-sm text-gray-500 hover:text-gray-800 underline"
-                >
-                  Sign out
-                </a>
-              )}
-            </div>
+          </div>
+
+          <div className="flex items-center gap-3">
+            {user?.image && (
+              <img
+                src={user.image}
+                alt=""
+                width={28}
+                height={28}
+                className="rounded-full ring-1 ring-gray-200"
+              />
+            )}
+            {user?.name && (
+              <span className="text-sm text-gray-600 hidden sm:block">{user.name}</span>
+            )}
+            {signOutUrl && (
+              <Button variant="ghost" size="sm" asChild>
+                <a href={signOutUrl}>Sign out</a>
+              </Button>
+            )}
           </div>
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8">
+      {/* Main content */}
+      <main className="max-w-screen-xl mx-auto px-4 py-8">
         {currentView === 'dashboard' && (
           <Dashboard
             onNavigate={() => toFiles()}

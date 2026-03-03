@@ -17,7 +17,7 @@ export declare function createGitCMSHandler(config: GitCMSConfig): {
     }> | NextResponse<{
         name: string;
         path: string;
-        type: "file" | "dir" | "submodule" | "symlink";
+        type: "dir" | "file" | "submodule" | "symlink";
         sha: string;
     }[]> | NextResponse<{
         content: string;

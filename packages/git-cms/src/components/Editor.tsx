@@ -3,6 +3,11 @@
 import React, { useState, useEffect } from 'react'
 import type { BlockSchema, BlockInstance, PageContent, PageSchema } from '../types/schemas'
 import { BlockEditor } from './BlockEditor'
+import { Button } from './ui/button'
+import { Input } from './ui/input'
+import { Textarea } from './ui/textarea'
+import { Label } from './ui/label'
+import { Card, CardContent, CardHeader, CardTitle } from './ui/card'
 
 // Inlined so this client component has zero server-only dependencies (no gray-matter)
 function generateBlockId() {
@@ -38,15 +43,16 @@ export function Editor({
   const [pageContent, setPageContent] = useState<PageContent | null>(null)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const [saveStatus, setSaveStatus] = useState<'idle' | 'saved' | 'error'>('idle')
+  const [saveError, setSaveError] = useState<string | null>(null)
   const [fileSha, setFileSha] = useState<string | undefined>(undefined)
   const [newFileName, setNewFileName] = useState('')
-  const schema = pageSchemas?.find((s) => s.contentPath.includes(contentPath || ''));
+  const schema = pageSchemas?.find((s) => s.contentPath.includes(contentPath || ''))
 
   useEffect(() => {
     if (filePath) {
       loadFile(filePath)
     } else if (isCreating) {
-      // New file — initialise empty state, skip loading
       setRawContent('')
       setPageContent(
         blockSchemas && blockSchemas.length > 0
@@ -67,7 +73,6 @@ export function Editor({
       const raw: string = data.content ?? ''
       setRawContent(raw)
       setFileSha(data.sha)
-      // pageContent is parsed server-side by the API handler (gray-matter stays server-side)
       if (blockSchemas && blockSchemas.length > 0 && data.pageContent) {
         setPageContent(data.pageContent as PageContent)
       }
@@ -84,7 +89,8 @@ export function Editor({
     if (isCreating) {
       const name = newFileName.trim()
       if (!name) {
-        alert('Please enter a file name.')
+        setSaveError('Please enter a file name.')
+        setSaveStatus('error')
         return
       }
       const safeName = name.endsWith('.md') ? name : `${name}.md`
@@ -94,6 +100,8 @@ export function Editor({
     if (!targetPath) return
 
     setSaving(true)
+    setSaveStatus('idle')
+    setSaveError(null)
     try {
       const isNew = isCreating
       const message = isNew ? `Create ${targetPath}` : `Update ${targetPath}`
@@ -111,18 +119,21 @@ export function Editor({
 
       if (!response.ok) {
         const data = await response.json()
-        alert(`Failed to save: ${data.error ?? 'Unknown error'}`)
+        setSaveError(data.error ?? 'Unknown error')
+        setSaveStatus('error')
         return
       }
 
       if (isNew && onCreated) {
         onCreated(targetPath)
       } else {
-        alert('Saved successfully!')
+        setSaveStatus('saved')
+        setTimeout(() => setSaveStatus('idle'), 3000)
       }
     } catch (err) {
       console.error('Error saving:', err)
-      alert('Failed to save')
+      setSaveError('Failed to save')
+      setSaveStatus('error')
     } finally {
       setSaving(false)
     }
@@ -165,126 +176,179 @@ export function Editor({
     setPageContent({ ...pageContent, blocks })
   }
 
-  if (loading) return <div>Loading editor...</div>
+  if (loading) {
+    return (
+      <div className="space-y-4">
+        <div className="h-10 w-64 bg-gray-100 rounded animate-pulse" />
+        <div className="h-48 bg-gray-100 rounded animate-pulse" />
+      </div>
+    )
+  }
 
   const useSchemaEditor = !!(blockSchemas && blockSchemas.length > 0 && pageContent)
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
+      {/* Toolbar */}
+      <div className="flex items-center justify-between gap-4">
         {isCreating ? (
-          <div className="flex items-center gap-2 flex-1 mr-4">
-            <span className="text-sm text-gray-500 whitespace-nowrap">New file:</span>
-            <input
-              type="text"
+          <div className="flex items-center gap-2 flex-1">
+            <Label htmlFor="new-file-name" className="whitespace-nowrap text-gray-500">
+              New file:
+            </Label>
+            <Input
+              id="new-file-name"
               value={newFileName}
               onChange={(e) => setNewFileName(e.target.value)}
               placeholder="my-page.md"
-              className="border rounded px-3 py-1.5 text-sm flex-1 max-w-xs"
+              className="max-w-xs"
               autoFocus
             />
           </div>
         ) : (
-          <h2 className="text-xl font-bold truncate max-w-sm text-gray-800">{filePath}</h2>
+          <h2 className="text-lg font-semibold text-gray-800 truncate max-w-md">{filePath}</h2>
         )}
-        <div className="flex gap-2">
-          <button onClick={onBack} className="px-4 py-2 text-gray-600 hover:text-gray-900">
+
+        <div className="flex items-center gap-2 shrink-0">
+          {saveStatus === 'saved' && (
+            <span className="text-sm text-green-600 font-medium">Saved ✓</span>
+          )}
+          {saveStatus === 'error' && saveError && (
+            <span className="text-sm text-red-600">{saveError}</span>
+          )}
+          <Button variant="ghost" size="sm" onClick={onBack}>
             ← Back
-          </button>
-          <button
+          </Button>
+          <Button
+            size="sm"
             onClick={handleSave}
             disabled={saving || (isCreating && !newFileName.trim())}
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
           >
             {saving ? 'Saving…' : isCreating ? 'Create' : 'Save'}
-          </button>
+          </Button>
         </div>
       </div>
 
       {useSchemaEditor ? (
         <div className="space-y-4">
           {/* Page metadata */}
-          <div className="bg-white p-4 rounded-lg shadow space-y-3">
-            <h3 className="font-semibold text-sm text-gray-700">Page settings</h3>
-            <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1">Title</label>
-              <input
-                type="text"
-                value={pageContent!.title}
-                onChange={(e) => setPageContent({ ...pageContent!, title: e.target.value })}
-                className="w-full border rounded px-3 py-2 text-sm"
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1">Slug</label>
-              <input
-                type="text"
-                value={pageContent!.slug}
-                onChange={(e) => setPageContent({ ...pageContent!, slug: e.target.value })}
-                className="w-full border rounded px-3 py-2 text-sm"
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1">Description</label>
-              <textarea
-                value={pageContent!.description ?? ''}
-                rows={2}
-                onChange={(e) => setPageContent({ ...pageContent!, description: e.target.value })}
-                className="w-full border rounded px-3 py-2 text-sm"
-              />
-            </div>
-          </div>
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-sm">Page settings</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div className="space-y-1">
+                <Label htmlFor="page-title">Title</Label>
+                <Input
+                  id="page-title"
+                  value={pageContent!.title}
+                  onChange={(e) => setPageContent({ ...pageContent!, title: e.target.value })}
+                />
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="page-slug">Slug</Label>
+                <Input
+                  id="page-slug"
+                  value={pageContent!.slug}
+                  onChange={(e) => setPageContent({ ...pageContent!, slug: e.target.value })}
+                />
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="page-desc">Description</Label>
+                <Textarea
+                  id="page-desc"
+                  value={pageContent!.description ?? ''}
+                  rows={2}
+                  onChange={(e) =>
+                    setPageContent({ ...pageContent!, description: e.target.value })
+                  }
+                />
+              </div>
+            </CardContent>
+          </Card>
 
           {/* Navigation */}
-          <div className="bg-white p-4 rounded-lg shadow space-y-3">
-            <h3 className="font-semibold text-sm text-gray-700">Navigation</h3>
-            <div className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                id="navEnabled"
-                checked={!!pageContent!.navEnabled}
-                onChange={(e) => setPageContent({ ...pageContent!, navEnabled: e.target.checked || undefined })}
-                className="rounded"
-              />
-              <label htmlFor="navEnabled" className="text-sm text-gray-700">Show in navigation</label>
-            </div>
-            {pageContent!.navEnabled && (
-              <div className="space-y-3 pt-1">
-                <div>
-                  <label className="block text-xs font-medium text-gray-600 mb-1">Nav label <span className="text-gray-400 font-normal">(defaults to title)</span></label>
-                  <input
-                    type="text"
-                    value={pageContent!.navTitle ?? ''}
-                    onChange={(e) => setPageContent({ ...pageContent!, navTitle: e.target.value || undefined })}
-                    placeholder={pageContent!.title || 'Page title'}
-                    className="w-full border rounded px-3 py-2 text-sm"
-                  />
-                </div>
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-xs font-medium text-gray-600 mb-1">Order <span className="text-gray-400 font-normal">(ascending)</span></label>
-                    <input
-                      type="number"
-                      value={pageContent!.navOrder ?? ''}
-                      onChange={(e) => setPageContent({ ...pageContent!, navOrder: e.target.value ? Number(e.target.value) : undefined })}
-                      placeholder="0"
-                      className="w-full border rounded px-3 py-2 text-sm"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-medium text-gray-600 mb-1">Parent slug <span className="text-gray-400 font-normal">(e.g. /about)</span></label>
-                    <input
-                      type="text"
-                      value={pageContent!.navParent ?? ''}
-                      onChange={(e) => setPageContent({ ...pageContent!, navParent: e.target.value || undefined })}
-                      placeholder="/parent-page"
-                      className="w-full border rounded px-3 py-2 text-sm"
-                    />
-                  </div>
-                </div>
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-sm">Navigation</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  id="navEnabled"
+                  checked={!!pageContent!.navEnabled}
+                  onChange={(e) =>
+                    setPageContent({
+                      ...pageContent!,
+                      navEnabled: e.target.checked || undefined,
+                    })
+                  }
+                  className="h-4 w-4 rounded border-gray-300"
+                />
+                <label htmlFor="navEnabled" className="text-sm text-gray-700">
+                  Show in navigation
+                </label>
               </div>
-            )}
-          </div>
+              {pageContent!.navEnabled && (
+                <div className="space-y-3 pt-1">
+                  <div className="space-y-1">
+                    <Label htmlFor="navTitle">
+                      Nav label{' '}
+                      <span className="text-gray-400 font-normal">(defaults to title)</span>
+                    </Label>
+                    <Input
+                      id="navTitle"
+                      value={pageContent!.navTitle ?? ''}
+                      onChange={(e) =>
+                        setPageContent({
+                          ...pageContent!,
+                          navTitle: e.target.value || undefined,
+                        })
+                      }
+                      placeholder={pageContent!.title || 'Page title'}
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-1">
+                      <Label htmlFor="navOrder">
+                        Order <span className="text-gray-400 font-normal">(ascending)</span>
+                      </Label>
+                      <Input
+                        id="navOrder"
+                        type="number"
+                        value={pageContent!.navOrder ?? ''}
+                        onChange={(e) =>
+                          setPageContent({
+                            ...pageContent!,
+                            navOrder: e.target.value ? Number(e.target.value) : undefined,
+                          })
+                        }
+                        placeholder="0"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <Label htmlFor="navParent">
+                        Parent slug{' '}
+                        <span className="text-gray-400 font-normal">(e.g. /about)</span>
+                      </Label>
+                      <Input
+                        id="navParent"
+                        value={pageContent!.navParent ?? ''}
+                        onChange={(e) =>
+                          setPageContent({
+                            ...pageContent!,
+                            navParent: e.target.value || undefined,
+                          })
+                        }
+                        placeholder="/parent-page"
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
 
           {/* Block list */}
           {pageContent!.blocks.map((block, index) => {
@@ -304,30 +368,35 @@ export function Editor({
           })}
 
           {/* Add block picker */}
-          <div className="bg-white p-4 rounded-lg shadow">
-            <p className="text-sm font-medium text-gray-700 mb-2">Add block</p>
-            <div className="flex flex-wrap gap-2">
-              {blockSchemas!.map((schema) => (
-                <button
-                  key={schema.type}
-                  onClick={() => handleAddBlock(schema.type)}
-                  className="px-3 py-1.5 text-sm border rounded hover:bg-gray-50"
-                >
-                  + {schema.label}
-                </button>
-              ))}
-            </div>
-          </div>
+          <Card>
+            <CardContent className="pt-5">
+              <p className="text-sm font-medium text-gray-700 mb-3">Add block</p>
+              <div className="flex flex-wrap gap-2">
+                {blockSchemas!.map((schema) => (
+                  <Button
+                    key={schema.type}
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleAddBlock(schema.type)}
+                  >
+                    + {schema.label}
+                  </Button>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
         </div>
       ) : (
-        <div className="bg-white p-4 rounded-lg shadow">
-          <textarea
-            value={rawContent}
-            onChange={(e) => setRawContent(e.target.value)}
-            className="w-full h-96 p-4 border rounded font-mono text-sm"
-            placeholder="Edit your content..."
-          />
-        </div>
+        <Card>
+          <CardContent className="pt-5">
+            <Textarea
+              value={rawContent}
+              onChange={(e) => setRawContent(e.target.value)}
+              className="h-96 font-mono text-sm"
+              placeholder="Edit your content..."
+            />
+          </CardContent>
+        </Card>
       )}
     </div>
   )

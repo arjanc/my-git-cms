@@ -6,6 +6,6 @@ interface FileListProps {
     contentPath: string;
     apiBasePath?: string;
 }
-export declare function FileList({ onSelectFile, onCreateNew, onBack, contentPath, apiBasePath }: FileListProps): React.JSX.Element;
+export declare function FileList({ onSelectFile, onCreateNew, onBack, contentPath, apiBasePath, }: FileListProps): React.JSX.Element;
 export {};
 //# sourceMappingURL=FileList.d.ts.map
