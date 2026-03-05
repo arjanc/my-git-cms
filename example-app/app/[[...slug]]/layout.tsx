@@ -1,6 +1,6 @@
 import path from 'path';
 import { buildNav } from '@git-cms/core/nav';
-import { Nav } from '../../components/Nav';
+import { Navigation } from '../../components/navigation';
 
 
 export default async function AppLayout({
@@ -16,7 +16,7 @@ export default async function AppLayout({
     return (
         <>
             <header>
-                {nav.items.length > 0 && <Nav nav={nav} />}
+                {nav.items.length > 0 && <Navigation nav={nav} />}
             </header>
             {children}
         </>
