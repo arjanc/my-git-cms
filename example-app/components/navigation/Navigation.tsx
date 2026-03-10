@@ -17,8 +17,9 @@ export function Navigation({ nav }: Omit<NavRendererProps, 'currentPath'>) {
 
                     {/* Logo */}
                     <div className="lg:w-0 lg:flex-1 size-20">
-                        <a href="/" className=" no-underline">
+                        <a href="/" className="no-underline">
                             <Image
+                                className="h-full"
                                 src="/ark-logo.jpg"
                                 alt="My App Logo"
                                 width={100}

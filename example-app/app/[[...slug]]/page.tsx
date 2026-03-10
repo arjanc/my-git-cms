@@ -82,7 +82,18 @@ export default async function Page({ params }: PageProps) {
   return (
     <main>
       {content.blocks.length > 0 ? (
-        content.blocks.map(renderBlock)
+        // content.blocks.map(renderBlock)
+        content.blocks.map((block) => {
+          if (block.type !== 'hero') {
+            return (
+              <div key={`${block.type}-${block.id}`} className="container mx-auto px-4">
+                {renderBlock(block)}
+              </div>
+            )
+          }
+
+          return renderBlock(block)
+        })
       ) : (
         <div className="max-w-4xl mx-auto px-6 py-16">
           <h1 className="text-4xl font-bold">{content.title}</h1>
