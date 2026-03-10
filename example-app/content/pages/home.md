@@ -30,17 +30,17 @@ blocks:
     type: layout
     columns: '2'
     slots:
-      - - id: block_1773173427962_qqtlv3l16
-          type: image
-          url: /media/Gemini_Generated_Image_wxcy0xwxcy0xwxcy.png
-          alt: ''
-          caption: ''
+      - - id: block_1773176209263_gwz4q3525
+          type: text
+          content: "We are a small, not-for-profit foundation (stichting) launched in 2010. Ark is for children aged 3 to 13 years with autism, communication and language delays, sensory processing disorders,\_ and other developmental challenges.\_We work with children who are not yet ready for a regular school environment."
       - - id: block_1773173436346_cxjp0zh1w
           type: text
-          content: |-
-            # Heading
-
-            tekst
+          content: >-
+            Ark provides intensive one-to-one support throughout the day from a
+            skilled, experienced educator. Children also have the opportunity to
+            work in pairs and small groups – to form friendships and learn from
+            their peers in a structured but playful environment – a vital part
+            of any child’s development.
   - id: block_2_usp
     type: usp
     title: Why Git CMS?
@@ -60,7 +60,7 @@ blocks:
     variant: info
 metadata:
   createdAt: '2026-03-01T06:35:41.559Z'
-  updatedAt: '2026-03-10T20:44:01.598Z'
+  updatedAt: '2026-03-10T20:57:22.252Z'
   author: Celar
 navEnabled: true
 navTitle: Home
