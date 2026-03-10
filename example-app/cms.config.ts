@@ -54,6 +54,38 @@ export const blockSchemas: BlockSchema[] = [
     ],
   },
   {
+    type: 'heading',
+    label: 'Heading',
+    fields: [
+      {
+        name: 'tag',
+        label: 'Tag',
+        fieldType: 'dropdown',
+        defaultValue: 'h2',
+        options: [
+          { label: 'H1', value: 'h1' },
+          { label: 'H2', value: 'h2' },
+          { label: 'H3', value: 'h3' },
+          { label: 'H4', value: 'h4' },
+          { label: 'H5', value: 'h5' },
+          { label: 'H6', value: 'h6' },
+        ],
+      },
+      { name: 'text', label: 'Text', fieldType: 'text', required: true, defaultValue: '' },
+      {
+        name: 'alignment',
+        label: 'Alignment',
+        fieldType: 'dropdown',
+        defaultValue: 'left',
+        options: [
+          { label: 'Left', value: 'left' },
+          { label: 'Center', value: 'center' },
+          { label: 'Right', value: 'right' },
+        ],
+      },
+    ],
+  },
+  {
     type: 'text',
     label: 'Text / Rich Text',
     fields: [
