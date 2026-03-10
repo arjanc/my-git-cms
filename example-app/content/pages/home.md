@@ -6,11 +6,12 @@ pageSchema: pages
 blocks:
   - id: block_1_hero
     type: hero
-    heading: Welcome to Git CMS
-    subheading: A content management system built on top of GitHub
+    heading: Welcome to Ark
+    subheading: All children have within them the potential to be great kids. It’s our job to create a great world where this potential can flourish.
+    subheadingAttribution: Stanley Greenspan, MD (Great Kids, 2007)
     ctaText: Get started
     ctaUrl: /admin
-    backgroundImage: /media/Gemini_Generated_Image_wxcy0xwxcy0xwxcy.png
+    backgroundImage: /media/IMG-20191031-WA0001-e1575998983539-1024x780.jpg
   - id: block_2_usp
     type: usp
     title: Why Git CMS?

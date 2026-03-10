@@ -8,20 +8,32 @@
 
 @theme {
 
-  /* ── Primary (brand blue) ────────────────────────────────────────────── */
-  --color-primary-50:  #eff6ff;
-  --color-primary-100: #dbeafe;
-  --color-primary-200: #bfdbfe;
-  --color-primary-300: #93c5fd;
-  --color-primary-400: #60a5fa;
-  --color-primary-500: #3b82f6;
-  --color-primary-600: #2563eb;   /* main brand  */
-  --color-primary-700: #1d4ed8;   /* hover state */
-  --color-primary-800: #1e40af;
-  --color-primary-900: #1e3a8a;
+  /* ── Primary (brand green) ────────────────────────────────────────────── */
+  --color-primary-50: #eef7f6;
+  /* very light tint */
+  --color-primary-100: #d4ede9;
+  /* soft tint */
+  --color-primary-200: #aad9d2;
+  /* light */
+  --color-primary-300: #7dc4bb;
+  /* medium-light */
+  --color-primary-400: #5bb3a9;
+  /* near-base light */
+  --color-primary-500: #569F96;
+  /* ★ BASE COLOR */
+  --color-primary-600: #448880;
+  /* slightly darker */
+  /* main brand */
+  --color-primary-700: #356e67;
+  /* dark */
+  /* hover state */
+  --color-primary-800: #26524d;
+  /* deeper dark */
+  --color-primary-900: #163530;
+  /* near-black teal */
 
   /* ── Neutral ─────────────────────────────────────────────────────────── */
-  --color-neutral-50:  #f9fafb;
+  --color-neutral-50: #f9fafb;
   --color-neutral-100: #f3f4f6;
   --color-neutral-200: #e5e7eb;
   --color-neutral-300: #d1d5db;
@@ -34,7 +46,7 @@
   --color-neutral-950: #0f172a;
 
   /* ── Success ─────────────────────────────────────────────────────────── */
-  --color-success-50:  #f0fdf4;
+  --color-success-50: #f0fdf4;
   --color-success-100: #dcfce7;
   --color-success-200: #bbf7d0;
   --color-success-600: #16a34a;
@@ -42,7 +54,7 @@
   --color-success-900: #14532d;
 
   /* ── Warning ─────────────────────────────────────────────────────────── */
-  --color-warning-50:  #fefce8;
+  --color-warning-50: #fefce8;
   --color-warning-100: #fef9c3;
   --color-warning-200: #fef08a;
   --color-warning-500: #eab308;
@@ -50,7 +62,7 @@
   --color-warning-900: #713f12;
 
   /* ── Error ───────────────────────────────────────────────────────────── */
-  --color-error-50:  #fef2f2;
+  --color-error-50: #fef2f2;
   --color-error-100: #fee2e2;
   --color-error-200: #fecaca;
   --color-error-600: #dc2626;
@@ -58,27 +70,35 @@
   --color-error-900: #7f1d1d;
 
   /* ── Accent / violet (inline code highlight) ─────────────────────────── */
-  --color-accent-50:  #f5f3ff;
+  --color-accent-50: #f5f3ff;
   --color-accent-100: #ede9fe;
   --color-accent-600: #7c3aed;
   --color-accent-700: #6d28d9;
 
   /* ── Surface aliases ─────────────────────────────────────────────────── */
-  --color-surface:         #ffffff;
-  --color-surface-muted:   #f9fafb;   /* light bg for sections, table zebra */
-  --color-surface-subtle:  #f3f4f6;   /* inline code bg, inputs */
-  --color-surface-inverse: #1e293b;   /* dark bg for code blocks */
+  --color-surface: #ffffff;
+  --color-surface-muted: #f9fafb;
+  /* light bg for sections, table zebra */
+  --color-surface-subtle: #f3f4f6;
+  /* inline code bg, inputs */
+  --color-surface-inverse: #1e293b;
+  /* dark bg for code blocks */
 
   /* ── Fonts ───────────────────────────────────────────────────────────── */
   --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
 
   /* ── Border radius ───────────────────────────────────────────────────── */
-  --radius-sm:   0.25rem;    /*  4px */
-  --radius-md:   0.375rem;   /*  6px */
-  --radius-lg:   0.5rem;     /*  8px */
-  --radius-xl:   0.75rem;    /* 12px */
-  --radius-2xl:  1rem;       /* 16px */
+  --radius-sm: 0.25rem;
+  /*  4px */
+  --radius-md: 0.375rem;
+  /*  6px */
+  --radius-lg: 0.5rem;
+  /*  8px */
+  --radius-xl: 0.75rem;
+  /* 12px */
+  --radius-2xl: 1rem;
+  /* 16px */
   --radius-full: 9999px;
 
   /* ── Shadows ─────────────────────────────────────────────────────────── */
@@ -127,7 +147,12 @@
 
   /* ── Headings ────────────────────────────────────────────────────────── */
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     color: var(--color-neutral-950);
     font-weight: 700;
     line-height: 1.2;
@@ -175,10 +200,10 @@
   }
 
   /* Remove top margin on the first heading inside any container */
-  * > h1:first-child,
-  * > h2:first-child,
-  * > h3:first-child,
-  * > h4:first-child {
+  *>h1:first-child,
+  *>h2:first-child,
+  *>h3:first-child,
+  *>h4:first-child {
     margin-top: 0;
   }
 
@@ -245,7 +270,10 @@
     margin-bottom: 0;
   }
 
-  ul ul, ol ol, ul ol, ol ul {
+  ul ul,
+  ol ol,
+  ul ol,
+  ol ul {
     margin-top: 0.375rem;
     margin-bottom: 0.375rem;
   }
@@ -253,11 +281,11 @@
   /* ── Blockquote ──────────────────────────────────────────────────────── */
 
   blockquote {
-    border-left: 4px solid var(--color-primary-600);
     padding: 0.25rem 0 0.25rem 1.25rem;
     margin: 1.75rem 0;
     color: var(--color-neutral-500);
     font-style: italic;
+    position: relative;
   }
 
   blockquote p {
@@ -270,7 +298,7 @@
 
   /* ── Code ────────────────────────────────────────────────────────────── */
 
-  :not(pre) > code {
+  :not(pre)>code {
     font-family: var(--font-mono);
     font-size: 0.875em;
     background-color: var(--color-surface-subtle);

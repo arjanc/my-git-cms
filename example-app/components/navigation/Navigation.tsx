@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Image from 'next/image';
 import { usePathname } from 'next/navigation'
 import type { NavRendererProps } from '@git-cms/core'
 import { NavigationItem } from './NavigationItem'
@@ -17,7 +18,14 @@ export function Navigation({ nav }: Omit<NavRendererProps, 'currentPath'>) {
                     {/* Logo */}
                     <div className="lg:w-0 lg:flex-1">
                         <a href="/" className="flex items-center no-underline">
-                            <span className="text-xl font-bold text-primary-600 tracking-tight">My Site</span>
+                            <Image
+                                src="/ark-logo.jpg"
+                                alt="My App Logo"
+                                width={100}
+                                height={100}
+                                priority          // Eagerly loads the logo (no lazy loading)
+                                style={{ objectFit: 'contain' }}
+                            />
                         </a>
                     </div>
 
@@ -59,8 +67,8 @@ export function Navigation({ nav }: Omit<NavRendererProps, 'currentPath'>) {
             {/* ── Mobile menu panel ───────────────────────────────────────────────── */}
             <div
                 className={`absolute top-0 inset-x-0 p-2 z-50 md:hidden transition transform origin-top-right duration-200 ${mobileMenuOpen
-                        ? 'opacity-100 scale-100 pointer-events-auto'
-                        : 'opacity-0 scale-95 pointer-events-none'
+                    ? 'opacity-100 scale-100 pointer-events-auto'
+                    : 'opacity-0 scale-95 pointer-events-none'
                     }`}
             >
                 <div className="rounded-lg shadow-lg">
