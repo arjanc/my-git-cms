@@ -11,7 +11,14 @@ blocks:
     subheadingAttribution: Stanley Greenspan, MD (Great Kids, 2007)
     ctaText: Get started
     ctaUrl: /admin
-    backgroundImage: /media/IMG-20191031-WA0001-e1575998983539-1024x780.jpg
+    backgroundImages:
+      - /media/IMG-20191031-WA0001-e1575998983539-1024x780.jpg
+      - /media/IMG-20180307-WA0001-1024x768.jpg
+      - /media/IMG-20191024-WA0029.jpg
+      - /media/IMG-20191101-WA0029-1024x768.jpg
+      - /media/IMG-20191122-WA0005-1024x768.jpg
+      - /media/IMG-20191211-WA0003-1024x768.jpg
+      - /media/Gemini_Generated_Image_wxcy0xwxcy0xwxcy.png
   - id: block_2_usp
     type: usp
     title: Why Git CMS?

@@ -1,6 +1,7 @@
 'use client';
 import React from 'react';
 import { ImageField } from './ImageField';
+import { ImageListField } from './ImageListField';
 import { RichTextEditor } from './RichTextEditor';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
@@ -19,6 +20,14 @@ function FieldEditor({ field, value, onChange }) {
             return (React.createElement(Input, { value: strVal, onChange: (e) => onChange(e.target.value), placeholder: field.label }));
         case 'image':
             return React.createElement(ImageField, { field: field, value: strVal, onChange: onChange });
+        case 'imagelist': {
+            const listVal = Array.isArray(value)
+                ? value
+                : strVal
+                    ? strVal.split('\n').map((s) => s.trim()).filter(Boolean)
+                    : [];
+            return (React.createElement(ImageListField, { value: listVal, onChange: (val) => onChange(val) }));
+        }
         case 'richtext':
             return React.createElement(RichTextEditor, { value: strVal, onChange: (val) => onChange(val) });
         case 'textarea':

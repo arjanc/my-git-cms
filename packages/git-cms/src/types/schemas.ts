@@ -3,6 +3,7 @@ export type FieldType =
   | 'textarea'
   | 'number'
   | 'image'
+  | 'imagelist'
   | 'dropdown'
   | 'boolean'
   | 'richtext'

@@ -10,7 +10,7 @@ export const blockSchemas: BlockSchema[] = [
       { name: 'subheadingAttribution', label: 'Subheading Attribution', fieldType: 'text', defaultValue: '' },
       { name: 'ctaText', label: 'Button text', fieldType: 'text', defaultValue: 'Get started' },
       { name: 'ctaUrl', label: 'Button URL', fieldType: 'text', defaultValue: '/' },
-      { name: 'backgroundImage', label: 'Background image URL', fieldType: 'image', defaultValue: '' },
+      { name: 'backgroundImages', label: 'Background images', fieldType: 'imagelist', defaultValue: [] },
     ],
   },
   {

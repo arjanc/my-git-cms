@@ -3,6 +3,7 @@
 import React from 'react'
 import type { BlockSchema, FieldSchema, BlockInstance } from '../types/schemas'
 import { ImageField } from './ImageField'
+import { ImageListField } from './ImageListField'
 import { RichTextEditor } from './RichTextEditor'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
@@ -37,6 +38,20 @@ function FieldEditor({ field, value, onChange }: FieldEditorProps) {
 
     case 'image':
       return <ImageField field={field} value={strVal} onChange={onChange} />
+
+    case 'imagelist': {
+      const listVal = Array.isArray(value)
+        ? (value as string[])
+        : strVal
+          ? strVal.split('\n').map((s) => s.trim()).filter(Boolean)
+          : []
+      return (
+        <ImageListField
+          value={listVal}
+          onChange={(val) => onChange(val)}
+        />
+      )
+    }
 
     case 'richtext':
       return <RichTextEditor value={strVal} onChange={(val) => onChange(val)} />

@@ -1,4 +1,4 @@
-export type FieldType = 'text' | 'textarea' | 'number' | 'image' | 'dropdown' | 'boolean' | 'richtext';
+export type FieldType = 'text' | 'textarea' | 'number' | 'image' | 'imagelist' | 'dropdown' | 'boolean' | 'richtext';
 export interface FieldSchema {
     /** Key used in the block data object, e.g. "heading" */
     name: string;
