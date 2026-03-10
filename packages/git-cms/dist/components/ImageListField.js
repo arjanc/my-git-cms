@@ -21,7 +21,7 @@ export function ImageListField({ value, onChange }) {
     function handleRemove(index) {
         onChange(value.filter((_, i) => i !== index));
     }
-    return (React.createElement("div", { className: "space-y-2" },
+    return (React.createElement("div", { className: "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8" },
         value.map((src, i) => (React.createElement("div", { key: i, className: "flex items-start gap-2" },
             React.createElement("div", { className: "relative aspect-video w-full max-w-xs rounded-lg border border-gray-200 bg-gray-50 overflow-hidden group flex-1" }, src ? (React.createElement(React.Fragment, null,
                 React.createElement("img", { src: src, alt: "", className: "w-full h-full object-contain", onError: (e) => {

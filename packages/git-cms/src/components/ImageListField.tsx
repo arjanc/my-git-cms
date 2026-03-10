@@ -30,7 +30,7 @@ export function ImageListField({ value, onChange }: ImageListFieldProps) {
   }
 
   return (
-    <div className="space-y-2">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
       {value.map((src, i) => (
         <div key={i} className="flex items-start gap-2">
           <div className="relative aspect-video w-full max-w-xs rounded-lg border border-gray-200 bg-gray-50 overflow-hidden group flex-1">
@@ -41,7 +41,7 @@ export function ImageListField({ value, onChange }: ImageListFieldProps) {
                   alt=""
                   className="w-full h-full object-contain"
                   onError={(e) => {
-                    ;(e.target as HTMLImageElement).src =
+                    ; (e.target as HTMLImageElement).src =
                       'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIGZpbGw9IiNFMkU4RjAiLz48cGF0aCBkPSJNMjAgMTJMMTIgMjBIMjhMMjAgMTJaIiBmaWxsPSIjOTQ0QjU1Ii8+PC9zdmc+'
                   }}
                 />
