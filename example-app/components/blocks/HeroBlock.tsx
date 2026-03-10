@@ -14,9 +14,9 @@ export function HeroBlock({ block }: { block: BlockInstance }) {
   const images: string[] = Array.isArray(block.backgroundImages)
     ? (block.backgroundImages as string[]).filter(Boolean)
     : String(block.backgroundImages ?? '')
-        .split('\n')
-        .map(s => s.trim())
-        .filter(Boolean)
+      .split('\n')
+      .map(s => s.trim())
+      .filter(Boolean)
 
   if (images.length === 0 && block.backgroundImage) {
     images.push(String(block.backgroundImage))
@@ -100,7 +100,7 @@ export function HeroBlock({ block }: { block: BlockInstance }) {
           <button
             onClick={prev}
             aria-label="Previous image"
-            className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 z-20 flex items-center justify-center w-10 h-10 rounded-full bg-black/40 hover:bg-black/60 text-white transition-colors"
+            className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 z-20 flex items-center justify-center w-10 h-10 rounded-full bg-black/40 hover:bg-black/60 text-white transition-colors cursor-pointer"
           >
             <svg
               width="20"
@@ -120,7 +120,7 @@ export function HeroBlock({ block }: { block: BlockInstance }) {
           <button
             onClick={next}
             aria-label="Next image"
-            className="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 z-20 flex items-center justify-center w-10 h-10 rounded-full bg-black/40 hover:bg-black/60 text-white transition-colors"
+            className="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 z-20 flex items-center justify-center w-10 h-10 rounded-full bg-black/40 hover:bg-black/60 text-white transition-colors cursor-pointer"
           >
             <svg
               width="20"
@@ -143,11 +143,10 @@ export function HeroBlock({ block }: { block: BlockInstance }) {
                 key={i}
                 onClick={() => setCurrent(i)}
                 aria-label={`Go to image ${i + 1}`}
-                className={`rounded-full bg-white transition-all duration-300 ${
-                  i === current
-                    ? 'w-4 h-4 opacity-100'
-                    : 'w-2.5 h-2.5 opacity-50 hover:opacity-75'
-                }`}
+                className={`rounded-full bg-white transition-all duration-300 cursor-pointer ${i === current
+                  ? 'w-4 h-4 opacity-100'
+                  : 'w-2.5 h-2.5 opacity-50 hover:opacity-75'
+                  }`}
               />
             ))}
           </div>

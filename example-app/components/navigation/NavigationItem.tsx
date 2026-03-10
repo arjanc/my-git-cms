@@ -33,9 +33,8 @@ export function NavigationItem({ item, currentPath }: NavigationItemProps) {
     return (
       <a
         href={item.href}
-        className={`text-base leading-6 font-medium hover:text-neutral-900 focus:outline-none focus:text-neutral-900 transition ease-in-out duration-150 no-underline ${
-          isActive ? 'text-primary-600' : 'text-neutral-500'
-        }`}
+        className={`text-base leading-6 text-l hover:text-neutral-900 focus:outline-none focus:text-neutral-900 transition ease-in-out duration-150 no-underline ${isActive ? 'text-primary-600' : 'text-neutral-500'
+          }`}
       >
         {item.title}
       </a>
@@ -48,18 +47,16 @@ export function NavigationItem({ item, currentPath }: NavigationItemProps) {
       <button
         type="button"
         onClick={() => setFlyoutOpen((o) => !o)}
-        className={`group inline-flex items-center space-x-1 text-base leading-6 font-medium hover:text-neutral-900 focus:outline-none focus:text-neutral-900 transition ease-in-out duration-150 ${
-          flyoutOpen || isActive ? 'text-neutral-900' : 'text-neutral-500'
-        }`}
+        className={`group inline-flex items-center space-x-1 text-base leading-6 font-medium hover:text-neutral-900 focus:outline-none focus:text-neutral-900 transition ease-in-out duration-150 ${flyoutOpen || isActive ? 'text-neutral-900' : 'text-neutral-500'
+          }`}
       >
         <span>{item.title}</span>
         {/* Chevron rotates when open */}
         <svg
-          className={`h-5 w-5 transition-transform ease-in-out duration-150 ${
-            flyoutOpen
-              ? 'rotate-180 text-neutral-600'
-              : 'rotate-0 text-neutral-400 group-hover:text-neutral-500'
-          }`}
+          className={`h-5 w-5 transition-transform ease-in-out duration-150 ${flyoutOpen
+            ? 'rotate-180 text-neutral-600'
+            : 'rotate-0 text-neutral-400 group-hover:text-neutral-500'
+            }`}
           viewBox="0 0 20 20"
           fill="currentColor"
           aria-hidden="true"
@@ -74,11 +71,10 @@ export function NavigationItem({ item, currentPath }: NavigationItemProps) {
 
       {/* ── Flyout panel ──────────────────────────────────────────────────── */}
       <div
-        className={`absolute -ml-4 mt-3 transform px-2 w-screen max-w-xs sm:px-0 lg:ml-0 lg:left-1/2 lg:-translate-x-1/2 transition ease-out duration-200 ${
-          flyoutOpen
-            ? 'opacity-100 translate-y-0 pointer-events-auto'
-            : 'opacity-0 translate-y-1 pointer-events-none'
-        }`}
+        className={`absolute -ml-4 mt-3 transform px-2 w-screen max-w-xs sm:px-0 lg:ml-0 lg:left-1/2 lg:-translate-x-1/2 transition ease-out duration-200 ${flyoutOpen
+          ? 'opacity-100 translate-y-0 pointer-events-auto'
+          : 'opacity-0 translate-y-1 pointer-events-none'
+          }`}
       >
         <div className="rounded-lg shadow-lg overflow-hidden">
           {/* Child items */}
@@ -98,9 +94,8 @@ export function NavigationItem({ item, currentPath }: NavigationItemProps) {
                   </div>
                   <div>
                     <p
-                      className={`text-base leading-6 font-medium ${
-                        childActive ? 'text-primary-600' : 'text-neutral-900 group-hover:text-primary-600'
-                      } transition-colors duration-150`}
+                      className={`text-base leading-6 font-medium ${childActive ? 'text-primary-600' : 'text-neutral-900 group-hover:text-primary-600'
+                        } transition-colors duration-150`}
                     >
                       {child.title}
                     </p>

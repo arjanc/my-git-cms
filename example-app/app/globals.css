@@ -88,6 +88,14 @@
   --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
 
+  /* ── Font sizes ──────────────────────────────────────────────────────── */
+  --font-size-xs:  0.625rem;  /* 10px */
+  --font-size-s:   0.75rem;   /* 12px */
+  --font-size-m:   1rem;      /* 16px — base */
+  --font-size-l:   1.25rem;   /* 20px (corrected from 18px; see note below) */
+  --font-size-xl:  1.5rem;    /* 24px */
+  --font-size-2xl: 2rem;      /* 32px */
+
   /* ── Border radius ───────────────────────────────────────────────────── */
   --radius-sm: 0.25rem;
   /*  4px */
@@ -130,6 +138,9 @@
 @source inline("{text,bg,border}-surface-{muted,subtle,inverse}");
 @source inline("hover:{text,bg}-surface-{muted,subtle,inverse}");
 
+/* Font sizes */
+@source inline("text-{xs,s,m,l,xl,2xl}");
+
 /* ─── Global typography ──────────────────────────────────────────────────────
    @layer base is lower-specificity than Tailwind utilities, so any component
    that applies its own classes (e.g. the admin UI) is unaffected.
@@ -139,6 +150,7 @@
 
   /* Body */
   body {
+    font-size: var(--font-size-m);
     color: var(--color-neutral-900);
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;

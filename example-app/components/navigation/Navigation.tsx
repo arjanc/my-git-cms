@@ -16,8 +16,8 @@ export function Navigation({ nav }: Omit<NavRendererProps, 'currentPath'>) {
                 <div className="flex justify-between items-center border-b-2 border-neutral-100 py-6 md:justify-start md:space-x-10">
 
                     {/* Logo */}
-                    <div className="lg:w-0 lg:flex-1">
-                        <a href="/" className="flex items-center no-underline">
+                    <div className="lg:w-0 lg:flex-1 size-20">
+                        <a href="/" className=" no-underline">
                             <Image
                                 src="/ark-logo.jpg"
                                 alt="My App Logo"
