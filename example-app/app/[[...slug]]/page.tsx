@@ -4,7 +4,7 @@ import fs from 'fs'
 import path from 'path'
 import { parseMarkdown } from '@git-cms/core/markdown'
 import type { BlockInstance } from '@git-cms/core'
-import { HeroBlock, BannerBlock, USPBlock, ImageBlock, TextBlock } from '../../components/blocks'
+import { HeroBlock, BannerBlock, USPBlock, ImageBlock, TextBlock, LayoutBlock } from '../../components/blocks'
 
 interface PageProps {
   params: Promise<{ slug?: string[] }>
@@ -54,7 +54,7 @@ function readContent(slug: string[]) {
   return null
 }
 
-function renderBlock(block: BlockInstance) {
+function renderBlock(block: BlockInstance): React.ReactNode {
   switch (block.type) {
     case 'hero':
       return <HeroBlock key={block.id} block={block} />
@@ -66,6 +66,8 @@ function renderBlock(block: BlockInstance) {
       return <ImageBlock key={block.id} block={block} />
     case 'text':
       return <TextBlock key={block.id} block={block} />
+    case 'layout':
+      return <LayoutBlock key={block.id} block={block} renderBlock={renderBlock} />
     default:
       return null
   }

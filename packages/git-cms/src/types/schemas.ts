@@ -28,6 +28,14 @@ export interface BlockSchema {
   /** Human-readable name shown in the admin block picker */
   label: string
   fields: FieldSchema[]
+  /**
+   * Only relevant when type === 'layout'.
+   * Controls which block types users can add inside column slots.
+   * Omit or set to 'any' to allow all non-layout blocks.
+   */
+  columnsConfig?: {
+    allowedBlocks: string[] | 'any'
+  }
 }
 
 export interface PageSchema {

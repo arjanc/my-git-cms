@@ -3,6 +3,7 @@ import React from 'react';
 import { ImageField } from './ImageField';
 import { ImageListField } from './ImageListField';
 import { RichTextEditor } from './RichTextEditor';
+import { LayoutBlockEditor } from './LayoutBlockEditor';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Textarea } from './ui/textarea';
@@ -45,7 +46,10 @@ function FieldEditor({ field, value, onChange }) {
             return null;
     }
 }
-export function BlockEditor({ block, schema, onChange, onRemove, onMoveUp, onMoveDown, }) {
+export function BlockEditor({ block, schema, blockSchemas = [], onChange, onRemove, onMoveUp, onMoveDown, }) {
+    if (schema.type === 'layout') {
+        return (React.createElement(LayoutBlockEditor, { block: block, schema: schema, blockSchemas: blockSchemas, onChange: onChange, onRemove: onRemove, onMoveUp: onMoveUp, onMoveDown: onMoveDown }));
+    }
     function handleField(name, val) {
         onChange({ ...block, [name]: val });
     }

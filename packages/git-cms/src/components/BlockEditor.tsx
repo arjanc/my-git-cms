@@ -5,6 +5,7 @@ import type { BlockSchema, FieldSchema, BlockInstance } from '../types/schemas'
 import { ImageField } from './ImageField'
 import { ImageListField } from './ImageListField'
 import { RichTextEditor } from './RichTextEditor'
+import { LayoutBlockEditor } from './LayoutBlockEditor'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
 import { Textarea } from './ui/textarea'
@@ -112,6 +113,7 @@ function FieldEditor({ field, value, onChange }: FieldEditorProps) {
 interface BlockEditorProps {
   block: BlockInstance
   schema: BlockSchema
+  blockSchemas?: BlockSchema[]
   onChange: (updated: BlockInstance) => void
   onRemove: () => void
   onMoveUp: () => void
@@ -121,11 +123,26 @@ interface BlockEditorProps {
 export function BlockEditor({
   block,
   schema,
+  blockSchemas = [],
   onChange,
   onRemove,
   onMoveUp,
   onMoveDown,
 }: BlockEditorProps) {
+  if (schema.type === 'layout') {
+    return (
+      <LayoutBlockEditor
+        block={block}
+        schema={schema}
+        blockSchemas={blockSchemas}
+        onChange={onChange}
+        onRemove={onRemove}
+        onMoveUp={onMoveUp}
+        onMoveDown={onMoveDown}
+      />
+    )
+  }
+
   function handleField(name: string, val: unknown) {
     onChange({ ...block, [name]: val })
   }

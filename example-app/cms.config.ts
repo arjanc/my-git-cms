@@ -60,6 +60,27 @@ export const blockSchemas: BlockSchema[] = [
       { name: 'content', label: 'Content', fieldType: 'richtext', required: true, defaultValue: '' },
     ],
   },
+  {
+    type: 'layout',
+    label: 'Layout (columns)',
+    fields: [
+      {
+        name: 'columns',
+        label: 'Number of columns',
+        fieldType: 'dropdown',
+        defaultValue: '2',
+        options: [
+          { label: '2 columns', value: '2' },
+          { label: '3 columns', value: '3' },
+          { label: '4 columns', value: '4' },
+        ],
+      },
+    ],
+    columnsConfig: {
+      // Remove 'layout' to prevent nesting; list specific types to restrict
+      allowedBlocks: ['text', 'image', 'banner', 'usp'],
+    },
+  },
 ]
 
 /**

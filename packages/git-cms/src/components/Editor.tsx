@@ -359,6 +359,7 @@ export function Editor({
                 key={block.id}
                 block={block}
                 schema={schema}
+                blockSchemas={blockSchemas}
                 onChange={(updated) => handleBlockChange(index, updated)}
                 onRemove={() => handleBlockRemove(index)}
                 onMoveUp={() => handleMoveUp(index)}
