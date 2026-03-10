@@ -43,7 +43,7 @@ blocks:
             of any child’s development.
   - id: block_2_usp
     type: usp
-    title: Why Git CMS?
+    title: Why Ark stichting
     item1Title: Support
     item1Description: |-
 
@@ -60,7 +60,7 @@ blocks:
     variant: info
 metadata:
   createdAt: '2026-03-01T06:35:41.559Z'
-  updatedAt: '2026-03-10T21:03:04.455Z'
+  updatedAt: '2026-03-10T21:03:48.826Z'
   author: Celar
 navEnabled: true
 navTitle: Home
