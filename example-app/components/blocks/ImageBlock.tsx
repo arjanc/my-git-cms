@@ -9,7 +9,7 @@ export function ImageBlock({ block }: { block: BlockInstance }) {
   if (!url) return null
 
   return (
-    <figure className="my-8">
+    <figure className="mb-8">
       <div className="relative w-full aspect-video">
         <Image
           src={url}

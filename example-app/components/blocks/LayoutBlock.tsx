@@ -17,9 +17,9 @@ export function LayoutBlock({ block, renderBlock }: LayoutBlockProps) {
   const slots = (block.slots ?? []) as BlockInstance[][]
 
   return (
-    <div className={`grid ${gridCols[columns] ?? 'grid-cols-2'} gap-6 px-6 py-4`}>
+    <div className={`grid ${gridCols[columns] ?? 'grid-cols-2'} gap-6 px-6`}>
       {Array.from({ length: columns }, (_, i) => (
-        <div key={i} className="flex flex-col gap-4">
+        <div key={i} className="flex flex-col">
           {(slots[i] ?? []).map((nested) => (
             <React.Fragment key={nested.id}>{renderBlock(nested)}</React.Fragment>
           ))}

@@ -7,7 +7,7 @@ export function TextBlock({ block }: { block: BlockInstance }) {
   const content = String(block.content ?? '')
 
   return (
-    <div className="prose prose-gray max-w-none py-8">
+    <div className="prose prose-gray max-w-none pb-8">
       <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
     </div>
   )

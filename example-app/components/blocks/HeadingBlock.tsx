@@ -29,5 +29,5 @@ export function HeadingBlock({ block }: { block: BlockInstance }) {
   const alignClass = alignStyles[alignment] ?? alignStyles.left
   const tagClass = tagStyles[tag] ?? tagStyles.h2
 
-  return React.createElement(tag, { className: `${tagClass} ${alignClass}` }, text)
+  return React.createElement(tag, { className: `after:content-[''] after:block after:h-1 after:w-16 after:bg-primary-500 after:mx-auto after:mt-4 ${tagClass} ${alignClass}` }, text)
 }

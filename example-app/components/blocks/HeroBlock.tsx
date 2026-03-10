@@ -35,7 +35,7 @@ export function HeroBlock({ block }: { block: BlockInstance }) {
   )
 
   return (
-    <section className="relative flex items-center justify-center min-h-[480px] bg-neutral-900 text-white overflow-hidden">
+    <section className="relative flex items-center justify-center min-h-[480px] bg-neutral-900 text-white overflow-hidden mb-8">
       {/* Sliding image track */}
       {images.length > 0 && (
         <div
