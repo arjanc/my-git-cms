@@ -21,6 +21,11 @@ blocks:
       - /media/IMG-20191122-WA0005-1024x768.jpg
       - /media/IMG-20191211-WA0003-1024x768.jpg
       - /media/Gemini_Generated_Image_wxcy0xwxcy0xwxcy.png
+  - id: block_1773175377212_kyburcjd8
+    type: heading
+    tag: h2
+    text: About Ark
+    alignment: center
   - id: block_1773173417106_a94zqktat
     type: layout
     columns: '2'
@@ -55,7 +60,7 @@ blocks:
     variant: info
 metadata:
   createdAt: '2026-03-01T06:35:41.559Z'
-  updatedAt: '2026-03-10T20:11:00.193Z'
+  updatedAt: '2026-03-10T20:44:01.598Z'
   author: Celar
 navEnabled: true
 navTitle: Home
