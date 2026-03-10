@@ -87,6 +87,9 @@ export function Editor({ filePath, isCreating = false, contentPath, onBack, onCr
                 setSaveStatus('error');
                 return;
             }
+            const data = await response.json();
+            if (data.sha)
+                setFileSha(data.sha);
             if (isNew && onCreated) {
                 onCreated(targetPath);
             }

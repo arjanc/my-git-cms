@@ -35,6 +35,7 @@ export declare function createGitCMSHandler(config: GitCMSConfig): {
         error: string;
     }> | NextResponse<{
         success: boolean;
+        sha: string | undefined;
     }>>;
     DELETE: (request: NextRequest, context: {
         params: Promise<{

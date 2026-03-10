@@ -96,7 +96,7 @@ export function createGitCMSHandler(config) {
                 ? serializeToMarkdown(pageContent)
                 : rawContent;
             try {
-                await octokit.repos.createOrUpdateFileContents({
+                const { data: writeData } = await octokit.repos.createOrUpdateFileContents({
                     owner: config.owner,
                     repo: config.repo,
                     path,
@@ -104,7 +104,7 @@ export function createGitCMSHandler(config) {
                     content: encoding === 'base64' ? content : Buffer.from(content).toString('base64'),
                     sha,
                 });
-                return NextResponse.json({ success: true });
+                return NextResponse.json({ success: true, sha: writeData.content?.sha });
             }
             catch (error) {
                 console.error('GitHub API error:', error);

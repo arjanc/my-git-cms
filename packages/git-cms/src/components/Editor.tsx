@@ -124,6 +124,9 @@ export function Editor({
         return
       }
 
+      const data = await response.json()
+      if (data.sha) setFileSha(data.sha)
+
       if (isNew && onCreated) {
         onCreated(targetPath)
       } else {
