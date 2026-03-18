@@ -5,6 +5,7 @@ import type { BlockSchema, FieldSchema, BlockInstance } from '../types/schemas'
 import { ImageField } from './ImageField'
 import { ImageListField } from './ImageListField'
 import { RichTextEditor } from './RichTextEditor'
+import { PagePickerField } from './PagePickerField'
 import { LayoutBlockEditor } from './LayoutBlockEditor'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
@@ -17,9 +18,10 @@ interface FieldEditorProps {
   field: FieldSchema
   value: unknown
   onChange: (val: unknown) => void
+  apiBasePath?: string
 }
 
-function FieldEditor({ field, value, onChange }: FieldEditorProps) {
+function FieldEditor({ field, value, onChange, apiBasePath = '/admin/api/cms' }: FieldEditorProps) {
   const strVal =
     value !== undefined && value !== null
       ? typeof value === 'object'
@@ -105,6 +107,16 @@ function FieldEditor({ field, value, onChange }: FieldEditorProps) {
         </Select>
       )
 
+    case 'pagepicker':
+      return (
+        <PagePickerField
+          field={field}
+          value={strVal}
+          onChange={(val) => onChange(val)}
+          apiBasePath={apiBasePath}
+        />
+      )
+
     default:
       return null
   }
@@ -118,6 +130,7 @@ interface BlockEditorProps {
   onRemove: () => void
   onMoveUp: () => void
   onMoveDown: () => void
+  apiBasePath?: string
 }
 
 export function BlockEditor({
@@ -128,6 +141,7 @@ export function BlockEditor({
   onRemove,
   onMoveUp,
   onMoveDown,
+  apiBasePath,
 }: BlockEditorProps) {
   if (schema.type === 'layout') {
     return (
@@ -139,6 +153,7 @@ export function BlockEditor({
         onRemove={onRemove}
         onMoveUp={onMoveUp}
         onMoveDown={onMoveDown}
+        apiBasePath={apiBasePath}
       />
     )
   }
@@ -184,6 +199,7 @@ export function BlockEditor({
               field={field}
               value={block[field.name]}
               onChange={(val) => handleField(field.name, val)}
+              apiBasePath={apiBasePath}
             />
           </div>
         ))}

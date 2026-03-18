@@ -218,7 +218,7 @@ export function Editor({ filePath, isCreating = false, contentPath, onBack, onCr
                 const schema = blockSchemas.find((s) => s.type === block.type);
                 if (!schema)
                     return null;
-                return (React.createElement(BlockEditor, { key: block.id, block: block, schema: schema, blockSchemas: blockSchemas, onChange: (updated) => handleBlockChange(index, updated), onRemove: () => handleBlockRemove(index), onMoveUp: () => handleMoveUp(index), onMoveDown: () => handleMoveDown(index) }));
+                return (React.createElement(BlockEditor, { key: block.id, block: block, schema: schema, blockSchemas: blockSchemas, onChange: (updated) => handleBlockChange(index, updated), onRemove: () => handleBlockRemove(index), onMoveUp: () => handleMoveUp(index), onMoveDown: () => handleMoveDown(index), apiBasePath: apiBasePath }));
             }),
             React.createElement(Card, null,
                 React.createElement(CardContent, { className: "pt-5" },

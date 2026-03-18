@@ -8,7 +8,8 @@ interface BlockEditorProps {
     onRemove: () => void;
     onMoveUp: () => void;
     onMoveDown: () => void;
+    apiBasePath?: string;
 }
-export declare function BlockEditor({ block, schema, blockSchemas, onChange, onRemove, onMoveUp, onMoveDown, }: BlockEditorProps): React.JSX.Element;
+export declare function BlockEditor({ block, schema, blockSchemas, onChange, onRemove, onMoveUp, onMoveDown, apiBasePath, }: BlockEditorProps): React.JSX.Element;
 export {};
 //# sourceMappingURL=BlockEditor.d.ts.map

@@ -1,6 +1,6 @@
 // Block type definitions
 
-export type BlockType = 'hero' | 'banner' | 'usp' | 'video' | 'image' | 'text';
+export type BlockType = 'hero' | 'banner' | 'usp' | 'video' | 'image' | 'text' | 'button';
 
 export interface BaseBlock {
   id: string;
@@ -56,7 +56,17 @@ export interface TextBlock extends BaseBlock {
   variant?: 'prose' | 'heading' | 'paragraph';
 }
 
-export type Block = HeroBlock | BannerBlock | USPBlock | VideoBlock | ImageBlock | TextBlock;
+export interface ButtonBlock extends BaseBlock {
+  type: 'button';
+  label: string;
+  url: string;
+  variant: 'primary' | 'secondary' | 'clean';
+  target: 'self' | 'blank';
+  size: 'small' | 'medium' | 'large';
+  alignment: 'left' | 'center' | 'right';
+}
+
+export type Block = HeroBlock | BannerBlock | USPBlock | VideoBlock | ImageBlock | TextBlock | ButtonBlock;
 
 export interface PageContent {
   title: string;
@@ -126,6 +136,18 @@ export function createDefaultBlock(type: BlockType, id: string): Block {
         variant: 'prose',
       } as TextBlock;
     
+    case 'button':
+      return {
+        ...baseBlock,
+        type: 'button',
+        label: 'Click here',
+        url: '/',
+        variant: 'primary',
+        target: 'self',
+        size: 'medium',
+        alignment: 'left',
+      } as ButtonBlock;
+
     default:
       throw new Error(`Unknown block type: ${type}`);
   }

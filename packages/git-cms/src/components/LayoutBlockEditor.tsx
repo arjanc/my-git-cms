@@ -17,6 +17,7 @@ interface LayoutBlockEditorProps {
   onRemove: () => void
   onMoveUp: () => void
   onMoveDown: () => void
+  apiBasePath?: string
 }
 
 export function LayoutBlockEditor({
@@ -27,6 +28,7 @@ export function LayoutBlockEditor({
   onRemove,
   onMoveUp,
   onMoveDown,
+  apiBasePath,
 }: LayoutBlockEditorProps) {
   const columnCount = Number(block.columns ?? 2)
   const rawSlots = Array.isArray(block.slots) ? (block.slots as BlockInstance[][]) : []
@@ -72,6 +74,7 @@ export function LayoutBlockEditor({
         onRemove={onNestedRemove}
         onMoveUp={onNestedMoveUp}
         onMoveDown={onNestedMoveDown}
+        apiBasePath={apiBasePath}
       />
     )
   }

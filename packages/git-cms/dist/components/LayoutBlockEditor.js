@@ -6,7 +6,7 @@ import { Button } from './ui/button';
 import { Label } from './ui/label';
 import { Card, CardContent, CardHeader } from './ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
-export function LayoutBlockEditor({ block, schema, blockSchemas, onChange, onRemove, onMoveUp, onMoveDown, }) {
+export function LayoutBlockEditor({ block, schema, blockSchemas, onChange, onRemove, onMoveUp, onMoveDown, apiBasePath, }) {
     const columnCount = Number(block.columns ?? 2);
     const rawSlots = Array.isArray(block.slots) ? block.slots : [];
     // Ensure slots array always matches current column count
@@ -31,7 +31,7 @@ export function LayoutBlockEditor({ block, schema, blockSchemas, onChange, onRem
         const nestedSchema = blockSchemas.find((s) => s.type === nestedBlock.type);
         if (!nestedSchema)
             return null;
-        return (React.createElement(BlockEditor, { key: nestedBlock.id, block: nestedBlock, schema: nestedSchema, blockSchemas: blockSchemas, onChange: onNestedChange, onRemove: onNestedRemove, onMoveUp: onNestedMoveUp, onMoveDown: onNestedMoveDown }));
+        return (React.createElement(BlockEditor, { key: nestedBlock.id, block: nestedBlock, schema: nestedSchema, blockSchemas: blockSchemas, onChange: onNestedChange, onRemove: onNestedRemove, onMoveUp: onNestedMoveUp, onMoveDown: onNestedMoveDown, apiBasePath: apiBasePath }));
     }
     return (React.createElement(Card, null,
         React.createElement(CardHeader, { className: "py-3 px-4 flex flex-row items-center justify-between space-y-0" },

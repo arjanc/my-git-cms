@@ -1,4 +1,4 @@
-export type BlockType = 'hero' | 'banner' | 'usp' | 'video' | 'image' | 'text';
+export type BlockType = 'hero' | 'banner' | 'usp' | 'video' | 'image' | 'text' | 'button';
 export interface BaseBlock {
     id: string;
     type: BlockType;
@@ -46,7 +46,16 @@ export interface TextBlock extends BaseBlock {
     content: string;
     variant?: 'prose' | 'heading' | 'paragraph';
 }
-export type Block = HeroBlock | BannerBlock | USPBlock | VideoBlock | ImageBlock | TextBlock;
+export interface ButtonBlock extends BaseBlock {
+    type: 'button';
+    label: string;
+    url: string;
+    variant: 'primary' | 'secondary' | 'clean';
+    target: 'self' | 'blank';
+    size: 'small' | 'medium' | 'large';
+    alignment: 'left' | 'center' | 'right';
+}
+export type Block = HeroBlock | BannerBlock | USPBlock | VideoBlock | ImageBlock | TextBlock | ButtonBlock;
 export interface PageContent {
     title: string;
     slug: string;

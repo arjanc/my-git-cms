@@ -8,7 +8,8 @@ interface LayoutBlockEditorProps {
     onRemove: () => void;
     onMoveUp: () => void;
     onMoveDown: () => void;
+    apiBasePath?: string;
 }
-export declare function LayoutBlockEditor({ block, schema, blockSchemas, onChange, onRemove, onMoveUp, onMoveDown, }: LayoutBlockEditorProps): React.JSX.Element;
+export declare function LayoutBlockEditor({ block, schema, blockSchemas, onChange, onRemove, onMoveUp, onMoveDown, apiBasePath, }: LayoutBlockEditorProps): React.JSX.Element;
 export {};
 //# sourceMappingURL=LayoutBlockEditor.d.ts.map

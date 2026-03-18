@@ -7,6 +7,7 @@ export type FieldType =
   | 'dropdown'
   | 'boolean'
   | 'richtext'
+  | 'pagepicker'
 
 export interface FieldSchema {
   /** Key used in the block data object, e.g. "heading" */
@@ -20,6 +21,11 @@ export interface FieldSchema {
   options?: Array<{ label: string; value: string }>
   /** Default value injected when creating a new block */
   defaultValue?: unknown
+  /**
+   * For fieldType "pagepicker": the content directory path to list pages from.
+   * Should include contentBase, e.g. "example-app/content/pages".
+   */
+  contentPath?: string
 }
 
 export interface BlockSchema {

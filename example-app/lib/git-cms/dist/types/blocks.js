@@ -48,6 +48,17 @@ export function createDefaultBlock(type, id) {
                 content: 'Start writing your content here...',
                 variant: 'prose',
             };
+        case 'button':
+            return {
+                ...baseBlock,
+                type: 'button',
+                label: 'Click here',
+                url: '/',
+                variant: 'primary',
+                target: 'self',
+                size: 'medium',
+                alignment: 'left',
+            };
         default:
             throw new Error(`Unknown block type: ${type}`);
     }

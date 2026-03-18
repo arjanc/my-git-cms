@@ -3,6 +3,7 @@ import React from 'react';
 import { ImageField } from './ImageField';
 import { ImageListField } from './ImageListField';
 import { RichTextEditor } from './RichTextEditor';
+import { PagePickerField } from './PagePickerField';
 import { LayoutBlockEditor } from './LayoutBlockEditor';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
@@ -10,7 +11,7 @@ import { Textarea } from './ui/textarea';
 import { Label } from './ui/label';
 import { Card, CardContent, CardHeader } from './ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
-function FieldEditor({ field, value, onChange }) {
+function FieldEditor({ field, value, onChange, apiBasePath = '/admin/api/cms' }) {
     const strVal = value !== undefined && value !== null
         ? typeof value === 'object'
             ? JSON.stringify(value, null, 2)
@@ -42,13 +43,15 @@ function FieldEditor({ field, value, onChange }) {
                 React.createElement(SelectTrigger, null,
                     React.createElement(SelectValue, { placeholder: field.label })),
                 React.createElement(SelectContent, null, (field.options ?? []).map((opt) => (React.createElement(SelectItem, { key: opt.value, value: opt.value }, opt.label))))));
+        case 'pagepicker':
+            return (React.createElement(PagePickerField, { field: field, value: strVal, onChange: (val) => onChange(val), apiBasePath: apiBasePath }));
         default:
             return null;
     }
 }
-export function BlockEditor({ block, schema, blockSchemas = [], onChange, onRemove, onMoveUp, onMoveDown, }) {
+export function BlockEditor({ block, schema, blockSchemas = [], onChange, onRemove, onMoveUp, onMoveDown, apiBasePath, }) {
     if (schema.type === 'layout') {
-        return (React.createElement(LayoutBlockEditor, { block: block, schema: schema, blockSchemas: blockSchemas, onChange: onChange, onRemove: onRemove, onMoveUp: onMoveUp, onMoveDown: onMoveDown }));
+        return (React.createElement(LayoutBlockEditor, { block: block, schema: schema, blockSchemas: blockSchemas, onChange: onChange, onRemove: onRemove, onMoveUp: onMoveUp, onMoveDown: onMoveDown, apiBasePath: apiBasePath }));
     }
     function handleField(name, val) {
         onChange({ ...block, [name]: val });
@@ -68,5 +71,5 @@ export function BlockEditor({ block, schema, blockSchemas = [], onChange, onRemo
             React.createElement(Label, null,
                 field.label,
                 field.required && React.createElement("span", { className: "text-red-500 ml-1" }, "*")),
-            React.createElement(FieldEditor, { field: field, value: block[field.name], onChange: (val) => handleField(field.name, val) })))))));
+            React.createElement(FieldEditor, { field: field, value: block[field.name], onChange: (val) => handleField(field.name, val), apiBasePath: apiBasePath })))))));
 }

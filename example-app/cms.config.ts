@@ -93,6 +93,57 @@ export const blockSchemas: BlockSchema[] = [
     ],
   },
   {
+    type: 'button',
+    label: 'Button',
+    fields: [
+      { name: 'label',     label: 'Button text', fieldType: 'text',        required: true,  defaultValue: 'Click here' },
+      { name: 'url',       label: 'URL',          fieldType: 'pagepicker', required: true,  defaultValue: '/', contentPath: 'example-app/content/pages' },
+      {
+        name: 'variant',
+        label: 'Variant',
+        fieldType: 'dropdown',
+        defaultValue: 'primary',
+        options: [
+          { label: 'Primary',   value: 'primary' },
+          { label: 'Secondary', value: 'secondary' },
+          { label: 'Clean',     value: 'clean' },
+        ],
+      },
+      {
+        name: 'target',
+        label: 'Open in',
+        fieldType: 'dropdown',
+        defaultValue: 'self',
+        options: [
+          { label: 'Same tab',  value: 'self' },
+          { label: 'New tab',   value: 'blank' },
+        ],
+      },
+      {
+        name: 'size',
+        label: 'Size',
+        fieldType: 'dropdown',
+        defaultValue: 'medium',
+        options: [
+          { label: 'Small',  value: 'small' },
+          { label: 'Medium', value: 'medium' },
+          { label: 'Large',  value: 'large' },
+        ],
+      },
+      {
+        name: 'alignment',
+        label: 'Alignment',
+        fieldType: 'dropdown',
+        defaultValue: 'left',
+        options: [
+          { label: 'Left',   value: 'left' },
+          { label: 'Center', value: 'center' },
+          { label: 'Right',  value: 'right' },
+        ],
+      },
+    ],
+  },
+  {
     type: 'layout',
     label: 'Layout (columns)',
     fields: [
@@ -110,7 +161,7 @@ export const blockSchemas: BlockSchema[] = [
     ],
     columnsConfig: {
       // Remove 'layout' to prevent nesting; list specific types to restrict
-      allowedBlocks: ['text', 'image', 'banner', 'usp'],
+      allowedBlocks: ['text', 'image', 'banner', 'usp', 'button'],
     },
   },
 ]

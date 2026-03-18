@@ -367,6 +367,7 @@ export function Editor({
                 onRemove={() => handleBlockRemove(index)}
                 onMoveUp={() => handleMoveUp(index)}
                 onMoveDown={() => handleMoveDown(index)}
+                apiBasePath={apiBasePath}
               />
             )
           })}
