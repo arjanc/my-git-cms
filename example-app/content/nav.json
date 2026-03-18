@@ -5,13 +5,13 @@
       "href": "/"
     },
     {
-      "title": "Blogs",
-      "href": "/blogs",
-      "slug": "/blog",
+      "title": "About Ark",
+      "href": "/about",
+      "slug": "/about",
       "children": [
         {
           "title": "Getting started",
-          "href": "/blog/getting-started"
+          "href": "/about/getting-started"
         }
       ]
     }

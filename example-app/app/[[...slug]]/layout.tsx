@@ -10,7 +10,7 @@ export default async function AppLayout({
 }) {
     const nav = buildNav([
         path.join(process.cwd(), 'content', 'pages'),
-        path.join(process.cwd(), 'content', 'blog'),
+        path.join(process.cwd(), 'content', 'about'),
     ]);
 
     return (

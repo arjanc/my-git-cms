@@ -1,6 +1,6 @@
 ---
-title: blogs
-slug: /blogs
+title: About Ark
+slug: /about
 description: overview
 pageSchema: pages
 blocks:
@@ -33,7 +33,7 @@ metadata:
   updatedAt: '2026-03-05T14:03:49.607Z'
   author: Celar
 navEnabled: true
-navTitle: Blogs
+navTitle: About ark
 navOrder: 1
 ---
 

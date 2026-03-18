@@ -1,8 +1,8 @@
 ---
 title: Getting Started with Git CMS
-slug: /blog/getting-started
+slug: /about/getting-started
 description: How to set up and configure Git CMS for your Next.js project
-pageSchema: blog
+pageSchema: page
 blocks:
   - id: block_1_text
     type: text
@@ -25,6 +25,6 @@ metadata:
 navEnabled: true
 navTitle: Getting started with GIT CMS
 navOrder: 0
-navParent: /blogs
+navParent: /about
 ---
 
