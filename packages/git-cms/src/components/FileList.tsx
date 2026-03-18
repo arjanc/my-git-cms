@@ -123,7 +123,7 @@ function TreeNode({ page, depth, onSelectFile }: TreeNodeProps) {
       </button>
 
       {hasChildren && (
-        <div className="mt-2 space-y-0.5 ml-5 pl-3 border-l-2 border-neutral-200">
+        <div className="mt-2 space-y-2 ml-5 pl-3 border-l-2 border-neutral-200">
           {page.children.map((child) => (
             <TreeNode
               key={child.path}
