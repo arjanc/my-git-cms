@@ -25,6 +25,14 @@ blocks:
 
             We are always in search of new staff members so send us your CV and
             motivational letter for an open application​!
+        - id: block_1773828766796_r6ql6uvyy
+          type: button
+          label: Contact us
+          url: /
+          variant: primary
+          target: self
+          size: medium
+          alignment: left
       - - id: block_1773679312708_8t3qhfc39
           type: image
           url: /media/IMG-20191101-WA0029-1024x768.jpg
@@ -32,7 +40,7 @@ blocks:
           caption: ''
 metadata:
   createdAt: '2026-03-16T16:39:51.469Z'
-  updatedAt: '2026-03-16T16:42:06.174Z'
+  updatedAt: '2026-03-18T10:16:34.572Z'
   author: Celar
 navEnabled: true
 navTitle: Working at
