@@ -10,48 +10,19 @@ interface PageProps {
   params: Promise<{ slug?: string[] }>
 }
 
-function resolveContentPath(slug: string[]): string[] {
-  const contentDir = path.join(process.cwd(), 'content')
-
-  if (slug.length === 0) {
-    return [path.join(contentDir, 'pages', 'home.md')]
-  }
-
-  // 1. Try resolving relative to content/
-  const candidates = [
-    path.join(contentDir, ...slug) + '.md',
-    path.join(contentDir, ...slug, 'index.md'),
-  ]
-
-  // 2. Dynamically add candidates for each subdirectory in content/
-  // This handles content in pages/, blog/, etc.
-  try {
-    const subdirs = fs.readdirSync(contentDir, { withFileTypes: true })
-      .filter((dirent) => dirent.isDirectory())
-      .map((dirent) => dirent.name)
-
-    for (const subdir of subdirs) {
-      candidates.push(path.join(contentDir, subdir, ...slug) + '.md')
-      candidates.push(path.join(contentDir, subdir, ...slug, 'index.md'))
-    }
-  } catch (err) {
-    console.error('Failed to read content directory:', err)
-  }
-
-  return candidates
-}
+const slugMap: Record<string, string> = JSON.parse(
+  fs.readFileSync(path.join(process.cwd(), 'content', 'slug-map.json'), 'utf-8')
+)
 
 function readContent(slug: string[]) {
-  const candidates = resolveContentPath(slug)
-  for (const filePath of candidates) {
-    try {
-      const raw = fs.readFileSync(filePath, 'utf-8')
-      return parseMarkdown(raw)
-    } catch {
-      // try next candidate
-    }
+  const slugStr = slug.length === 0 ? '/' : '/' + slug.join('/')
+  const relPath = slugMap[slugStr]
+  if (!relPath) return null
+  try {
+    return parseMarkdown(fs.readFileSync(path.join(process.cwd(), relPath), 'utf-8'))
+  } catch {
+    return null
   }
-  return null
 }
 
 function renderBlock(block: BlockInstance): React.ReactNode {

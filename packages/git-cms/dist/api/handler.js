@@ -1,6 +1,77 @@
 import { NextResponse } from 'next/server';
 import { Octokit } from '@octokit/rest';
 import { parseMarkdown, serializeToMarkdown } from '../lib/markdown';
+// ─── Slug map helpers ─────────────────────────────────────────────────────────
+/**
+ * Derives the slug-map file path and the app-relative file path from a repo
+ * file path.
+ *
+ * Examples (contentBase = 'example-app'):
+ *   filePath: 'example-app/content/pages/team.md'
+ *   → slugMapRepoPath: 'example-app/content/slug-map.json'
+ *   → fileRelPath:     'content/pages/team.md'
+ *
+ * Examples (no contentBase — app at repo root):
+ *   filePath: 'content/pages/team.md'
+ *   → slugMapRepoPath: 'content/slug-map.json'
+ *   → fileRelPath:     'content/pages/team.md'
+ */
+function getSlugMapInfo(filePath) {
+    const segments = filePath.split('/');
+    const contentIdx = segments.indexOf('content');
+    if (contentIdx === -1)
+        return null;
+    return {
+        slugMapRepoPath: [...segments.slice(0, contentIdx + 1), 'slug-map.json'].join('/'),
+        fileRelPath: segments.slice(contentIdx).join('/'),
+    };
+}
+async function readSlugMapFromGitHub(octokit, owner, repo, slugMapPath) {
+    try {
+        const { data } = await octokit.repos.getContent({ owner, repo, path: slugMapPath });
+        if (!Array.isArray(data) && 'content' in data) {
+            const map = JSON.parse(Buffer.from(data.content, 'base64').toString('utf-8'));
+            return { map, sha: data.sha };
+        }
+    }
+    catch {
+        // File doesn't exist yet
+    }
+    return { map: {}, sha: undefined };
+}
+async function writeSlugMapToGitHub(octokit, owner, repo, slugMapPath, map, sha, message) {
+    const sorted = Object.fromEntries(Object.entries(map).sort(([a], [b]) => a.localeCompare(b)));
+    await octokit.repos.createOrUpdateFileContents({
+        owner,
+        repo,
+        path: slugMapPath,
+        message,
+        content: Buffer.from(JSON.stringify(sorted, null, 2) + '\n').toString('base64'),
+        sha,
+    });
+}
+/**
+ * Adds or updates a slug → file mapping. Also removes any stale entries
+ * that previously pointed to the same file (handles slug renames).
+ */
+async function upsertSlugEntry(octokit, owner, repo, slugMapPath, slug, fileRelPath) {
+    const { map, sha } = await readSlugMapFromGitHub(octokit, owner, repo, slugMapPath);
+    // Remove stale entries for this file (in case the slug changed)
+    const cleaned = Object.fromEntries(Object.entries(map).filter(([, v]) => v !== fileRelPath));
+    cleaned[slug] = fileRelPath;
+    // Skip write if nothing changed
+    if (JSON.stringify(cleaned) === JSON.stringify(map))
+        return;
+    await writeSlugMapToGitHub(octokit, owner, repo, slugMapPath, cleaned, sha, `slug-map: ${slug}`);
+}
+/** Removes the entry for a deleted file from the slug map. */
+async function removeSlugEntry(octokit, owner, repo, slugMapPath, fileRelPath) {
+    const { map, sha } = await readSlugMapFromGitHub(octokit, owner, repo, slugMapPath);
+    const updated = Object.fromEntries(Object.entries(map).filter(([, v]) => v !== fileRelPath));
+    if (Object.keys(updated).length === Object.keys(map).length)
+        return; // nothing to remove
+    await writeSlugMapToGitHub(octokit, owner, repo, slugMapPath, updated, sha, `slug-map: remove ${fileRelPath}`);
+}
 export function createGitCMSHandler(config) {
     return {
         GET: async (request, context) => {
@@ -104,7 +175,16 @@ export function createGitCMSHandler(config) {
                     content: encoding === 'base64' ? content : Buffer.from(content).toString('base64'),
                     sha,
                 });
-                return NextResponse.json({ success: true, sha: writeData.content?.sha });
+                const savedSha = writeData.content?.sha;
+                // Maintain the slug map — non-critical, errors must not fail the save
+                if (pageContent?.slug) {
+                    const info = getSlugMapInfo(path);
+                    if (info) {
+                        upsertSlugEntry(octokit, config.owner, config.repo, info.slugMapRepoPath, pageContent.slug, info.fileRelPath)
+                            .catch((err) => console.error('slug-map update failed:', err));
+                    }
+                }
+                return NextResponse.json({ success: true, sha: savedSha });
             }
             catch (error) {
                 console.error('GitHub API error:', error);
@@ -134,6 +214,12 @@ export function createGitCMSHandler(config) {
                     message,
                     sha,
                 });
+                // Maintain the slug map — non-critical, errors must not fail the delete
+                const info = getSlugMapInfo(path);
+                if (info) {
+                    removeSlugEntry(octokit, config.owner, config.repo, info.slugMapRepoPath, info.fileRelPath)
+                        .catch((err) => console.error('slug-map remove failed:', err));
+                }
                 return NextResponse.json({ success: true });
             }
             catch (error) {

@@ -1,6 +1,6 @@
 ---
 title: Team
-slug: working-at/team
+slug: /working-at/team
 description: ''
 pageSchema: pages
 blocks:

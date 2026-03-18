@@ -1,0 +1,8 @@
+{
+  "/": "content/pages/home.md",
+  "/about": "content/pages/about.md",
+  "/about/getting-started": "content/about/getting-started.md",
+  "/working-at": "content/pages/working-at.md",
+  "/working-at/team": "content/pages/team.md",
+  "/working-at/test": "content/pages/testsubpage.md"
+}
