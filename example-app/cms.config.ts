@@ -96,17 +96,17 @@ export const blockSchemas: BlockSchema[] = [
     type: 'button',
     label: 'Button',
     fields: [
-      { name: 'label',     label: 'Button text', fieldType: 'text',        required: true,  defaultValue: 'Click here' },
-      { name: 'url',       label: 'URL',          fieldType: 'pagepicker', required: true,  defaultValue: '/', contentPath: 'example-app/content/pages' },
+      { name: 'label', label: 'Button text', fieldType: 'text', required: true, defaultValue: 'Click here' },
+      { name: 'url', label: 'URL', fieldType: 'pagepicker', required: true, defaultValue: '/', contentPath: 'example-app/content/pages' },
       {
         name: 'variant',
         label: 'Variant',
         fieldType: 'dropdown',
         defaultValue: 'primary',
         options: [
-          { label: 'Primary',   value: 'primary' },
+          { label: 'Primary', value: 'primary' },
           { label: 'Secondary', value: 'secondary' },
-          { label: 'Clean',     value: 'clean' },
+          { label: 'Clean', value: 'clean' },
         ],
       },
       {
@@ -115,8 +115,8 @@ export const blockSchemas: BlockSchema[] = [
         fieldType: 'dropdown',
         defaultValue: 'self',
         options: [
-          { label: 'Same tab',  value: 'self' },
-          { label: 'New tab',   value: 'blank' },
+          { label: 'Same tab', value: 'self' },
+          { label: 'New tab', value: 'blank' },
         ],
       },
       {
@@ -125,9 +125,9 @@ export const blockSchemas: BlockSchema[] = [
         fieldType: 'dropdown',
         defaultValue: 'medium',
         options: [
-          { label: 'Small',  value: 'small' },
+          { label: 'Small', value: 'small' },
           { label: 'Medium', value: 'medium' },
-          { label: 'Large',  value: 'large' },
+          { label: 'Large', value: 'large' },
         ],
       },
       {
@@ -136,9 +136,9 @@ export const blockSchemas: BlockSchema[] = [
         fieldType: 'dropdown',
         defaultValue: 'left',
         options: [
-          { label: 'Left',   value: 'left' },
+          { label: 'Left', value: 'left' },
           { label: 'Center', value: 'center' },
-          { label: 'Right',  value: 'right' },
+          { label: 'Right', value: 'right' },
         ],
       },
     ],
@@ -182,9 +182,9 @@ export const pageSchemas: PageSchema[] = [
     contentPath: 'content/pages',
   },
   {
-    type: 'blog',
-    label: 'Blog posts',
-    allowedBlocks: ['text', 'image'],
-    contentPath: 'content/blog',
+    type: 'about',
+    label: 'About',
+    allowedBlocks: 'any',
+    contentPath: 'content/about',
   },
 ]

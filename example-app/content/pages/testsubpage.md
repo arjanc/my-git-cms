@@ -15,6 +15,6 @@ metadata:
   author: Celar
 navEnabled: true
 navOrder: 0
-navParent: working-at
+navParent: /working-at
 ---
 
