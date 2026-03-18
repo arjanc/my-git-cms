@@ -95,9 +95,8 @@ function TreeNode({ page, depth, onSelectFile }: TreeNodeProps) {
         className="w-full text-left group"
       >
         <Card
-          className={`px-4 py-3 hover:shadow-md transition-shadow cursor-pointer ${
-            isChild ? 'bg-neutral-50 border-neutral-200' : ''
-          }`}
+          className={`px-4 py-3 hover:shadow-md transition-shadow cursor-pointer ${isChild ? 'bg-neutral-50 border-neutral-200' : ''
+            }`}
         >
           <div className="flex items-center gap-2">
             {isChild && (
@@ -106,9 +105,8 @@ function TreeNode({ page, depth, onSelectFile }: TreeNodeProps) {
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2">
                 <span
-                  className={`font-medium truncate group-hover:text-blue-600 transition-colors ${
-                    isChild ? 'text-sm text-gray-700' : 'text-gray-800'
-                  }`}
+                  className={`font-medium truncate group-hover:text-blue-600 transition-colors ${isChild ? 'text-sm text-gray-700' : 'text-gray-800'
+                    }`}
                 >
                   {page.pageTitle}
                 </span>
@@ -125,7 +123,7 @@ function TreeNode({ page, depth, onSelectFile }: TreeNodeProps) {
       </button>
 
       {hasChildren && (
-        <div className="mt-0.5 space-y-0.5 ml-5 pl-3 border-l-2 border-neutral-200">
+        <div className="mt-2 space-y-0.5 ml-5 pl-3 border-l-2 border-neutral-200">
           {page.children.map((child) => (
             <TreeNode
               key={child.path}

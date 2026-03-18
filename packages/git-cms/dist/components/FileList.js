@@ -64,7 +64,7 @@ function TreeNode({ page, depth, onSelectFile }) {
                             React.createElement("span", { className: `font-medium truncate group-hover:text-blue-600 transition-colors ${isChild ? 'text-sm text-gray-700' : 'text-gray-800'}` }, page.pageTitle),
                             hasChildren && (React.createElement("span", { className: "flex-shrink-0 text-xs text-neutral-400 bg-neutral-100 rounded px-1.5 py-0.5 leading-none" }, page.children.length))),
                         React.createElement("span", { className: "text-xs text-gray-400 font-mono" }, page.name))))),
-        hasChildren && (React.createElement("div", { className: "mt-0.5 space-y-0.5 ml-5 pl-3 border-l-2 border-neutral-200" }, page.children.map((child) => (React.createElement(TreeNode, { key: child.path, page: child, depth: depth + 1, onSelectFile: onSelectFile })))))));
+        hasChildren && (React.createElement("div", { className: "mt-2 space-y-0.5 ml-5 pl-3 border-l-2 border-neutral-200" }, page.children.map((child) => (React.createElement(TreeNode, { key: child.path, page: child, depth: depth + 1, onSelectFile: onSelectFile })))))));
 }
 export function FileList({ onSelectFile, onCreateNew, onBack, contentPath, apiBasePath = '/admin/api/cms', }) {
     const [tree, setTree] = useState(null);
