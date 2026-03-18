@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import type { BlockSchema, BlockInstance, PageContent, PageSchema } from '../types/schemas'
 import { BlockEditor } from './BlockEditor'
+import { PagePickerField } from './PagePickerField'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
 import { Textarea } from './ui/textarea'
@@ -335,15 +336,17 @@ export function Editor({
                         Parent slug{' '}
                         <span className="text-gray-400 font-normal">(e.g. /about)</span>
                       </Label>
-                      <Input
-                        id="navParent"
+                      <PagePickerField
+                        contentPaths={pageSchemas?.map((s) => s.contentPath) ?? []}
                         value={pageContent!.navParent ?? ''}
-                        onChange={(e) =>
+                        onChange={(val) =>
                           setPageContent({
                             ...pageContent!,
-                            navParent: e.target.value || undefined,
+                            navParent: val || undefined,
                           })
                         }
+                        apiBasePath={apiBasePath}
+                        excludeSlug={pageContent!.slug || undefined}
                         placeholder="/parent-page"
                       />
                     </div>

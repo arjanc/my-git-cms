@@ -19,59 +19,108 @@ interface Page {
 }
 
 interface PagePickerFieldProps {
-  field: FieldSchema
+  /** Used when rendered from BlockEditor — provides label and contentPath */
+  field?: FieldSchema
+  /**
+   * Explicit list of full content paths to fetch pages from.
+   * Takes precedence over field.contentPath.
+   * Use when you need pages from multiple directories (e.g. navParent picker).
+   */
+  contentPaths?: string[]
   value: string
   onChange: (val: string) => void
   apiBasePath: string
+  /**
+   * Slug of the currently edited page — excluded from the picker list.
+   * Prevents a page from selecting itself as a parent or link target.
+   */
+  excludeSlug?: string
+  placeholder?: string
 }
 
-export function PagePickerField({ field, value, onChange, apiBasePath }: PagePickerFieldProps) {
+async function fetchPagesFromPath(
+  apiBasePath: string,
+  contentPath: string
+): Promise<Page[]> {
+  const res = await fetch(`${apiBasePath}/${contentPath}`)
+  if (!res.ok) return []
+  const items = await res.json()
+  if (!Array.isArray(items)) return []
+
+  const mdFiles = items.filter(
+    (item: { type: string; name: string }) =>
+      item.type === 'file' && item.name.endsWith('.md')
+  )
+
+  return Promise.all(
+    mdFiles.map(async (item: { name: string; path: string }) => {
+      try {
+        const fileRes = await fetch(`${apiBasePath}/${item.path}`)
+        const fileData = await fileRes.json()
+        const pc = fileData.pageContent
+        return {
+          name: item.name,
+          path: item.path,
+          title: pc?.title ?? item.name.replace(/\.md$/, ''),
+          slug: pc?.slug ?? `/${item.name.replace(/\.md$/, '')}`,
+        }
+      } catch {
+        return {
+          name: item.name,
+          path: item.path,
+          title: item.name.replace(/\.md$/, ''),
+          slug: `/${item.name.replace(/\.md$/, '')}`,
+        }
+      }
+    })
+  )
+}
+
+export function PagePickerField({
+  field,
+  contentPaths,
+  value,
+  onChange,
+  apiBasePath,
+  excludeSlug,
+  placeholder,
+}: PagePickerFieldProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [pages, setPages] = useState<Page[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const contentPath = field.contentPath ?? ''
+  // Resolve which paths to fetch from
+  const resolvedPaths: string[] =
+    contentPaths && contentPaths.length > 0
+      ? contentPaths
+      : field?.contentPath
+        ? [field.contentPath]
+        : []
 
   const loadPages = async () => {
-    if (!contentPath) return
+    if (resolvedPaths.length === 0) return
     setLoading(true)
     setError(null)
     try {
-      const res = await fetch(`${apiBasePath}/${contentPath}`)
-      if (!res.ok) throw new Error(`Failed to load pages (${res.status})`)
-      const items = await res.json()
-      if (!Array.isArray(items)) throw new Error('Unexpected response')
-
-      const mdFiles = items.filter(
-        (item: { type: string; name: string }) =>
-          item.type === 'file' && item.name.endsWith('.md')
+      const results = await Promise.all(
+        resolvedPaths.map((p) => fetchPagesFromPath(apiBasePath, p))
       )
+      const all = results.flat()
 
-      const pageDetails = await Promise.all(
-        mdFiles.map(async (item: { name: string; path: string }) => {
-          try {
-            const fileRes = await fetch(`${apiBasePath}/${item.path}`)
-            const fileData = await fileRes.json()
-            const pc = fileData.pageContent
-            return {
-              name: item.name,
-              path: item.path,
-              title: pc?.title ?? item.name.replace(/\.md$/, ''),
-              slug: pc?.slug ?? `/${item.name.replace(/\.md$/, '')}`,
-            }
-          } catch {
-            return {
-              name: item.name,
-              path: item.path,
-              title: item.name.replace(/\.md$/, ''),
-              slug: `/${item.name.replace(/\.md$/, '')}`,
-            }
-          }
-        })
-      )
+      // Deduplicate by slug, then exclude the current page if needed
+      const seen = new Set<string>()
+      const filtered: Page[] = []
+      for (const page of all) {
+        if (seen.has(page.slug)) continue
+        seen.add(page.slug)
+        if (excludeSlug && page.slug === excludeSlug) continue
+        filtered.push(page)
+      }
 
-      setPages(pageDetails)
+      // Sort alphabetically by title
+      filtered.sort((a, b) => a.title.localeCompare(b.title))
+      setPages(filtered)
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Failed to load pages')
     } finally {
@@ -89,12 +138,14 @@ export function PagePickerField({ field, value, onChange, apiBasePath }: PagePic
     setIsOpen(false)
   }
 
+  const hasContent = resolvedPaths.length > 0
+
   return (
     <div className="flex gap-2">
       <Input
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        placeholder={field.label}
+        placeholder={placeholder ?? field?.label ?? 'Enter URL or select a page'}
         className="flex-1"
       />
       <Button
@@ -102,7 +153,7 @@ export function PagePickerField({ field, value, onChange, apiBasePath }: PagePic
         variant="outline"
         size="sm"
         onClick={handleOpen}
-        disabled={!contentPath}
+        disabled={!hasContent}
         className="shrink-0"
       >
         Select page

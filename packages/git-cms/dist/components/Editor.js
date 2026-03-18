@@ -1,6 +1,7 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { BlockEditor } from './BlockEditor';
+import { PagePickerField } from './PagePickerField';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Textarea } from './ui/textarea';
@@ -210,10 +211,10 @@ export function Editor({ filePath, isCreating = false, contentPath, onBack, onCr
                                     "Parent slug",
                                     ' ',
                                     React.createElement("span", { className: "text-gray-400 font-normal" }, "(e.g. /about)")),
-                                React.createElement(Input, { id: "navParent", value: pageContent.navParent ?? '', onChange: (e) => setPageContent({
+                                React.createElement(PagePickerField, { contentPaths: pageSchemas?.map((s) => s.contentPath) ?? [], value: pageContent.navParent ?? '', onChange: (val) => setPageContent({
                                         ...pageContent,
-                                        navParent: e.target.value || undefined,
-                                    }), placeholder: "/parent-page" }))))))),
+                                        navParent: val || undefined,
+                                    }), apiBasePath: apiBasePath, excludeSlug: pageContent.slug || undefined, placeholder: "/parent-page" }))))))),
             pageContent.blocks.map((block, index) => {
                 const schema = blockSchemas.find((s) => s.type === block.type);
                 if (!schema)

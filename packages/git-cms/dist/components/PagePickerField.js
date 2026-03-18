@@ -3,47 +3,69 @@ import React, { useState } from 'react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, } from './ui/dialog';
-export function PagePickerField({ field, value, onChange, apiBasePath }) {
+async function fetchPagesFromPath(apiBasePath, contentPath) {
+    const res = await fetch(`${apiBasePath}/${contentPath}`);
+    if (!res.ok)
+        return [];
+    const items = await res.json();
+    if (!Array.isArray(items))
+        return [];
+    const mdFiles = items.filter((item) => item.type === 'file' && item.name.endsWith('.md'));
+    return Promise.all(mdFiles.map(async (item) => {
+        try {
+            const fileRes = await fetch(`${apiBasePath}/${item.path}`);
+            const fileData = await fileRes.json();
+            const pc = fileData.pageContent;
+            return {
+                name: item.name,
+                path: item.path,
+                title: pc?.title ?? item.name.replace(/\.md$/, ''),
+                slug: pc?.slug ?? `/${item.name.replace(/\.md$/, '')}`,
+            };
+        }
+        catch {
+            return {
+                name: item.name,
+                path: item.path,
+                title: item.name.replace(/\.md$/, ''),
+                slug: `/${item.name.replace(/\.md$/, '')}`,
+            };
+        }
+    }));
+}
+export function PagePickerField({ field, contentPaths, value, onChange, apiBasePath, excludeSlug, placeholder, }) {
     const [isOpen, setIsOpen] = useState(false);
     const [pages, setPages] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    const contentPath = field.contentPath ?? '';
+    // Resolve which paths to fetch from
+    const resolvedPaths = contentPaths && contentPaths.length > 0
+        ? contentPaths
+        : field?.contentPath
+            ? [field.contentPath]
+            : [];
     const loadPages = async () => {
-        if (!contentPath)
+        if (resolvedPaths.length === 0)
             return;
         setLoading(true);
         setError(null);
         try {
-            const res = await fetch(`${apiBasePath}/${contentPath}`);
-            if (!res.ok)
-                throw new Error(`Failed to load pages (${res.status})`);
-            const items = await res.json();
-            if (!Array.isArray(items))
-                throw new Error('Unexpected response');
-            const mdFiles = items.filter((item) => item.type === 'file' && item.name.endsWith('.md'));
-            const pageDetails = await Promise.all(mdFiles.map(async (item) => {
-                try {
-                    const fileRes = await fetch(`${apiBasePath}/${item.path}`);
-                    const fileData = await fileRes.json();
-                    const pc = fileData.pageContent;
-                    return {
-                        name: item.name,
-                        path: item.path,
-                        title: pc?.title ?? item.name.replace(/\.md$/, ''),
-                        slug: pc?.slug ?? `/${item.name.replace(/\.md$/, '')}`,
-                    };
-                }
-                catch {
-                    return {
-                        name: item.name,
-                        path: item.path,
-                        title: item.name.replace(/\.md$/, ''),
-                        slug: `/${item.name.replace(/\.md$/, '')}`,
-                    };
-                }
-            }));
-            setPages(pageDetails);
+            const results = await Promise.all(resolvedPaths.map((p) => fetchPagesFromPath(apiBasePath, p)));
+            const all = results.flat();
+            // Deduplicate by slug, then exclude the current page if needed
+            const seen = new Set();
+            const filtered = [];
+            for (const page of all) {
+                if (seen.has(page.slug))
+                    continue;
+                seen.add(page.slug);
+                if (excludeSlug && page.slug === excludeSlug)
+                    continue;
+                filtered.push(page);
+            }
+            // Sort alphabetically by title
+            filtered.sort((a, b) => a.title.localeCompare(b.title));
+            setPages(filtered);
         }
         catch (err) {
             setError(err instanceof Error ? err.message : 'Failed to load pages');
@@ -60,9 +82,10 @@ export function PagePickerField({ field, value, onChange, apiBasePath }) {
         onChange(slug);
         setIsOpen(false);
     };
+    const hasContent = resolvedPaths.length > 0;
     return (React.createElement("div", { className: "flex gap-2" },
-        React.createElement(Input, { value: value, onChange: (e) => onChange(e.target.value), placeholder: field.label, className: "flex-1" }),
-        React.createElement(Button, { type: "button", variant: "outline", size: "sm", onClick: handleOpen, disabled: !contentPath, className: "shrink-0" }, "Select page"),
+        React.createElement(Input, { value: value, onChange: (e) => onChange(e.target.value), placeholder: placeholder ?? field?.label ?? 'Enter URL or select a page', className: "flex-1" }),
+        React.createElement(Button, { type: "button", variant: "outline", size: "sm", onClick: handleOpen, disabled: !hasContent, className: "shrink-0" }, "Select page"),
         React.createElement(Dialog, { open: isOpen, onOpenChange: setIsOpen },
             React.createElement(DialogContent, { className: "max-w-md" },
                 React.createElement(DialogHeader, null,
