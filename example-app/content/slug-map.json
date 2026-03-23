@@ -2,6 +2,7 @@
   "/": "content/pages/home.md",
   "/about": "content/pages/about.md",
   "/about/a-day-at": "content/pages/a-day-at.md",
+  "/about/anbi": "content/pages/anbi.md",
   "/about/getting-started": "content/about/getting-started.md",
   "/about/tarrifs": "content/pages/tarrifs.md",
   "/working-at": "content/pages/working-at.md",
