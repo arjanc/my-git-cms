@@ -1,6 +1,6 @@
 ---
 title: A day at Ark
-slug: a-day-at
+slug: /about/a-day-at
 description: ''
 pageSchema: pages
 blocks:
@@ -52,7 +52,7 @@ blocks:
       of others with different needs.
 metadata:
   createdAt: '2026-03-23T19:08:28.434Z'
-  updatedAt: '2026-03-23T19:08:28.434Z'
+  updatedAt: '2026-03-23T19:09:23.198Z'
   author: Celar
 navEnabled: true
 navOrder: -50
