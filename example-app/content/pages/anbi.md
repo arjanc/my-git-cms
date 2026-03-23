@@ -38,7 +38,10 @@ blocks:
           caption: ''
 metadata:
   createdAt: '2026-03-23T19:24:22.194Z'
-  updatedAt: '2026-03-23T19:24:22.194Z'
+  updatedAt: '2026-03-23T19:25:12.272Z'
   author: Celar
+navEnabled: true
+navOrder: 3
+navParent: /about
 ---
 
