@@ -7,5 +7,6 @@
   "/about/getting-started": "content/about/getting-started.md",
   "/about/tarrifs": "content/pages/tarrifs.md",
   "/about/team": "content/pages/team.md",
+  "/contact": "content/pages/contact.md",
   "/working-at": "content/pages/working-at.md"
 }
