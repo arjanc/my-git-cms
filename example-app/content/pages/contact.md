@@ -23,7 +23,7 @@ blocks:
           content: |-
             ## Stichting Ark
 
-            - +31 (0)65 0218299
+            - [+31 (0)65 0218299](tel:+31650218299)
             - [info@arkstichting.nl](mailto:info@arkstichting.nl)
             - Jan Evertsenstraat 761\
               1061XZ Amsterdam
@@ -36,7 +36,7 @@ blocks:
             [www.icdl.com](http://www.icdl.com)
 metadata:
   createdAt: '2026-03-23T19:53:27.348Z'
-  updatedAt: '2026-03-23T19:53:27.348Z'
+  updatedAt: '2026-03-23T19:55:31.142Z'
   author: Celar
 navEnabled: true
 navOrder: 3
