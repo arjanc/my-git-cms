@@ -89,12 +89,18 @@
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
 
   /* ── Font sizes ──────────────────────────────────────────────────────── */
-  --font-size-xs:  0.625rem;  /* 10px */
-  --font-size-s:   0.75rem;   /* 12px */
-  --font-size-m:   1rem;      /* 16px — base */
-  --font-size-l:   1.25rem;   /* 20px (corrected from 18px; see note below) */
-  --font-size-xl:  1.5rem;    /* 24px */
-  --font-size-2xl: 2rem;      /* 32px */
+  --font-size-xs: 0.625rem;
+  /* 10px */
+  --font-size-s: 0.75rem;
+  /* 12px */
+  --font-size-m: 1rem;
+  /* 16px — base */
+  --font-size-l: 1.25rem;
+  /* 20px (corrected from 18px; see note below) */
+  --font-size-xl: 1.5rem;
+  /* 24px */
+  --font-size-2xl: 2rem;
+  /* 32px */
 
   /* ── Border radius ───────────────────────────────────────────────────── */
   --radius-sm: 0.25rem;
@@ -148,13 +154,24 @@
 
 @layer base {
 
+  html,
+  body {
+    height: 100%;
+  }
+
   /* Body */
   body {
+    display: flex;
+    flex-direction: column;
     font-size: var(--font-size-m);
     color: var(--color-neutral-900);
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+  }
+
+  main {
+    flex: 1;
   }
 
   /* ── Headings ────────────────────────────────────────────────────────── */

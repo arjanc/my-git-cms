@@ -7,17 +7,17 @@ import { HeroBlock, BannerBlock, USPBlock, ImageBlock, TextBlock, LayoutBlock, H
 import type { BlockInstance } from '@git-cms/core';
 
 function renderFooterBlock(block: BlockInstance): React.ReactNode {
-  switch (block.type) {
-    case 'hero':    return <HeroBlock key={block.id} block={block} />
-    case 'banner':  return <BannerBlock key={block.id} block={block} />
-    case 'usp':     return <USPBlock key={block.id} block={block} />
-    case 'image':   return <ImageBlock key={block.id} block={block} />
-    case 'text':    return <TextBlock key={block.id} block={block} />
-    case 'layout':  return <LayoutBlock key={block.id} block={block} renderBlock={renderFooterBlock} />
-    case 'heading': return <HeadingBlock key={block.id} block={block} />
-    case 'button':  return <ButtonBlock key={block.id} block={block} />
-    default:        return null
-  }
+    switch (block.type) {
+        case 'hero': return <HeroBlock key={block.id} block={block} />
+        case 'banner': return <BannerBlock key={block.id} block={block} />
+        case 'usp': return <USPBlock key={block.id} block={block} />
+        case 'image': return <ImageBlock key={block.id} block={block} />
+        case 'text': return <TextBlock key={block.id} block={block} />
+        case 'layout': return <LayoutBlock key={block.id} block={block} renderBlock={renderFooterBlock} />
+        case 'heading': return <HeadingBlock key={block.id} block={block} />
+        case 'button': return <ButtonBlock key={block.id} block={block} />
+        default: return null
+    }
 }
 
 export default async function AppLayout({
@@ -40,7 +40,7 @@ export default async function AppLayout({
             </header>
             {children}
             {footerBlocks.length > 0 && (
-                <footer>
+                <footer className="bg-primary-100 pt-8">
                     {footerBlocks.map((block) => (
                         <div key={block.id} className="container mx-auto max-w-5xl px-4">
                             {renderFooterBlock(block)}

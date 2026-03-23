@@ -55,7 +55,7 @@ export default async function Page({ params }: PageProps) {
   if (!content) notFound()
 
   return (
-    <main>
+    <main className="flex-1">
       {content.blocks.length > 0 ? (
         // content.blocks.map(renderBlock)
         content.blocks.map((block) => {
