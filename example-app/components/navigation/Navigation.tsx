@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation'
 import type { NavRendererProps } from '@git-cms/core'
 import { NavigationItem } from './NavigationItem'
 
-export function Navigation({ nav }: Omit<NavRendererProps, 'currentPath'>) {
+export function Navigation({ nav, title }: Omit<NavRendererProps, 'currentPath'> & { title: string }) {
     const currentPath = usePathname()
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
@@ -79,7 +79,7 @@ export function Navigation({ nav }: Omit<NavRendererProps, 'currentPath'>) {
                         <div className="pt-5 pb-6 px-5 space-y-6">
                             <div className="flex items-center justify-between">
                                 <a href="/" className="no-underline">
-                                    <span className="text-xl font-bold text-primary-600 tracking-tight">My Site</span>
+                                    <span className="text-xl font-bold text-primary-600 tracking-tight">{title}</span>
                                 </a>
                                 <div className="-mr-2">
                                     <button
@@ -95,47 +95,35 @@ export function Navigation({ nav }: Omit<NavRendererProps, 'currentPath'>) {
                                 </div>
                             </div>
 
-                            {/* Items with children — shown as a flat list of their children */}
-                            {nav.items.some((item) => item.children && item.children.length > 0) && (
-                                <nav className="grid gap-y-6">
-                                    {nav.items
-                                        .filter((item) => item.children && item.children.length > 0)
-                                        .flatMap((item) => item.children!)
-                                        .map((child) => (
-                                            <a
-                                                key={child.href}
-                                                href={child.href}
-                                                onClick={() => setMobileMenuOpen(false)}
-                                                className={`-m-3 p-3 flex items-center space-x-3 rounded-md hover:bg-neutral-50 transition ease-in-out duration-150 no-underline ${currentPath === child.href ? 'text-primary-600' : 'text-neutral-900'
-                                                    }`}
-                                            >
-                                                <div className="flex-shrink-0 flex items-center justify-center h-8 w-8 rounded-md bg-primary-600 text-white text-sm font-bold">
-                                                    {child.title.charAt(0).toUpperCase()}
-                                                </div>
-                                                <span className="text-base font-medium">{child.title}</span>
-                                            </a>
-                                        ))}
-                                </nav>
-                            )}
-                        </div>
-
-                        {/* All top-level items as a 2-column grid */}
-                        <div className="py-6 px-5 space-y-6">
-                            <div className="grid grid-cols-2 gap-y-4 gap-x-8">
+                            {/* All top-level items as a 2-column grid */}
+                            <nav className="grid gap-y-6">
                                 {nav.items.map((item) => (
-                                    <a
-                                        key={item.href}
-                                        href={item.href}
-                                        onClick={() => setMobileMenuOpen(false)}
-                                        className={`text-base font-medium hover:text-neutral-700 transition ease-in-out duration-150 no-underline ${currentPath === item.href ? 'text-primary-600' : 'text-neutral-900'
-                                            }`}
-                                    >
-                                        {item.title}
-                                    </a>
+                                    <div key={item.href}>
+                                        <a
+                                            href={item.href}
+                                            onClick={() => setMobileMenuOpen(false)}
+                                            className={`-m-3 p-3 flex items-center space-x-3 rounded-md hover:bg-neutral-50 transition ease-in-out duration-150 no-underline ${currentPath === item.href ? 'text-primary-600' : 'text-neutral-900'}`}
+                                        >
+                                            {item.title}
+                                        </a>
+                                        {item.children && (
+                                            <div className="pl-4">
+                                                {item.children?.map((child) => (
+                                                    <a
+                                                        key={child.href}
+                                                        href={child.href}
+                                                        onClick={() => setMobileMenuOpen(false)}
+                                                        className={`p-3 flex items-center space-x-3 rounded-md hover:bg-neutral-50 transition ease-in-out duration-150 no-underline ${currentPath === child.href ? 'text-primary-600' : 'text-neutral-900'}`}
+                                                    >
+                                                        {child.title}
+                                                    </a>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
                                 ))}
-                            </div>
+                            </nav>
                         </div>
-
                     </div>
                 </div>
             </div>

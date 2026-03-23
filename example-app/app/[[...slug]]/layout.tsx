@@ -37,7 +37,7 @@ export default async function AppLayout({
     return (
         <>
             <header>
-                {nav.items.length > 0 && <Navigation nav={nav} />}
+                {nav.items.length > 0 && <Navigation nav={nav} title={settings.siteName} />}
             </header>
             {children}
             {footerBlocks.length > 0 && (
