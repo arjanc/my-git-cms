@@ -21,11 +21,12 @@
         ],
         [
           {
-            "id": "block_1774297424758_lsucqc2om",
-            "type": "image",
-            "url": "/media/Gemini_Generated_Image_wxcy0xwxcy0xwxcy.png",
-            "alt": "",
-            "caption": ""
+            "id": "block_1774299681976_nwaptuyfi",
+            "type": "map",
+            "location": "Jan Evertsenstraat 761, 1061 XZ Amsterdam",
+            "aspectRatio": "1:1",
+            "showDirections": true,
+            "openInNewWindow": true
           }
         ]
       ]
