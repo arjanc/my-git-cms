@@ -36,9 +36,10 @@ blocks:
           url: /media/anbi-logo.png
           alt: ANBI logo
           caption: ''
+          aspectRatio: '4:3'
 metadata:
   createdAt: '2026-03-23T19:24:22.194Z'
-  updatedAt: '2026-03-23T19:25:12.272Z'
+  updatedAt: '2026-03-23T21:11:31.744Z'
   author: Celar
 navEnabled: true
 navOrder: 3
