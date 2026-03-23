@@ -7,6 +7,7 @@ import { Input } from './ui/input';
 import { Textarea } from './ui/textarea';
 import { Label } from './ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose, } from './ui/dialog';
 // Inlined so this client component has zero server-only dependencies (no gray-matter)
 function generateBlockId() {
     return `block_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
@@ -20,6 +21,8 @@ export function Editor({ filePath, isCreating = false, contentPath, onBack, onCr
     const [saveError, setSaveError] = useState(null);
     const [fileSha, setFileSha] = useState(undefined);
     const [newFileName, setNewFileName] = useState('');
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+    const [deleting, setDeleting] = useState(false);
     const schema = pageSchemas?.find((s) => s.contentPath.includes(contentPath || ''));
     useEffect(() => {
         if (filePath) {
@@ -108,6 +111,35 @@ export function Editor({ filePath, isCreating = false, contentPath, onBack, onCr
             setSaving(false);
         }
     }
+    async function handleDelete() {
+        if (!filePath || !fileSha)
+            return;
+        setDeleting(true);
+        try {
+            const response = await fetch(`${apiBasePath}/${filePath}`, {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ path: filePath, sha: fileSha, message: `Delete ${filePath}` }),
+            });
+            if (!response.ok) {
+                const data = await response.json();
+                setSaveError(data.error ?? 'Failed to delete');
+                setSaveStatus('error');
+                setShowDeleteConfirm(false);
+                return;
+            }
+            onBack();
+        }
+        catch (err) {
+            console.error('Error deleting:', err);
+            setSaveError('Failed to delete');
+            setSaveStatus('error');
+            setShowDeleteConfirm(false);
+        }
+        finally {
+            setDeleting(false);
+        }
+    }
     function handleAddBlock(type) {
         if (!pageContent)
             return;
@@ -161,6 +193,7 @@ export function Editor({ filePath, isCreating = false, contentPath, onBack, onCr
             React.createElement("div", { className: "flex items-center gap-2 shrink-0" },
                 saveStatus === 'saved' && (React.createElement("span", { className: "text-sm text-green-600 font-medium" }, "Saved \u2713")),
                 saveStatus === 'error' && saveError && (React.createElement("span", { className: "text-sm text-red-600" }, saveError)),
+                !isCreating && (React.createElement(Button, { variant: "destructive", size: "sm", onClick: () => setShowDeleteConfirm(true) }, "Delete")),
                 React.createElement(Button, { variant: "ghost", size: "sm", onClick: onBack }, "\u2190 Back"),
                 React.createElement(Button, { size: "sm", onClick: handleSave, disabled: saving || (isCreating && !newFileName.trim()) }, saving ? 'Saving…' : isCreating ? 'Create' : 'Save'))),
         useSchemaEditor ? (React.createElement("div", { className: "space-y-4" },
@@ -228,5 +261,14 @@ export function Editor({ filePath, isCreating = false, contentPath, onBack, onCr
                         "+ ",
                         schema.label)))))))) : (React.createElement(Card, null,
             React.createElement(CardContent, { className: "pt-5" },
-                React.createElement(Textarea, { value: rawContent, onChange: (e) => setRawContent(e.target.value), className: "h-96 font-mono text-sm", placeholder: "Edit your content..." }))))));
+                React.createElement(Textarea, { value: rawContent, onChange: (e) => setRawContent(e.target.value), className: "h-96 font-mono text-sm", placeholder: "Edit your content..." })))),
+        React.createElement(Dialog, { open: showDeleteConfirm, onOpenChange: setShowDeleteConfirm },
+            React.createElement(DialogContent, null,
+                React.createElement(DialogHeader, null,
+                    React.createElement(DialogTitle, null, "Delete page"),
+                    React.createElement(DialogDescription, null, "Are you sure you want to delete this page? This action cannot be undone.")),
+                React.createElement(DialogFooter, null,
+                    React.createElement(DialogClose, { asChild: true },
+                        React.createElement(Button, { variant: "outline", size: "sm" }, "Cancel")),
+                    React.createElement(Button, { variant: "destructive", size: "sm", onClick: handleDelete, disabled: deleting }, deleting ? 'Deleting…' : 'Delete'))))));
 }

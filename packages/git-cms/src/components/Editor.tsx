@@ -9,6 +9,15 @@ import { Input } from './ui/input'
 import { Textarea } from './ui/textarea'
 import { Label } from './ui/label'
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+  DialogClose,
+} from './ui/dialog'
 
 // Inlined so this client component has zero server-only dependencies (no gray-matter)
 function generateBlockId() {
@@ -48,6 +57,8 @@ export function Editor({
   const [saveError, setSaveError] = useState<string | null>(null)
   const [fileSha, setFileSha] = useState<string | undefined>(undefined)
   const [newFileName, setNewFileName] = useState('')
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+  const [deleting, setDeleting] = useState(false)
   const schema = pageSchemas?.find((s) => s.contentPath.includes(contentPath || ''))
 
   useEffect(() => {
@@ -143,6 +154,33 @@ export function Editor({
     }
   }
 
+  async function handleDelete() {
+    if (!filePath || !fileSha) return
+    setDeleting(true)
+    try {
+      const response = await fetch(`${apiBasePath}/${filePath}`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ path: filePath, sha: fileSha, message: `Delete ${filePath}` }),
+      })
+      if (!response.ok) {
+        const data = await response.json()
+        setSaveError(data.error ?? 'Failed to delete')
+        setSaveStatus('error')
+        setShowDeleteConfirm(false)
+        return
+      }
+      onBack()
+    } catch (err) {
+      console.error('Error deleting:', err)
+      setSaveError('Failed to delete')
+      setSaveStatus('error')
+      setShowDeleteConfirm(false)
+    } finally {
+      setDeleting(false)
+    }
+  }
+
   function handleAddBlock(type: string) {
     if (!pageContent) return
     const schema = blockSchemas?.find((s) => s.type === type)
@@ -219,6 +257,11 @@ export function Editor({
           )}
           {saveStatus === 'error' && saveError && (
             <span className="text-sm text-red-600">{saveError}</span>
+          )}
+          {!isCreating && (
+            <Button variant="destructive" size="sm" onClick={() => setShowDeleteConfirm(true)}>
+              Delete
+            </Button>
           )}
           <Button variant="ghost" size="sm" onClick={onBack}>
             ← Back
@@ -406,6 +449,24 @@ export function Editor({
           </CardContent>
         </Card>
       )}
+      <Dialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Delete page</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete this page? This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button variant="outline" size="sm">Cancel</Button>
+            </DialogClose>
+            <Button variant="destructive" size="sm" onClick={handleDelete} disabled={deleting}>
+              {deleting ? 'Deleting…' : 'Delete'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
