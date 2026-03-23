@@ -161,9 +161,9 @@ export const blockSchemas: BlockSchema[] = [
         defaultValue: '16:9',
         options: [
           { label: '16:9', value: '16:9' },
-          { label: '4:3',  value: '4:3' },
-          { label: '3:2',  value: '3:2' },
-          { label: '1:1',  value: '1:1' },
+          { label: '4:3', value: '4:3' },
+          { label: '3:2', value: '3:2' },
+          { label: '1:1', value: '1:1' },
           { label: '21:9', value: '21:9' },
         ],
       },
@@ -199,7 +199,7 @@ export const blockSchemas: BlockSchema[] = [
     ],
     columnsConfig: {
       // Remove 'layout' to prevent nesting; list specific types to restrict
-      allowedBlocks: ['text', 'image', 'banner', 'usp', 'button'],
+      allowedBlocks: ['text', 'image', 'banner', 'usp', 'button', 'map'],
     },
   },
 ]
