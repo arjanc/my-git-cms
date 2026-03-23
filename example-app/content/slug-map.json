@@ -6,6 +6,6 @@
   "/about/complaints-policy": "content/pages/complaints-policy.md",
   "/about/getting-started": "content/about/getting-started.md",
   "/about/tarrifs": "content/pages/tarrifs.md",
-  "/working-at": "content/pages/working-at.md",
-  "/working-at/team": "content/pages/team.md"
+  "/about/team": "content/pages/team.md",
+  "/working-at": "content/pages/working-at.md"
 }
