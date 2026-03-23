@@ -8,7 +8,7 @@ blocks:
     type: heading
     tag: h1
     text: About Ark
-    alignment: left
+    alignment: center
   - id: block_1774292034545_9o6te4r5k
     type: text
     content: "We are a small, not-for-profit foundation (stichting) launched in 2010. Ark is for children aged 3 to 13 years with autism, communication and language delays, sensory processing disorders and other developmental challenges.\_We work with children who are not yet ready for a regular school environment. Ark provides intensive one-to-one support throughout the day from a skilled, experienced educator. Children also have the opportunity to work in pairs and small groups – to form friendships and learn from their peers in a structured but playful environment – a vital part of any child’s development."
@@ -64,7 +64,7 @@ blocks:
       therapists and other professionals
 metadata:
   createdAt: '2026-02-28T10:21:40.163Z'
-  updatedAt: '2026-03-23T18:56:59.274Z'
+  updatedAt: '2026-03-23T18:57:27.208Z'
   author: Celar
 navEnabled: true
 navTitle: About ark
