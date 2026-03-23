@@ -4,14 +4,28 @@ slug: /about
 description: overview
 pageSchema: pages
 blocks:
+  - id: block_1774292175281_j4mbqh8r4
+    type: heading
+    tag: h1
+    text: About Ark
+    alignment: left
   - id: block_1774292034545_9o6te4r5k
     type: text
     content: "We are a small, not-for-profit foundation (stichting) launched in 2010. Ark is for children aged 3 to 13 years with autism, communication and language delays, sensory processing disorders and other developmental challenges.\_We work with children who are not yet ready for a regular school environment. Ark provides intensive one-to-one support throughout the day from a skilled, experienced educator. Children also have the opportunity to work in pairs and small groups – to form friendships and learn from their peers in a structured but playful environment – a vital part of any child’s development."
-  - id: block_1774292049903_i22fqzq4g
-    type: image
-    url: /media/IMG-20191024-WA0029.jpg
-    alt: ''
-    caption: ''
+  - id: block_1774292195339_0x3wo8om0
+    type: layout
+    columns: '2'
+    slots:
+      - - id: block_1774292204564_li4wsm8ff
+          type: image
+          url: /media/IMG-20180307-WA0001-1024x768.jpg
+          alt: ''
+          caption: ''
+      - - id: block_1774292210777_9ohmyftg7
+          type: image
+          url: /media/IMG-20191024-WA0029.jpg
+          alt: ''
+          caption: ''
   - id: block_1774292061406_0ywn8kabu
     type: text
     content: >-
@@ -22,11 +36,6 @@ blocks:
       independence through their relationships with educators, other children
       and the vibrant community we’re part of – helping all of us to realise our
       potential.
-  - id: block_1774292078649_5sphw03c6
-    type: image
-    url: /media/IMG-20191031-WA0001-e1575998983539-1024x780.jpg
-    alt: ''
-    caption: ''
   - id: block_1774292095731_bwesr2yau
     type: text
     content: >-
@@ -55,7 +64,7 @@ blocks:
       therapists and other professionals
 metadata:
   createdAt: '2026-02-28T10:21:40.163Z'
-  updatedAt: '2026-03-23T18:55:24.329Z'
+  updatedAt: '2026-03-23T18:56:59.274Z'
   author: Celar
 navEnabled: true
 navTitle: About ark
