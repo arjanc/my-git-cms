@@ -1,0 +1,34 @@
+{
+  "footerBlocks": [
+    {
+      "id": "block_1774297310336_t6kny8kzv",
+      "type": "layout",
+      "columns": "3",
+      "slots": [
+        [
+          {
+            "id": "block_1774297331865_q2z8gc0x1",
+            "type": "text",
+            "content": "### About us\n\n\\\nStichting Ark offers home & school guidance to children with a care indication."
+          }
+        ],
+        [
+          {
+            "id": "block_1774297373052_zg2z1fep5",
+            "type": "text",
+            "content": "### Contact\n\n- Jan Evertsenstraat 761\n- 1061 XZ Amsterdam\n- [+31 (0)65 0218299](tel:+31650218299)\n- [info@arkstichting.nl](mailto:info@arkstichting.nl)"
+          }
+        ],
+        [
+          {
+            "id": "block_1774297424758_lsucqc2om",
+            "type": "image",
+            "url": "/media/Gemini_Generated_Image_wxcy0xwxcy0xwxcy.png",
+            "alt": "",
+            "caption": ""
+          }
+        ]
+      ]
+    }
+  ]
+}
