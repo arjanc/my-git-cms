@@ -5,7 +5,7 @@ import './globals.css';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-    title: 'Git CMS Web App',
+    title: 'Ark Stichting',
     description: 'Built with Next.js and Git CMS',
 };
 

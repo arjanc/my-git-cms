@@ -61,7 +61,7 @@ export default async function Page({ params }: PageProps) {
         content.blocks.map((block) => {
           if (block.type !== 'hero') {
             return (
-              <div key={`${block.type}-${block.id}`} className="container mx-auto px-4 mb-8">
+              <div key={`${block.type}-${block.id}`} className="container mx-auto max-w-5xl px-4 mb-8">
                 {renderBlock(block)}
               </div>
             )
@@ -70,7 +70,7 @@ export default async function Page({ params }: PageProps) {
           return renderBlock(block)
         })
       ) : (
-        <div className="max-w-4xl mx-auto px-6 py-16">
+        <div className="max-w-5xl mx-auto px-6 py-16">
           <h1 className="text-4xl font-bold">{content.title}</h1>
           {content.description && (
             <p className="mt-4 text-xl text-neutral-600">{content.description}</p>
