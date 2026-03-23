@@ -3,7 +3,7 @@ import path from 'path';
 import { buildNav } from '@git-cms/core/nav';
 import { getSettings } from '@git-cms/core';
 import { Navigation } from '../../components/navigation';
-import { HeroBlock, BannerBlock, USPBlock, ImageBlock, TextBlock, LayoutBlock, HeadingBlock, ButtonBlock } from '../../components/blocks';
+import { HeroBlock, BannerBlock, USPBlock, ImageBlock, TextBlock, LayoutBlock, HeadingBlock, ButtonBlock, MapBlock } from '../../components/blocks';
 import type { BlockInstance } from '@git-cms/core';
 
 function renderFooterBlock(block: BlockInstance): React.ReactNode {
@@ -16,6 +16,7 @@ function renderFooterBlock(block: BlockInstance): React.ReactNode {
         case 'layout': return <LayoutBlock key={block.id} block={block} renderBlock={renderFooterBlock} />
         case 'heading': return <HeadingBlock key={block.id} block={block} />
         case 'button': return <ButtonBlock key={block.id} block={block} />
+        case 'map': return <MapBlock key={block.id} block={block} />
         default: return null
     }
 }

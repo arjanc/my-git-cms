@@ -4,7 +4,7 @@ import fs from 'fs'
 import path from 'path'
 import { parseMarkdown, getSettings } from '@git-cms/core'
 import type { BlockInstance } from '@git-cms/core'
-import { HeroBlock, BannerBlock, USPBlock, ImageBlock, TextBlock, LayoutBlock, HeadingBlock, ButtonBlock } from '../../components/blocks'
+import { HeroBlock, BannerBlock, USPBlock, ImageBlock, TextBlock, LayoutBlock, HeadingBlock, ButtonBlock, MapBlock } from '../../components/blocks'
 
 interface PageProps {
   params: Promise<{ slug?: string[] }>
@@ -43,6 +43,8 @@ function renderBlock(block: BlockInstance): React.ReactNode {
       return <HeadingBlock key={block.id} block={block} />
     case 'button':
       return <ButtonBlock key={block.id} block={block} />
+    case 'map':
+      return <MapBlock key={block.id} block={block} />
     default:
       return null
   }

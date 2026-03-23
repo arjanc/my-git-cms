@@ -144,6 +144,44 @@ export const blockSchemas: BlockSchema[] = [
     ],
   },
   {
+    type: 'map',
+    label: 'Map',
+    fields: [
+      {
+        name: 'location',
+        label: 'Location (address or lat,lng)',
+        fieldType: 'text',
+        required: true,
+        defaultValue: '',
+      },
+      {
+        name: 'aspectRatio',
+        label: 'Aspect ratio',
+        fieldType: 'dropdown',
+        defaultValue: '16:9',
+        options: [
+          { label: '16:9', value: '16:9' },
+          { label: '4:3',  value: '4:3' },
+          { label: '3:2',  value: '3:2' },
+          { label: '1:1',  value: '1:1' },
+          { label: '21:9', value: '21:9' },
+        ],
+      },
+      {
+        name: 'showDirections',
+        label: 'Show "Get directions" button',
+        fieldType: 'boolean',
+        defaultValue: false,
+      },
+      {
+        name: 'openInNewWindow',
+        label: 'Clicking map opens Google Maps',
+        fieldType: 'boolean',
+        defaultValue: true,
+      },
+    ],
+  },
+  {
     type: 'layout',
     label: 'Layout (columns)',
     fields: [
