@@ -1,6 +1,6 @@
 ---
 title: Team
-slug: /working-at/team
+slug: /about/team
 description: ''
 pageSchema: pages
 blocks:
@@ -11,10 +11,10 @@ blocks:
     alignment: left
 metadata:
   createdAt: '2026-03-18T12:24:35.259Z'
-  updatedAt: '2026-03-18T12:24:35.259Z'
+  updatedAt: '2026-03-23T19:43:40.369Z'
   author: Celar
 navEnabled: true
-navOrder: 1
-navParent: /working-at
+navOrder: 5
+navParent: /about
 ---
 
