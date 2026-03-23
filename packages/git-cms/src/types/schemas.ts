@@ -134,6 +134,36 @@ export interface PageContent {
   /** href of the parent nav item, e.g. "/about" — makes this a child item */
   navParent?: string
 }
+// ─── Site Settings ────────────────────────────────────────────────────────
+
+/**
+ * Global site settings stored in content/settings.json.
+ * Covers general meta, SEO, and footer blocks.
+ */
+export interface SiteSettings {
+  // General
+  siteName?: string
+  siteDescription?: string
+  author?: string
+  /** BCP 47 language tag, e.g. "en" or "nl" */
+  language?: string
+  /** Absolute URL or path, e.g. "/favicon.ico" */
+  faviconUrl?: string
+  /** CSS color value used as browser theme-color */
+  themeColor?: string
+
+  // SEO
+  /** Full base URL for canonical links, e.g. "https://example.com" */
+  canonicalBase?: string
+  /** robots meta content, e.g. "index, follow" */
+  robotsDirectives?: string
+  /** Default Open Graph image URL */
+  ogImageUrl?: string
+
+  // Footer
+  footerBlocks?: BlockInstance[]
+}
+
 // ─── Media Manager ────────────────────────────────────────────────────────
 
 export interface MediaItem {

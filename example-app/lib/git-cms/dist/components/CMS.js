@@ -5,9 +5,10 @@ import { Dashboard } from './Dashboard';
 import { Editor } from './Editor';
 import { FileList } from './FileList';
 import { MediaManager } from './MediaManager';
+import { SettingsEditor } from './SettingsEditor';
 import { Button } from './ui/button';
 import { Separator } from './ui/separator';
-function CMSInner({ basePath = '/admin', apiBasePath = '/admin/api/cms', contentPath = 'content/pages', githubOwner, githubRepo, blockSchemas, pageSchemas, user, signOutUrl, }) {
+function CMSInner({ basePath = '/admin', apiBasePath = '/admin/api/cms', contentPath = 'content/pages', settingsPath, githubOwner, githubRepo, blockSchemas, pageSchemas, user, signOutUrl, }) {
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
@@ -20,20 +21,23 @@ function CMSInner({ basePath = '/admin', apiBasePath = '/admin/api/cms', content
     const action = segments[1]; // 'create' | 'edit' | undefined
     const fileParam = searchParams.get('file'); // decoded file path (editor only)
     const isMediaView = section === 'media';
-    const isFilesView = !isMediaView && !!section && action === undefined;
-    const isEditorView = !isMediaView && !!section && (action === 'create' || action === 'edit');
+    const isSettingsView = section === 'settings';
+    const isFilesView = !isMediaView && !isSettingsView && !!section && action === undefined;
+    const isEditorView = !isMediaView && !isSettingsView && !!section && (action === 'create' || action === 'edit');
     const isCreating = action === 'create';
-    const activeSchema = (!isMediaView && section && section !== 'files')
+    const activeSchema = (!isMediaView && !isSettingsView && section && section !== 'files')
         ? pageSchemas?.find(s => s.type === section)
         : undefined;
     const activeContentPath = activeSchema?.contentPath ?? contentPath;
     const currentView = isMediaView ? 'media' :
-        isEditorView ? 'editor' :
-            isFilesView ? 'files' :
-                'dashboard';
+        isSettingsView ? 'settings' :
+            isEditorView ? 'editor' :
+                isFilesView ? 'files' :
+                    'dashboard';
     // Navigation helpers
     function toDashboard() { router.push(basePath); }
     function toMedia() { router.push(`${basePath}/media`); }
+    function toSettings() { router.push(`${basePath}/settings`); }
     function toFiles(schemaType) {
         router.push(`${basePath}/${schemaType ?? 'files'}`);
     }
@@ -57,17 +61,23 @@ function CMSInner({ basePath = '/admin', apiBasePath = '/admin/api/cms', content
                     React.createElement(Separator, { orientation: "vertical", className: "h-5" }),
                     React.createElement("nav", { className: "flex items-center gap-1" },
                         React.createElement(Button, { variant: currentView === 'dashboard' ? 'secondary' : 'ghost', size: "sm", onClick: toDashboard }, "Dashboard"),
-                        React.createElement(Button, { variant: currentView === 'media' ? 'secondary' : 'ghost', size: "sm", onClick: toMedia }, "Media"))),
+                        React.createElement(Button, { variant: currentView === 'media' ? 'secondary' : 'ghost', size: "sm", onClick: toMedia }, "Media"),
+                        React.createElement(Button, { variant: currentView === 'settings' ? 'secondary' : 'ghost', size: "sm", onClick: toSettings }, "Settings"))),
                 React.createElement("div", { className: "flex items-center gap-3" },
                     user?.image && (React.createElement("img", { src: user.image, alt: "", width: 28, height: 28, className: "rounded-full ring-1 ring-gray-200" })),
                     user?.name && (React.createElement("span", { className: "text-sm text-gray-600 hidden sm:block" }, user.name)),
                     signOutUrl && (React.createElement(Button, { variant: "ghost", size: "sm", asChild: true },
                         React.createElement("a", { href: signOutUrl }, "Sign out")))))),
         React.createElement("main", { className: "max-w-screen-xl mx-auto px-4 py-8" },
-            currentView === 'dashboard' && (React.createElement(Dashboard, { onNavigate: () => toFiles(), basePath: basePath, pageSchemas: pageSchemas, onSelectSchema: toFiles })),
+            currentView === 'dashboard' && (React.createElement(Dashboard, { onNavigate: () => toFiles(), basePath: basePath, pageSchemas: pageSchemas, onSelectSchema: toFiles, onSettings: toSettings })),
             currentView === 'files' && (React.createElement(FileList, { onSelectFile: toEditor, onCreateNew: toCreate, onBack: toDashboard, contentPath: activeContentPath, apiBasePath: apiBasePath })),
             currentView === 'editor' && (React.createElement(Editor, { filePath: fileParam, isCreating: isCreating, contentPath: activeContentPath, onBack: handleEditorBack, onCreated: handleCreated, basePath: basePath, apiBasePath: apiBasePath, blockSchemas: blockSchemas, pageSchemas: pageSchemas })),
-            currentView === 'media' && (React.createElement(MediaManager, { apiBasePath: apiBasePath, isLibraryView: true })))));
+            currentView === 'media' && (React.createElement(MediaManager, { apiBasePath: apiBasePath, isLibraryView: true })),
+            currentView === 'settings' && settingsPath && (React.createElement(SettingsEditor, { settingsPath: settingsPath, apiBasePath: apiBasePath, blockSchemas: blockSchemas, onBack: toDashboard })),
+            currentView === 'settings' && !settingsPath && (React.createElement("div", { className: "text-sm text-gray-500 py-8 text-center" },
+                "Settings are not configured. Pass a ",
+                React.createElement("code", null, "settingsPath"),
+                " prop to AdminPage.")))));
 }
 export function CMS(props) {
     return (React.createElement(Suspense, null,

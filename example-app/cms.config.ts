@@ -180,11 +180,5 @@ export const pageSchemas: PageSchema[] = [
     label: 'Pages',
     allowedBlocks: 'any',
     contentPath: 'content/pages',
-  },
-  {
-    type: 'about',
-    label: 'About',
-    allowedBlocks: 'any',
-    contentPath: 'content/about',
-  },
+  }
 ]

@@ -2,7 +2,7 @@ import React from 'react'
 import { notFound } from 'next/navigation'
 import fs from 'fs'
 import path from 'path'
-import { parseMarkdown } from '@git-cms/core/markdown'
+import { parseMarkdown, getSettings } from '@git-cms/core'
 import type { BlockInstance } from '@git-cms/core'
 import { HeroBlock, BannerBlock, USPBlock, ImageBlock, TextBlock, LayoutBlock, HeadingBlock, ButtonBlock } from '../../components/blocks'
 
@@ -84,9 +84,20 @@ export default async function Page({ params }: PageProps) {
 export async function generateMetadata({ params }: PageProps) {
   const { slug = [] } = await params
   const content = readContent(slug)
+  const settings = getSettings(path.join(process.cwd(), 'content', 'settings.json'))
+
   if (!content) return {}
+
   return {
     title: content.title,
-    description: content.description,
+    description: content.description ?? settings.siteDescription,
+    ...(settings.robotsDirectives ? { robots: settings.robotsDirectives } : {}),
+    ...(settings.canonicalBase ? { metadataBase: new URL(settings.canonicalBase) } : {}),
+    ...(settings.faviconUrl ? { icons: { icon: settings.faviconUrl } } : {}),
+    openGraph: {
+      title: content.title,
+      description: content.description ?? settings.siteDescription,
+      ...(settings.ogImageUrl ? { images: [settings.ogImageUrl] } : {}),
+    },
   }
 }

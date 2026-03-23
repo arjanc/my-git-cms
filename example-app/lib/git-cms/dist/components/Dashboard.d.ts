@@ -5,7 +5,8 @@ interface DashboardProps {
     basePath: string;
     pageSchemas?: PageSchema[];
     onSelectSchema?: (schemaType: string) => void;
+    onSettings?: () => void;
 }
-export declare function Dashboard({ onNavigate, pageSchemas, onSelectSchema }: DashboardProps): React.JSX.Element;
+export declare function Dashboard({ onNavigate, pageSchemas, onSelectSchema, onSettings }: DashboardProps): React.JSX.Element;
 export {};
 //# sourceMappingURL=Dashboard.d.ts.map

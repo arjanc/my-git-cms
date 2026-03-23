@@ -17,6 +17,11 @@ interface AdminPageProps {
    * Omit (or leave empty) when the Next.js app is at the repo root.
    */
   contentBase?: string
+  /**
+   * Repo-relative path to the settings JSON file.
+   * Defaults to <contentBase>/content/settings.json (or content/settings.json when no contentBase).
+   */
+  settingsPath?: string
 }
 
 function resolveContentPath(contentBase: string | undefined, contentPath: string): string {
@@ -28,6 +33,7 @@ export default async function AdminPage({
   blockSchemas,
   pageSchemas,
   contentBase,
+  settingsPath,
 }: AdminPageProps = {}) {
   const session = await auth()
   const basePath = process.env.GIT_CMS_BASE_PATH ?? '/admin'
@@ -42,11 +48,16 @@ export default async function AdminPage({
   }))
 
   const defaultContentPath = resolveContentPath(contentBase, 'content/pages')
+  const resolvedSettingsPath = resolveContentPath(
+    contentBase,
+    settingsPath ?? 'content/settings.json'
+  )
 
   return React.createElement(CMS, {
     basePath,
     apiBasePath: `${basePath}/api/cms`,
     contentPath: defaultContentPath,
+    settingsPath: resolvedSettingsPath,
     githubOwner: process.env.GITHUB_OWNER,
     githubRepo: process.env.GITHUB_REPO,
     blockSchemas,

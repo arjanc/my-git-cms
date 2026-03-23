@@ -10,9 +10,10 @@ interface DashboardProps {
   basePath: string
   pageSchemas?: PageSchema[]
   onSelectSchema?: (schemaType: string) => void
+  onSettings?: () => void
 }
 
-export function Dashboard({ onNavigate, pageSchemas, onSelectSchema }: DashboardProps) {
+export function Dashboard({ onNavigate, pageSchemas, onSelectSchema, onSettings }: DashboardProps) {
   return (
     <div className="space-y-6">
       <div>
@@ -52,6 +53,17 @@ export function Dashboard({ onNavigate, pageSchemas, onSelectSchema }: Dashboard
             </Card>
           </button>
         )}
+
+        <button onClick={onSettings} className="text-left group">
+          <Card className="h-full hover:shadow-md transition-shadow cursor-pointer">
+            <CardHeader>
+              <CardTitle className="group-hover:text-blue-600 transition-colors">
+                General Settings
+              </CardTitle>
+              <CardDescription>Footer, meta tags, SEO, and site-wide settings</CardDescription>
+            </CardHeader>
+          </Card>
+        </button>
 
         <Card>
           <CardHeader>

@@ -10,6 +10,7 @@ export type {
   PageSchema,
   BlockInstance,
   PageContent,
+  SiteSettings,
   NavItem,
   NavData,
   NavRendererProps,
@@ -37,3 +38,9 @@ export {
   validateBlock,
   generateBlockId,
 } from './lib/markdown'
+
+export {
+  getSettings,
+  parseSettings,
+  serializeSettings,
+} from './lib/settings'

@@ -4,6 +4,8 @@ export interface CMSProps {
     basePath?: string;
     apiBasePath?: string;
     contentPath?: string;
+    /** Repo-relative path to the settings JSON file, e.g. "example-app/content/settings.json" */
+    settingsPath?: string;
     githubOwner?: string;
     githubRepo?: string;
     blockSchemas?: BlockSchema[];

@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from './ui/card';
-export function Dashboard({ onNavigate, pageSchemas, onSelectSchema }) {
+export function Dashboard({ onNavigate, pageSchemas, onSelectSchema, onSettings }) {
     return (React.createElement("div", { className: "space-y-6" },
         React.createElement("div", null,
             React.createElement("h2", { className: "text-2xl font-bold text-gray-900" }, "Dashboard"),
@@ -16,6 +16,11 @@ export function Dashboard({ onNavigate, pageSchemas, onSelectSchema }) {
                     React.createElement(CardHeader, null,
                         React.createElement(CardTitle, { className: "group-hover:text-blue-600 transition-colors" }, "Manage Pages"),
                         React.createElement(CardDescription, null, "Create, edit, and delete your content pages"))))),
+            React.createElement("button", { onClick: onSettings, className: "text-left group" },
+                React.createElement(Card, { className: "h-full hover:shadow-md transition-shadow cursor-pointer" },
+                    React.createElement(CardHeader, null,
+                        React.createElement(CardTitle, { className: "group-hover:text-blue-600 transition-colors" }, "General Settings"),
+                        React.createElement(CardDescription, null, "Footer, meta tags, SEO, and site-wide settings")))),
             React.createElement(Card, null,
                 React.createElement(CardHeader, null,
                     React.createElement(CardTitle, null, "Repository"),

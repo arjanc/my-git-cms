@@ -13,7 +13,12 @@ interface AdminPageProps {
      * Omit (or leave empty) when the Next.js app is at the repo root.
      */
     contentBase?: string;
+    /**
+     * Repo-relative path to the settings JSON file.
+     * Defaults to <contentBase>/content/settings.json (or content/settings.json when no contentBase).
+     */
+    settingsPath?: string;
 }
-export default function AdminPage({ blockSchemas, pageSchemas, contentBase, }?: AdminPageProps): Promise<React.FunctionComponentElement<import("..").CMSProps>>;
+export default function AdminPage({ blockSchemas, pageSchemas, contentBase, settingsPath, }?: AdminPageProps): Promise<React.FunctionComponentElement<import("..").CMSProps>>;
 export {};
 //# sourceMappingURL=admin-page.d.ts.map

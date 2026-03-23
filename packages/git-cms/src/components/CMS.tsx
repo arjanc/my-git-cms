@@ -6,6 +6,7 @@ import { Dashboard } from './Dashboard'
 import { Editor } from './Editor'
 import { FileList } from './FileList'
 import { MediaManager } from './MediaManager'
+import { SettingsEditor } from './SettingsEditor'
 import type { BlockSchema, PageSchema } from '../types/schemas'
 import { Button } from './ui/button'
 import { Separator } from './ui/separator'
@@ -14,6 +15,8 @@ export interface CMSProps {
   basePath?: string
   apiBasePath?: string
   contentPath?: string
+  /** Repo-relative path to the settings JSON file, e.g. "example-app/content/settings.json" */
+  settingsPath?: string
   githubOwner?: string
   githubRepo?: string
   blockSchemas?: BlockSchema[]
@@ -26,6 +29,7 @@ function CMSInner({
   basePath = '/admin',
   apiBasePath = '/admin/api/cms',
   contentPath = 'content/pages',
+  settingsPath,
   githubOwner,
   githubRepo,
   blockSchemas,
@@ -47,25 +51,28 @@ function CMSInner({
   const action  = segments[1]  // 'create' | 'edit' | undefined
   const fileParam = searchParams.get('file')  // decoded file path (editor only)
 
-  const isMediaView  = section === 'media'
-  const isFilesView  = !isMediaView && !!section && action === undefined
-  const isEditorView = !isMediaView && !!section && (action === 'create' || action === 'edit')
-  const isCreating   = action === 'create'
+  const isMediaView    = section === 'media'
+  const isSettingsView = section === 'settings'
+  const isFilesView    = !isMediaView && !isSettingsView && !!section && action === undefined
+  const isEditorView   = !isMediaView && !isSettingsView && !!section && (action === 'create' || action === 'edit')
+  const isCreating     = action === 'create'
 
-  const activeSchema = (!isMediaView && section && section !== 'files')
+  const activeSchema = (!isMediaView && !isSettingsView && section && section !== 'files')
     ? pageSchemas?.find(s => s.type === section)
     : undefined
   const activeContentPath = activeSchema?.contentPath ?? contentPath
 
-  const currentView: 'dashboard' | 'files' | 'editor' | 'media' =
-    isMediaView  ? 'media'  :
-    isEditorView ? 'editor' :
-    isFilesView  ? 'files'  :
+  const currentView: 'dashboard' | 'files' | 'editor' | 'media' | 'settings' =
+    isMediaView    ? 'media'    :
+    isSettingsView ? 'settings' :
+    isEditorView   ? 'editor'   :
+    isFilesView    ? 'files'    :
     'dashboard'
 
   // Navigation helpers
-  function toDashboard() { router.push(basePath) }
-  function toMedia()     { router.push(`${basePath}/media`) }
+  function toDashboard()  { router.push(basePath) }
+  function toMedia()      { router.push(`${basePath}/media`) }
+  function toSettings()   { router.push(`${basePath}/settings`) }
 
   function toFiles(schemaType?: string) {
     router.push(`${basePath}/${schemaType ?? 'files'}`)
@@ -106,6 +113,13 @@ function CMSInner({
               >
                 Media
               </Button>
+              <Button
+                variant={currentView === 'settings' ? 'secondary' : 'ghost'}
+                size="sm"
+                onClick={toSettings}
+              >
+                Settings
+              </Button>
             </nav>
           </div>
 
@@ -139,6 +153,7 @@ function CMSInner({
             basePath={basePath}
             pageSchemas={pageSchemas}
             onSelectSchema={toFiles}
+            onSettings={toSettings}
           />
         )}
 
@@ -171,6 +186,21 @@ function CMSInner({
             apiBasePath={apiBasePath}
             isLibraryView={true}
           />
+        )}
+
+        {currentView === 'settings' && settingsPath && (
+          <SettingsEditor
+            settingsPath={settingsPath}
+            apiBasePath={apiBasePath}
+            blockSchemas={blockSchemas}
+            onBack={toDashboard}
+          />
+        )}
+
+        {currentView === 'settings' && !settingsPath && (
+          <div className="text-sm text-gray-500 py-8 text-center">
+            Settings are not configured. Pass a <code>settingsPath</code> prop to AdminPage.
+          </div>
         )}
       </main>
     </div>
