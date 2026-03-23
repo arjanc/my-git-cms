@@ -54,13 +54,9 @@ blocks:
     item3Description: >-
       On site training and learning opportunities for parents, educators,
       therapist and other professionals
-  - id: block_3_banner
-    type: banner
-    text: 'Edit this page in the admin: /admin'
-    variant: info
 metadata:
   createdAt: '2026-03-01T06:35:41.559Z'
-  updatedAt: '2026-03-10T21:03:48.826Z'
+  updatedAt: '2026-03-23T21:13:08.412Z'
   author: Celar
 navEnabled: true
 navTitle: Home
