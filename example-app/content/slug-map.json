@@ -1,9 +1,9 @@
 {
   "/": "content/pages/home.md",
   "/about": "content/pages/about.md",
+  "/about/a-day-at": "content/pages/a-day-at.md",
   "/about/getting-started": "content/about/getting-started.md",
   "/working-at": "content/pages/working-at.md",
   "/working-at/team": "content/pages/team.md",
-  "/working-at/test-new": "content/pages/testsubpage.md",
-  "a-day-at": "content/pages/a-day-at.md"
+  "/working-at/test-new": "content/pages/testsubpage.md"
 }
