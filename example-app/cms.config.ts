@@ -51,6 +51,19 @@ export const blockSchemas: BlockSchema[] = [
       { name: 'url', label: 'Image URL', fieldType: 'image', required: true, defaultValue: '' },
       { name: 'alt', label: 'Alt text', fieldType: 'text', required: true, defaultValue: '' },
       { name: 'caption', label: 'Caption', fieldType: 'textarea', defaultValue: '' },
+      {
+        name: 'aspectRatio',
+        label: 'Aspect ratio',
+        fieldType: 'dropdown',
+        defaultValue: '16:9',
+        options: [
+          { label: '16:9', value: '16:9' },
+          { label: '4:3', value: '4:3' },
+          { label: '3:2', value: '3:2' },
+          { label: '1:1', value: '1:1' },
+          { label: '21:9', value: '21:9' },
+        ],
+      },
     ],
   },
   {
