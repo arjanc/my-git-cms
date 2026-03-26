@@ -91,7 +91,7 @@ export async function generateMetadata({ params }: PageProps) {
   if (!content) return {}
 
   return {
-    title: content.title,
+    title: `${settings.siteName} - ${content.title}`,
     description: content.description ?? settings.siteDescription,
     ...(settings.robotsDirectives ? { robots: settings.robotsDirectives } : {}),
     ...(settings.canonicalBase ? { metadataBase: new URL(settings.canonicalBase) } : {}),
