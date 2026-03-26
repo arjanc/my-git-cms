@@ -92,13 +92,13 @@ export async function generateMetadata({ params }: PageProps) {
 
   return {
     title: `${settings.siteName} - ${content.title}`,
-    description: content.description ?? settings.siteDescription,
+    description: content.description && content.description !== '' ? content.description : settings.siteDescription,
     ...(settings.robotsDirectives ? { robots: settings.robotsDirectives } : {}),
     ...(settings.canonicalBase ? { metadataBase: new URL(settings.canonicalBase) } : {}),
     ...(settings.faviconUrl ? { icons: { icon: settings.faviconUrl } } : {}),
     openGraph: {
-      title: content.title,
-      description: content.description ?? settings.siteDescription,
+      title: `${settings.siteName} - ${content.title}`,
+      description: content.description && content.description !== '' ? content.description : settings.siteDescription,
       ...(settings.ogImageUrl ? { images: [settings.ogImageUrl] } : {}),
     },
   }
