@@ -1,7 +1,7 @@
 ---
 title: Homepage
 slug: /
-description: Welcome to our Git CMS powered site
+description: ''
 pageSchema: pages
 blocks:
   - id: block_1_hero
@@ -56,7 +56,7 @@ blocks:
       therapist and other professionals
 metadata:
   createdAt: '2026-03-01T06:35:41.559Z'
-  updatedAt: '2026-03-23T21:13:08.412Z'
+  updatedAt: '2026-03-26T07:21:45.376Z'
   author: Celar
 navEnabled: true
 navTitle: Home
